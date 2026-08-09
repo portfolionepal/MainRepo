@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.*.local
+
+# Vite
+*.local
+vite.config.js.timestamp-*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.idea/
+.vscode/
+
+# Docs / planning — no need in repo
+README.md
+claude.md
+progress.md
+
+# Seed scripts — local use only
+seed.js
+seed-runner.mjs
+
+# Firebase deploy artifacts
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
