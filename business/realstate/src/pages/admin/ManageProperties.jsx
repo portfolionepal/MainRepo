@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { DataContext } from '../../context/DataContext';
 import { Search, Plus, Edit2, Trash2, X, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { convertFileToBase64 } from '../../utils/fileHelpers';
+import { uploadToCloudinary } from '../../utils/cloudinary';
 
 const ManageProperties = () => {
   const { properties, deleteProperty, addProperty, updateProperty } = useContext(DataContext);
@@ -11,6 +11,7 @@ const ManageProperties = () => {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   
   // Form State
   const [formData, setFormData] = useState({
@@ -55,10 +56,13 @@ const ManageProperties = () => {
     const file = e.target.files[0];
     if (file) {
       try {
-        const base64 = await convertFileToBase64(file);
-        setFormData({ ...formData, images: [...formData.images, base64] });
+        setUploadingImage(true);
+        const url = await uploadToCloudinary(file);
+        setFormData({ ...formData, images: [...formData.images, url] });
       } catch (error) {
-        alert("Failed to read file.");
+        alert("Failed to upload image to Cloudinary.");
+      } finally {
+        setUploadingImage(false);
       }
     }
   };
@@ -69,12 +73,12 @@ const ManageProperties = () => {
     setFormData({ ...formData, images: newImages });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingProperty) {
-      updateProperty({ ...editingProperty, ...formData });
+      await updateProperty({ ...editingProperty, ...formData });
     } else {
-      addProperty(formData);
+      await addProperty(formData);
     }
     setIsModalOpen(false);
   };
@@ -271,8 +275,8 @@ const ManageProperties = () => {
                       <div className="flex gap-3 items-center mb-3">
                         <label className="cursor-pointer flex items-center justify-center px-4 py-2 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-all text-sm font-medium text-slate-600 shadow-sm">
                           <Upload className="h-4 w-4 mr-2" />
-                          Upload Image
-                          <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                          {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                          <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
                         </label>
                         <span className="text-xs text-slate-400">Add multiple images one by one</span>
                       </div>

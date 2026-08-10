@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { DataContext } from '../../context/DataContext';
 import { Search, Plus, Edit2, Trash2, ExternalLink, X, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { convertFileToBase64 } from '../../utils/fileHelpers';
+import { uploadToCloudinary } from '../../utils/cloudinary';
 
 const ManageProjects = () => {
   const { projects, deleteProject, addProject, updateProject } = useContext(DataContext);
@@ -11,6 +11,7 @@ const ManageProjects = () => {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   
   // Form State
   const [formData, setFormData] = useState({
@@ -46,20 +47,23 @@ const ManageProjects = () => {
     const file = e.target.files[0];
     if (file) {
       try {
-        const base64 = await convertFileToBase64(file);
-        setFormData({ ...formData, imageUrl: base64 });
+        setUploadingImage(true);
+        const url = await uploadToCloudinary(file);
+        setFormData({ ...formData, imageUrl: url });
       } catch (error) {
-        alert("Failed to read file.");
+        alert("Failed to upload image to Cloudinary.");
+      } finally {
+        setUploadingImage(false);
       }
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingProject) {
-      updateProject({ ...editingProject, ...formData });
+      await updateProject({ ...editingProject, ...formData });
     } else {
-      addProject(formData);
+      await addProject(formData);
     }
     setIsModalOpen(false);
   };
@@ -204,8 +208,8 @@ const ManageProjects = () => {
                   <div className="flex gap-3 items-center mb-3">
                     <label className="cursor-pointer flex items-center justify-center px-4 py-2 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-all text-sm font-medium text-slate-600 shadow-sm">
                       <Upload className="h-4 w-4 mr-2" />
-                      Upload File
-                      <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                      {uploadingImage ? 'Uploading...' : 'Upload File'}
+                      <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
                     </label>
                     <span className="text-xs text-slate-400">Max 5MB</span>
                   </div>
@@ -215,7 +219,7 @@ const ManageProjects = () => {
                     className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none bg-slate-50 focus:bg-white"
                     value={formData.imageUrl} onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
                   />
-                  {formData.imageUrl && formData.imageUrl.startsWith('data:') && (
+                  {formData.imageUrl && (
                     <div className="mt-3 h-24 w-40 rounded-lg border border-slate-200 overflow-hidden shadow-sm">
                        <img src={formData.imageUrl} alt="preview" className="h-full w-full object-cover" />
                     </div>

@@ -2,13 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 import { DataContext } from '../../context/DataContext';
 import { Save, CheckCircle2, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { convertFileToBase64 } from '../../utils/fileHelpers';
+import { uploadToCloudinary } from '../../utils/cloudinary';
 
 const ManagePages = () => {
   const { siteConfig, updateSiteConfig } = useContext(DataContext);
   const [formData, setFormData] = useState(siteConfig);
   const [activeTab, setActiveTab] = useState('Hero');
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, success
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     setFormData(siteConfig);
@@ -46,10 +47,13 @@ const ManagePages = () => {
     const file = e.target.files[0];
     if (file) {
       try {
-        const base64 = await convertFileToBase64(file);
-        setFormData(prev => ({ ...prev, [fieldName]: base64 }));
+        setUploadingImage(true);
+        const url = await uploadToCloudinary(file);
+        setFormData(prev => ({ ...prev, [fieldName]: url }));
       } catch (error) {
-        alert("Failed to read file.");
+        alert("Failed to upload image to Cloudinary.");
+      } finally {
+        setUploadingImage(false);
       }
     }
   };
@@ -143,8 +147,8 @@ const ManagePages = () => {
                     <div className="flex gap-3 items-center mb-3">
                       <label className="cursor-pointer flex items-center justify-center px-4 py-2 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-all text-sm font-medium text-slate-600 shadow-sm">
                         <Upload className="h-4 w-4 mr-2" />
-                        Upload Image
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'heroImage')} />
+                        {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'heroImage')} disabled={uploadingImage} />
                       </label>
                       <span className="text-xs text-slate-400">Max size 5MB</span>
                     </div>
@@ -188,8 +192,8 @@ const ManagePages = () => {
                     <div className="flex gap-3 items-center mb-3">
                       <label className="cursor-pointer flex items-center justify-center px-4 py-2 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-all text-sm font-medium text-slate-600 shadow-sm">
                         <Upload className="h-4 w-4 mr-2" />
-                        Upload Image
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'aboutImage')} />
+                        {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'aboutImage')} disabled={uploadingImage} />
                       </label>
                       <span className="text-xs text-slate-400">Max size 5MB</span>
                     </div>

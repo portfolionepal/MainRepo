@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { faqs } from '../data/faqs';
+import { useState, useContext } from 'react';
+import { DataContext } from '../context/DataContext';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQ = () => {
-  const [openId, setOpenId] = useState(faqs[0]?.id || null);
+  const { faqs } = useContext(DataContext);
+  const [openId, setOpenId] = useState(null);
 
   const toggleFaq = (id) => {
     setOpenId(openId === id ? null : id);

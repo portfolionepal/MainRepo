@@ -22,19 +22,19 @@ const Footer = () => {
               {siteConfig.subheading}
             </p>
             <div className="flex space-x-4">
-              <a href={siteConfig.socialLinks.linkedin} className="text-[#0a66c2] hover:opacity-80 transition-opacity" aria-label="LinkedIn">
+              <a href={siteConfig.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#0a66c2] hover:opacity-80 transition-opacity" aria-label="LinkedIn">
                 <FaLinkedinIn size={20} />
               </a>
-              <a href={siteConfig.socialLinks.facebook} className="text-[#1877f2] hover:opacity-80 transition-opacity" aria-label="Facebook">
+              <a href={siteConfig.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-[#1877f2] hover:opacity-80 transition-opacity" aria-label="Facebook">
                 <FaFacebookF size={20} />
               </a>
-              <a href={siteConfig.socialLinks.instagram} className="text-[#E1306C] hover:opacity-80 transition-opacity" aria-label="Instagram">
+              <a href={siteConfig.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-[#E1306C] hover:opacity-80 transition-opacity" aria-label="Instagram">
                 <FaInstagram size={20} />
               </a>
-              <a href={siteConfig.socialLinks.youtube} className="text-[#ff0000] hover:opacity-80 transition-opacity" aria-label="YouTube">
+              <a href={siteConfig.socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] hover:opacity-80 transition-opacity" aria-label="YouTube">
                 <FaYoutube size={20} />
               </a>
-              <a href={siteConfig.socialLinks.whatsapp} className="text-[#25D366] hover:opacity-80 transition-opacity" aria-label="WhatsApp">
+              <a href={siteConfig.socialLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="text-[#25D366] hover:opacity-80 transition-opacity" aria-label="WhatsApp">
                 <FaWhatsapp size={20} />
               </a>
             </div>

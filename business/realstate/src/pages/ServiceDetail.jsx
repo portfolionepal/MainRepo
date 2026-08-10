@@ -12,7 +12,7 @@ const ServiceDetail = () => {
   const { services } = React.useContext(DataContext);
 
   const service = services.find(s => 
-    s.id === parseInt(slug) || 
+    String(s.id) === String(slug) || 
     s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') === slug
   );
 

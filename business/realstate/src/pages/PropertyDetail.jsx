@@ -8,7 +8,7 @@ const PropertyDetail = () => {
   const { properties } = useContext(DataContext);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const property = properties.find(p => p.id === parseInt(id));
+  const property = properties.find(p => String(p.id) === String(id));
 
   // Scroll to top when loading the page
   useEffect(() => {
@@ -20,7 +20,7 @@ const PropertyDetail = () => {
       <div className="min-h-screen pt-32 pb-24 flex flex-col items-center justify-center bg-base text-center px-4">
         <h1 className="text-4xl font-heading font-bold text-text mb-4">Property Not Found</h1>
         <p className="text-text-muted mb-8">The property you are looking for does not exist.</p>
-        <Link to="/#properties" className="inline-flex items-center text-accent hover:text-accent-hover font-medium">
+        <Link to="/properties" className="inline-flex items-center text-accent hover:text-accent-hover font-medium">
           <ArrowLeft size={16} className="mr-2" />
           Back to Properties
         </Link>
@@ -51,7 +51,7 @@ const PropertyDetail = () => {
         
         {/* Breadcrumb / Back */}
         <div className="mb-8 mt-4">
-          <Link to="/#properties" className="inline-flex items-center text-text hover:text-accent transition-all font-medium border border-surface-border hover:border-accent/50 bg-transparent hover:bg-accent/5 rounded-full px-4 py-2 text-sm w-fit">
+          <Link to="/properties" className="inline-flex items-center text-text hover:text-accent transition-all font-medium border border-surface-border hover:border-accent/50 bg-transparent hover:bg-accent/5 rounded-full px-4 py-2 text-sm w-fit">
             <ArrowLeft size={16} className="mr-2" />
             Back to Properties
           </Link>

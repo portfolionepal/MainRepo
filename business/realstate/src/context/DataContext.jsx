@@ -1,149 +1,225 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { services as initialServices } from '../data/services';
-import { gallery as initialGallery } from '../data/gallery';
-import { properties as initialProperties } from '../data/properties';
 import { siteConfig as initialSiteConfig } from '../data/siteConfig';
-import { faqs as initialFaqs } from '../data/faqs';
+
+import { db } from '../firebase';
+import { collection, doc, setDoc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 
 export const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-  // --- STATE ---
-  const [services, setServices] = useState(() => {
-    const saved = localStorage.getItem('goodmoon_services');
-    return saved ? JSON.parse(saved) : initialServices.map(s => ({
-      ...s, 
-      // Convert component reference to string name if it's a function/object from lucide
-      iconName: typeof s.icon === 'function' || typeof s.icon === 'object' ? s.icon.render?.name || s.icon.displayName || s.title.split(' ')[0] : s.iconName
-    }));
-  });
-
-  const [projects, setProjects] = useState(() => {
-    const saved = localStorage.getItem('goodmoon_projects');
-    return saved ? JSON.parse(saved) : initialGallery;
-  });
-
-  const [properties, setProperties] = useState(() => {
-    const saved = localStorage.getItem('goodmoon_properties');
-    return saved ? JSON.parse(saved) : initialProperties;
-  });
-
-  const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem('goodmoon_messages');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        date: '2026-08-08T10:30:00Z',
-        subject: 'Hydropower Survey Inquiry',
-        message: 'Hello, I am interested in getting a topographical survey done.',
-        read: false
-      }
-    ];
-  });
-
-  const [siteConfig, setSiteConfig] = useState(() => {
-    const saved = localStorage.getItem('goodmoon_siteConfig');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return { 
-        ...initialSiteConfig, 
-        ...parsed, 
-        statistics: parsed.statistics || initialSiteConfig.statistics 
-      };
+  const getCachedConfig = () => {
+    try {
+      const cached = localStorage.getItem('siteConfigCache');
+      return cached ? JSON.parse(cached) : initialSiteConfig;
+    } catch (e) {
+      return initialSiteConfig;
     }
-    return initialSiteConfig;
-  });
+  };
 
-  const [faqs, setFaqs] = useState(() => {
-    const saved = localStorage.getItem('goodmoon_faqs');
-    return saved ? JSON.parse(saved) : initialFaqs;
-  });
+  // --- FIRESTORE STATE ---
+  const [services, setServices] = useState([]);
+  const [siteConfig, setSiteConfig] = useState(getCachedConfig);
+  const [projects, setProjects] = useState([]);
+  const [faqs, setFaqs] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // --- PERSIST TO LOCAL STORAGE ---
+  // --- FIRESTORE SUBSCRIPTIONS ---
   useEffect(() => {
-    localStorage.setItem('goodmoon_services', JSON.stringify(services));
-  }, [services]);
+    // 1. Subscribe to Site Config
+    const unsubSiteConfig = onSnapshot(doc(db, "settings", "siteConfig"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setSiteConfig(data);
+        localStorage.setItem('siteConfigCache', JSON.stringify(data));
+      } else {
+        setDoc(doc(db, "settings", "siteConfig"), initialSiteConfig);
+      }
+    });
 
-  useEffect(() => {
-    localStorage.setItem('goodmoon_projects', JSON.stringify(projects));
-  }, [projects]);
+    // 2. Subscribe to Services
+    const unsubServices = onSnapshot(collection(db, "services"), (snapshot) => {
+      const servicesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setServices(servicesData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)));
+    });
 
-  useEffect(() => {
-    localStorage.setItem('goodmoon_properties', JSON.stringify(properties));
-  }, [properties]);
+    // 3. Subscribe to Projects
+    const unsubProjects = onSnapshot(collection(db, "projects"), (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProjects(data.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)));
+    });
 
-  useEffect(() => {
-    localStorage.setItem('goodmoon_messages', JSON.stringify(messages));
-  }, [messages]);
+    // 4. Subscribe to FAQs
+    const unsubFaqs = onSnapshot(collection(db, "faqs"), (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setFaqs(data.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)));
+    });
 
-  useEffect(() => {
-    localStorage.setItem('goodmoon_siteConfig', JSON.stringify(siteConfig));
-  }, [siteConfig]);
+    // 5. Subscribe to Messages
+    const unsubMessages = onSnapshot(collection(db, "messages"), (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMessages(data.sort((a,b) => new Date(b.date) - new Date(a.date)));
+    });
 
-  useEffect(() => {
-    localStorage.setItem('goodmoon_faqs', JSON.stringify(faqs));
-  }, [faqs]);
+    // 6. Subscribe to Properties
+    const unsubProperties = onSnapshot(collection(db, "properties"), (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProperties(data.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)));
+    });
+
+    setLoading(false);
+
+    return () => {
+      unsubSiteConfig();
+      unsubServices();
+      unsubProjects();
+      unsubFaqs();
+      unsubMessages();
+      unsubProperties();
+    };
+  }, []);
 
   // --- ACTIONS ---
 
-  // Projects
-  const addProject = (project) => {
-    setProjects([{ ...project, id: Date.now() }, ...projects]);
+  // Projects (FIRESTORE)
+  const addProject = async (project) => {
+    try {
+      const newDocRef = doc(collection(db, "projects"));
+      await setDoc(newDocRef, { ...project, id: newDocRef.id, createdAt: Date.now() });
+    } catch (error) {
+      console.error("Error adding project: ", error);
+    }
   };
-  const deleteProject = (id) => {
-    setProjects(projects.filter(p => p.id !== id));
+  const deleteProject = async (id) => {
+    try {
+      await deleteDoc(doc(db, "projects", id));
+    } catch (error) {
+      console.error("Error deleting project: ", error);
+    }
   };
-  const updateProject = (updatedProject) => {
-    setProjects(projects.map(p => p.id === updatedProject.id ? updatedProject : p));
-  };
-
-  // Services
-  const addService = (service) => {
-    setServices([{ ...service, id: Date.now() }, ...services]);
-  };
-  const deleteService = (id) => {
-    setServices(services.filter(s => s.id !== id));
-  };
-  const updateService = (updatedService) => {
-    setServices(services.map(s => s.id === updatedService.id ? updatedService : s));
-  };
-
-  // Properties
-  const addProperty = (property) => {
-    setProperties([{ ...property, id: Date.now() }, ...properties]);
-  };
-  const deleteProperty = (id) => {
-    setProperties(properties.filter(p => p.id !== id));
-  };
-  const updateProperty = (updatedProperty) => {
-    setProperties(properties.map(p => p.id === updatedProperty.id ? updatedProperty : p));
+  const updateProject = async (updatedProject) => {
+    try {
+      await updateDoc(doc(db, "projects", updatedProject.id), updatedProject);
+    } catch (error) {
+      console.error("Error updating project: ", error);
+    }
   };
 
-  // FAQs
-  const addFAQ = (faq) => {
-    setFaqs([...faqs, { ...faq, id: Date.now() }]);
+  // Services (FIRESTORE)
+  const addService = async (service) => {
+    try {
+      const newDocRef = doc(collection(db, "services"));
+      await setDoc(newDocRef, { ...service, id: newDocRef.id, createdAt: Date.now() });
+    } catch (error) {
+      console.error("Error adding service: ", error);
+    }
   };
-  const deleteFAQ = (id) => {
-    setFaqs(faqs.filter(f => f.id !== id));
+  const deleteService = async (id) => {
+    try {
+      await deleteDoc(doc(db, "services", id));
+    } catch (error) {
+      console.error("Error deleting service: ", error);
+    }
   };
-  const updateFAQ = (updatedFAQ) => {
-    setFaqs(faqs.map(f => f.id === updatedFAQ.id ? updatedFAQ : f));
+  const updateService = async (updatedService) => {
+    try {
+      await updateDoc(doc(db, "services", updatedService.id), updatedService);
+    } catch (error) {
+      console.error("Error updating service: ", error);
+    }
   };
 
-  // Messages
-  const deleteMessage = (id) => {
-    setMessages(messages.filter(m => m.id !== id));
+  // Properties (FIRESTORE)
+  const addProperty = async (property) => {
+    try {
+      const newDocRef = doc(collection(db, "properties"));
+      await setDoc(newDocRef, { ...property, id: newDocRef.id, createdAt: Date.now() });
+    } catch (error) {
+      console.error("Error adding property: ", error);
+    }
   };
-  const markMessageRead = (id) => {
-    setMessages(messages.map(m => m.id === id ? { ...m, read: true } : m));
+  const deleteProperty = async (id) => {
+    try {
+      await deleteDoc(doc(db, "properties", id));
+    } catch (error) {
+      console.error("Error deleting property: ", error);
+    }
+  };
+  const updateProperty = async (updatedProperty) => {
+    try {
+      await updateDoc(doc(db, "properties", updatedProperty.id), updatedProperty);
+    } catch (error) {
+      console.error("Error updating property: ", error);
+    }
   };
 
-  // Site Config
-  const updateSiteConfig = (newConfig) => {
-    setSiteConfig(newConfig);
+  // FAQs (FIRESTORE)
+  const addFAQ = async (faq) => {
+    try {
+      const newDocRef = doc(collection(db, "faqs"));
+      await setDoc(newDocRef, { ...faq, id: newDocRef.id, createdAt: Date.now() });
+    } catch (error) {
+      console.error("Error adding FAQ: ", error);
+    }
   };
+  const deleteFAQ = async (id) => {
+    try {
+      await deleteDoc(doc(db, "faqs", id));
+    } catch (error) {
+      console.error("Error deleting FAQ: ", error);
+    }
+  };
+  const updateFAQ = async (updatedFAQ) => {
+    try {
+      await updateDoc(doc(db, "faqs", updatedFAQ.id), updatedFAQ);
+    } catch (error) {
+      console.error("Error updating FAQ: ", error);
+    }
+  };
+
+  // Messages (FIRESTORE)
+  const addMessage = async (message) => {
+    try {
+      const newDocRef = doc(collection(db, "messages"));
+      await setDoc(newDocRef, { 
+        ...message, 
+        id: newDocRef.id,
+        date: new Date().toISOString(),
+        read: false
+      });
+    } catch (error) {
+      console.error("Error adding message: ", error);
+    }
+  };
+  const deleteMessage = async (id) => {
+    try {
+      await deleteDoc(doc(db, "messages", id));
+    } catch (error) {
+      console.error("Error deleting message: ", error);
+    }
+  };
+  const markMessageRead = async (id) => {
+    try {
+      await updateDoc(doc(db, "messages", id), { read: true });
+    } catch (error) {
+      console.error("Error updating message: ", error);
+    }
+  };
+
+  // Site Config (FIRESTORE)
+  const updateSiteConfig = async (newConfig) => {
+    try {
+      await setDoc(doc(db, "settings", "siteConfig"), newConfig);
+    } catch (error) {
+      console.error("Error updating site config: ", error);
+    }
+  };
+
+  if (loading) return null;
 
   return (
     <DataContext.Provider value={{
@@ -151,7 +227,7 @@ export const DataProvider = ({ children }) => {
       projects, addProject, deleteProject, updateProject,
       properties, addProperty, deleteProperty, updateProperty,
       faqs, addFAQ, deleteFAQ, updateFAQ,
-      messages, deleteMessage, markMessageRead,
+      messages, addMessage, deleteMessage, markMessageRead,
       siteConfig, updateSiteConfig
     }}>
       {children}

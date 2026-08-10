@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ServiceDetail from './pages/ServiceDetail';
 import PropertyDetail from './pages/PropertyDetail';
+import PropertiesPage from './pages/PropertiesPage';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop'; // ADDED
 
@@ -29,9 +30,25 @@ const PublicLayout = () => (
 );
 
 // Protected Route Component for Admin Panel
+import { useState } from 'react';
+import { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('isAdminLoggedIn') === 'true';
-  if (!isAuthenticated) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center">Loading...</div>;
+
+  if (!user) {
     return <Navigate to="/admin/login" replace />;
   }
   return children;
@@ -54,6 +71,7 @@ function App() {
           {/* Public Routes */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/properties" element={<PropertiesPage />} />
             <Route path="/service/:slug" element={<ServiceDetail />} />
             <Route path="/property/:id" element={<PropertyDetail />} />
           </Route>

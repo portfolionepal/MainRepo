@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { DataContext } from '../context/DataContext';
 import { useNavigate } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
@@ -7,14 +7,9 @@ import { motion } from 'framer-motion';
 const Properties = () => {
   const navigate = useNavigate();
   const { properties } = useContext(DataContext);
-  const [filterType, setFilterType] = useState('All');
-  const [filterStatus, setFilterStatus] = useState('All');
-
-  const filteredProperties = properties.filter(prop => {
-    const matchType = filterType === 'All' || prop.type === filterType;
-    const matchStatus = filterStatus === 'All' || prop.status === filterStatus;
-    return matchType && matchStatus;
-  });
+  
+  // Show only up to 3 properties on the home page
+  const featuredProperties = properties.slice(0, 3);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -34,52 +29,20 @@ const Properties = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-12"
         >
           <h2 className="text-sm text-accent uppercase tracking-widest font-medium mb-3">Real Estate</h2>
           <h3 className="text-3xl md:text-4xl font-heading font-semibold text-text mb-4">
             Available Land & Properties
           </h3>
-          <p className="text-text-muted">
+          <p className="text-text-muted mb-8">
             Explore our curated selection of verified land parcels and properties for sale.
           </p>
         </motion.div>
 
-        {/* Filters */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex flex-col md:flex-row justify-center gap-4 mb-12"
-        >
-          <div className="flex space-x-2 bg-surface p-1 rounded-md border border-surface-border overflow-x-auto">
-            {['All', 'Land', 'House'].map(type => (
-              <button
-                key={type}
-                onClick={() => setFilterType(type)}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors whitespace-nowrap ${filterType === type ? 'bg-base-alt text-text shadow-sm border border-surface-border' : 'text-text-muted hover:text-text'}`}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-          <div className="flex space-x-2 bg-surface p-1 rounded-md border border-surface-border overflow-x-auto">
-            {['All', 'For Sale', 'Available', 'Sold'].map(status => (
-              <button
-                key={status}
-                onClick={() => setFilterStatus(status)}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors whitespace-nowrap ${filterStatus === status ? 'bg-base-alt text-text shadow-sm border border-surface-border' : 'text-text-muted hover:text-text'}`}
-              >
-                {status}
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
         {/* Property Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProperties.map((prop, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {featuredProperties.map((prop, index) => (
             <motion.div 
               key={prop.id} 
               initial={{ opacity: 0, y: 30 }}
@@ -125,15 +88,23 @@ const Properties = () => {
               </div>
             </motion.div>
           ))}
-          {filteredProperties.length === 0 && (
-            <div className="col-span-full text-center py-12 text-text-muted">
-              No properties found matching the selected filters.
-            </div>
-          )}
         </div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-center"
+        >
+          <button
+            onClick={() => navigate('/properties')}
+            className="bg-accent hover:bg-accent-hover text-white px-8 py-3 rounded-full font-medium transition-colors shadow-sm inline-flex items-center"
+          >
+            View All Properties
+          </button>
+        </motion.div>
       </div>
-
     </section>
   );
 };

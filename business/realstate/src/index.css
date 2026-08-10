@@ -34,7 +34,6 @@
 }
 
 html, body {
-  scroll-behavior: smooth;
   /* ADDED: stops mobile browsers (mainly Chrome/Safari) from auto-adjusting
      text/zoom scale on page load. */
   -webkit-text-size-adjust: 100%;

@@ -14,7 +14,6 @@ const Navbar = () => {
     { name: 'Home', href: '/#home', id: 'home' },
     { name: 'About', href: '/#about', id: 'about' },
     { name: 'Services', href: '/#services', id: 'services' },
-    { name: 'Properties', href: '/#properties', id: 'properties' },
     { name: 'Project', href: '/#gallery', id: 'gallery' },
     { name: 'FAQ', href: '/#faq', id: 'faq' },
     { name: 'Contact', href: '/#contact', id: 'contact' },
@@ -83,8 +82,8 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-6">
+          <div className="hidden md:flex items-center">
+            <div className="flex items-baseline space-x-6 mr-8">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -97,6 +96,12 @@ const Navbar = () => {
                 </a>
               ))}
             </div>
+            <a 
+              href="/properties"
+              className="bg-accent/10 border border-accent text-accent px-5 py-2 rounded-full text-sm font-semibold shadow-sm hover:bg-accent hover:text-white transition-all transform hover:scale-105 flex items-center"
+            >
+              View Properties
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -114,7 +119,7 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-surface border-t border-surface-border">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -127,6 +132,13 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
+            <a
+              href="/properties"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 mt-4 text-center rounded-md text-base font-semibold bg-accent text-white hover:bg-accent-hover shadow-sm"
+            >
+              View Properties
+            </a>
           </div>
         </div>
       )}

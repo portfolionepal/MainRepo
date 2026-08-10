@@ -31,12 +31,12 @@ const ManageFAQs = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingFAQ) {
-      updateFAQ({ ...editingFAQ, ...formData });
+      await updateFAQ({ ...editingFAQ, ...formData });
     } else {
-      addFAQ(formData);
+      await addFAQ(formData);
     }
     setIsModalOpen(false);
   };

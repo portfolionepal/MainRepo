@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Layers, FileText, MessageSquare, Settings, LogOut, Menu, X, User, HelpCircle, Home, Globe } from 'lucide-react';
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -16,9 +18,13 @@ const AdminLayout = () => {
     { name: 'Pages', path: '/admin/pages', icon: Settings },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAdminLoggedIn');
-    navigate('/admin/login');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
@@ -33,18 +39,17 @@ const AdminLayout = () => {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 z-50 h-screen w-64 bg-[#0F172A] border-r border-slate-800 shadow-2xl transition-transform duration-300
-        lg:translate-x-0 lg:sticky lg:top-0 lg:shrink-0
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        fixed top-0 left-0 z-50 h-screen w-64 bg-[#0F172A] border-r border-slate-800 shadow-2xl transition-transform duration-300 overflow-y-auto
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
       `}>
-        <div className="h-20 flex items-center px-6 border-b border-slate-800 bg-[#0B1120]">
+        <div className="h-20 flex items-center px-6 border-b border-slate-800 bg-[#0B1120] sticky top-0 z-10">
           <Link to="/" className="font-heading font-bold text-2xl text-white tracking-wide">
             GodMoon<span className="text-blue-500">.</span>
             <span className="text-[10px] ml-2 text-slate-400 font-medium uppercase tracking-[0.2em] border border-slate-700 px-2 py-0.5 rounded-full">Admin</span>
           </Link>
         </div>
 
-        <div className="p-4 flex flex-col h-[calc(100vh-4rem)] justify-between">
+        <div className="p-4 flex flex-col min-h-[calc(100vh-4rem)] justify-between">
           <nav className="space-y-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -68,7 +73,7 @@ const AdminLayout = () => {
             })}
           </nav>
 
-          <div className="space-y-2 pt-4 border-t border-slate-800">
+          <div className="space-y-2 pt-4 border-t border-slate-800 mt-4 pb-4">
             <Link
               to="/"
               target="_blank"
@@ -90,7 +95,7 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 bg-[#F1F5F9]">
+      <main className="flex-1 flex flex-col min-w-0 bg-[#F1F5F9] lg:ml-64 min-h-screen">
         {/* Top Header */}
         <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm flex items-center justify-between px-4 sm:px-8 z-30 sticky top-0 transition-all">
           <button 
