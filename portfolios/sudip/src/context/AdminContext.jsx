@@ -1,0 +1,190 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { trainingData, coachingData } from '../data/content';
+
+// Define the default content structure for ALL pages
+const defaultSiteContent = {
+  home: {
+    heroTitle: "Transforming Potential into",
+    heroHighlight: "Performance",
+    heroSubtitle: "Empowering individuals and organizations for over 20 years. Sudeep Basnet is a certified leadership coach and motivational trainer dedicated to facilitating real transformation.",
+    heroButtonPrimary: "Book a Training",
+    heroButtonSecondary: "Explore Coaching",
+    statsOrganizations: "100+",
+    statsIndividuals: "10,000+",
+    statsExperience: "20+",
+    statsCountries: "5+",
+  },
+  about: {
+    title: "Sudeep Basnet",
+    subtitle: "Inspirational Business Speaker & Certified Leadership Coach",
+    paragraph1: "For over 17 years, Sudeep has been working with hundreds of organization to improve teamwork, increase motivation, and develop customer service strategies.",
+    paragraph2: "Sudeep is recognized for his unique ability to connect with audiences about real issues. His listeners receive practical techniques that can be used immediately.",
+    paragraph3: "He knows that personal and professional success begins from within, therefore his mission is to empower people with the skill and attitudes needed in order to reach new height.",
+  },
+  contact: {
+    title: "Get in touch",
+    subtitle: "We will get back to you within 24 hours, or call us everyday.",
+    phone: "01-4599799",
+    email: "bd@successinc.com.np",
+    address: "Sangam Chowk, New baneshwor, Kathmandu",
+    facebookUrl: "#",
+    linkedinUrl: "#",
+    twitterUrl: "#",
+    instagramUrl: "#",
+    youtubeUrl: "#"
+  },
+  trainings: {
+    pageTitle: "Signature Programs",
+    pageSubtitle: "Transformative training experiences designed for modern organizations.",
+  },
+  coaching: {
+    pageTitle: "Professional Coaching",
+    pageSubtitle: "Unlock your true potential with personalized coaching programs.",
+  },
+  clients: {
+    pageTitle: "Our Clients",
+    pageSubtitle: "Trusted by leading organizations worldwide.",
+    items: [
+      { id: 1, name: 'Apple', url: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=200' },
+      { id: 2, name: 'Google', url: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?auto=format&fit=crop&q=80&w=200' },
+      { id: 3, name: 'Microsoft', url: 'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?auto=format&fit=crop&q=80&w=200' },
+      { id: 4, name: 'Spotify', url: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&q=80&w=200' },
+      { id: 5, name: 'Amazon', url: 'https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?auto=format&fit=crop&q=80&w=200' }
+    ]
+  },
+  testimonials: {
+    pageTitle: "Testimonials",
+    pageSubtitle: "Hear what our clients have to say.",
+    items: [
+      { id: 1, name: "Sarah Jenkins", role: "HR Director, TechCorp", image: "https://i.pravatar.cc/150?img=5", text: "Sudeep's leadership training completely transformed our management team's approach." },
+      { id: 2, name: "Michael Thapa", role: "VP Sales, FinServe", image: "https://i.pravatar.cc/150?img=11", text: "The 'Let's Play Sales' seminar was exactly the motivation my team needed this quarter." },
+      { id: 3, name: "Priya Maharjan", role: "CEO, Innovate Inc", image: "https://i.pravatar.cc/150?img=9", text: "Exceptional life coaching that provided me with clarity and focus during a critical transition period." }
+    ]
+  },
+  gallery: {
+    pageTitle: "Gallery",
+    pageSubtitle: "Moments from our transformative sessions.",
+    items: [
+      { id: 1, category: 'Corporate Training', title: 'Leadership Workshop', url: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=1200' },
+      { id: 2, category: 'Team Building', title: 'Outdoor Activities', url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200' },
+      { id: 3, category: 'Seminars', title: 'Keynote Speech', url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800' }
+    ]
+  },
+  events: {
+    pageTitle: "Upcoming Events",
+    pageSubtitle: "Join us at our next transformative session.",
+    items: [
+      { id: 1, title: 'Leadership Summit 2026', date: 'October 15, 2026', location: 'Yak & Yeti, Kathmandu', type: 'Public Seminar', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800', description: 'Join us for an exclusive public seminar where Sudeep Basnet will share transformative insights. This immersive experience is specifically designed to elevate your skills, connect you with like-minded professionals, and provide actionable strategies you can implement immediately in your career or business. Spaces for this event are highly limited to ensure a personalized and interactive learning environment. Secure your spot today!' },
+      { id: 2, title: 'Sales Masterclass', date: 'November 5, 2026', location: 'Online Webinar', type: 'Webinar', image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=800', description: 'Join us for an exclusive webinar where Sudeep Basnet will share transformative insights. This immersive experience is specifically designed to elevate your skills, connect you with like-minded professionals, and provide actionable strategies you can implement immediately in your career or business. Spaces for this event are highly limited to ensure a personalized and interactive learning environment. Secure your spot today!' }
+    ],
+    pastItems: [
+      { id: 3, title: 'Manager as a Coach Workshop', date: 'March 12, 2026', location: 'Soaltee Hotel, Kathmandu', type: 'Workshop', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800', description: 'A successful workshop focusing on the transition from managing to coaching.' },
+      { id: 4, title: 'Corporate Wellbeing Summit', date: 'January 20, 2026', location: 'Everest Hotel, Kathmandu', type: 'Public Seminar', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800', description: 'An impactful summit addressing mental health and wellbeing in the corporate sector.' }
+    ]
+  },
+  blog: {
+    pageTitle: "Insights & Articles",
+    pageSubtitle: "Thoughts on leadership, growth, and success.",
+    items: [
+      { id: 1, title: 'The Shift from Managing to Coaching', date: 'August 5, 2026', category: 'Leadership', excerpt: 'Why the traditional management style is failing in modern corporate environments and how coaching bridges the gap.', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800', content: 'The days of the command-and-control manager are over. Transitioning from a traditional manager to a coach requires a fundamental shift in mindset.' },
+      { id: 2, title: '5 NLP Techniques for Better Communication', date: 'July 22, 2026', category: 'Communication', excerpt: 'Neuro-Linguistic Programming offers incredible tools for connecting with your team.', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800', content: 'Here are 5 actionable NLP techniques to improve your workplace communication immediately: Mirroring, Pacing, Reframing, Anchoring, and Sensory Predicates.' }
+    ]
+  },
+  // Dynamic injection of Training Pages
+  managerCoach: trainingData['manager-coach'],
+  leadershipDevelopment: trainingData['leadership'],
+  letsPlaySales: trainingData['sales'],
+  teamBuilding: trainingData['team-building'],
+  motivational: trainingData['motivational'],
+  tot: trainingData['tot'],
+  wellbeing: trainingData['wellbeing'],
+  customerService: trainingData['customer-service'],
+
+  // Dynamic injection of Coaching Pages
+  whatIsCoaching: coachingData['what-is'],
+  lifeCoaching: coachingData['life'],
+  leadershipCoaching: coachingData['leadership'],
+
+  trainingProcess: { title: "Training Process", description: "How we deliver results." },
+  missionVision: { title: "Mission & Vision", description: "Our guiding principles." }
+};
+
+const AdminContext = createContext();
+
+export const AdminProvider = ({ children }) => {
+  // Try to load from localStorage first
+  const [siteContent, setSiteContent] = useState(() => {
+    try {
+      const saved = localStorage.getItem('successIncContent');
+      if (saved) {
+        const parsedSaved = JSON.parse(saved);
+        // We do a shallow merge so new keys from defaultSiteContent are included,
+        // but this doesn't deep-merge arrays.
+        const merged = { ...defaultSiteContent };
+        for (const key in parsedSaved) {
+          if (merged[key]) {
+            merged[key] = { ...merged[key], ...parsedSaved[key] };
+          }
+        }
+        return merged;
+      }
+    } catch (e) {
+      console.error("Failed to load content from localStorage", e);
+    }
+    return defaultSiteContent;
+  });
+
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('adminAuth') === 'true';
+  });
+
+  const login = (username, password) => {
+    // Hardcoded credentials for now
+    if (username === 'admin' && password === 'admin123') {
+      setIsAuthenticated(true);
+      localStorage.setItem('adminAuth', 'true');
+      return true;
+    }
+    return false;
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('adminAuth');
+  };
+
+  // Save to localStorage whenever content changes
+  useEffect(() => {
+    localStorage.setItem('successIncContent', JSON.stringify(siteContent));
+  }, [siteContent]);
+
+  const updatePageContent = (pageId, newData) => {
+    setSiteContent(prev => ({
+      ...prev,
+      [pageId]: {
+        ...prev[pageId],
+        ...newData
+      }
+    }));
+  };
+
+  const resetToDefaults = () => {
+    setSiteContent(defaultSiteContent);
+    localStorage.removeItem('successIncContent');
+  };
+
+  return (
+    <AdminContext.Provider value={{ siteContent, updatePageContent, resetToDefaults, isAuthenticated, login, logout }}>
+      {children}
+    </AdminContext.Provider>
+  );
+}
+
+export function useAdminContext() {
+  const context = useContext(AdminContext);
+  if (!context) {
+    throw new Error('useAdminContext must be used within an AdminProvider');
+  }
+  return context;
+}

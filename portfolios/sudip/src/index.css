@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@300..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', sans-serif;
+  --font-serif: 'Lora', serif;
+  
+  --color-primary: #2C5282;
+  --color-primary-light: #4299E1;
+  --color-secondary: #808000;
+  --color-secondary-light: #999900;
+  --color-accent: #C8102E;
+  --color-accent-hover: #990C22;
+  
+  --color-background: #F8F9FA;
+  --color-surface: #FFFFFF;
+  
+  --animate-marquee: marquee 40s linear infinite;
+  
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: #1F2937;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    color: var(--color-primary);
+  }
+}
+
