@@ -17,9 +17,9 @@ export default function LeadershipCoaching() {
           <div className="max-w-3xl">
             <AnimatedSection>
               <h1 className="text-3xl font-bold tracking-widest text-white uppercase mb-4">Executive & Leadership</h1>
-              <h2 className="text-3xl lg:text-4xl font-serif font-bold text-white mb-6 leading-tight">Elevate Your Executive Presence.</h2>
-              <p className="text-xl text-gray-300 leading-relaxed mb-10">
-                Leadership can be lonely. Executive Coaching provides a confidential sounding board for senior professionals to enhance their decision-making, emotional intelligence, and strategic vision.
+              <h2 className="text-3xl lg:text-4xl font-serif font-bold text-white mb-6 leading-tight">{program.title || 'Elevate Your Executive Presence.'}</h2>
+              <p className="text-xl text-gray-300 leading-relaxed mb-10 whitespace-pre-line">
+                {program.overview || 'Leadership can be lonely. Executive Coaching provides a confidential sounding board for senior professionals to enhance their decision-making, emotional intelligence, and strategic vision.'}
               </p>
               <Link to="/contact" className="inline-flex items-center bg-accent text-white font-bold px-8 py-4 rounded-full hover:bg-accent-hover transition-colors shadow-lg">
                 Schedule a Consultation <ArrowRight className="ml-2 w-5 h-5" />
@@ -36,25 +36,15 @@ export default function LeadershipCoaching() {
           <AnimatedSection>
             <h3 className="text-3xl font-serif font-bold text-primary mb-6">Who is this for?</h3>
             <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-              This specialized coaching track is designed exclusively for C-Suite Executives, Founders, Directors, and High-Potential Managers preparing for significant transitions.
+              {program.audience || 'This specialized coaching track is designed exclusively for C-Suite Executives, Founders, Directors, and High-Potential Managers preparing for significant transitions.'}
             </p>
             <ul className="space-y-4 text-gray-700">
-              <li className="flex items-start">
-                <span className="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0 mr-3 mt-1 text-sm font-bold">✓</span>
-                Leaders navigating complex organizational politics.
-              </li>
-              <li className="flex items-start">
-                <span className="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0 mr-3 mt-1 text-sm font-bold">✓</span>
-                Executives needing to improve conflict resolution.
-              </li>
-              <li className="flex items-start">
-                <span className="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0 mr-3 mt-1 text-sm font-bold">✓</span>
-                Founders struggling to delegate and scale their teams.
-              </li>
-              <li className="flex items-start">
-                <span className="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0 mr-3 mt-1 text-sm font-bold">✓</span>
-                Technically brilliant managers who need to develop soft skills.
-              </li>
+              {program.objectives && program.objectives.slice(0, 4).map((obj, i) => (
+                <li key={i} className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0 mr-3 mt-1 text-sm font-bold">✓</span>
+                  <span className="leading-relaxed text-gray-600">{obj}</span>
+                </li>
+              ))}
             </ul>
           </AnimatedSection>
 

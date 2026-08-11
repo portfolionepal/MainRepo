@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 import AnimatedSection from '../components/AnimatedSection';
+import { useAdminContext } from '../context/AdminContext';
 
 export default function About() {
+  const { siteContent } = useAdminContext();
+  const content = siteContent.about;
+
   return (
     <div className="relative min-h-screen bg-[#F5F5F5] flex items-center pt-20 overflow-hidden">
       
@@ -21,30 +25,16 @@ export default function About() {
              
              {/* Header */}
              <div className="flex-shrink-0 mb-6">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3 tracking-tight">Sudeep Basnet</h1>
-                <p className="text-gray-500 text-sm md:text-base font-medium">Inspirational Business Speaker & Certified Leadership Coach</p>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3 tracking-tight">{content.title}</h1>
+                <p className="text-gray-500 text-sm md:text-base font-medium">{content.subtitle}</p>
              </div>
              
              {/* Scrollable Text Area */}
              <div className="flex-grow text-gray-600 text-sm leading-relaxed space-y-5">
-                <p>
-                  For over 17 years, Sudeep has been working with hundreds of organization to improve teamwork, increase motivation, and develop customer service strategies. He is an effective motivator, trainer and certified leadership coach from Academy of Leadership Coaching and NLP, USA. Every year Sudeep speaks with thousands of people of different age group and shares his message with powerful content mixed in with humor, for an unforgettable experience that positively influences his audience life.
-                </p>
-                <p>
-                  Sudeep is recognized for his unique ability to connect with audiences about real issues. His listeners receive practical techniques that can be used immediately. His passion is to help make a difference in the lives of all those who attend his trainings and seminars. Through his personal experiences, humor, and insights Sudeep shares the principles and skill that are essential to the development of leaders. 
-                </p>
-                <p>
-                  He knows that personal and professional success begins from within, therefore his mission is to empower people with the skill and attitudes needed in order to reach new height and make a meaningful difference in their personal and professional lives.
-                </p>
-                <p>
-                  Sound personality and calm nature's Sudeep has already conducted various kind of training as a solo and combined way. Sudeep offers motivational trainings, sales trainings, provides professional development training, life coaching and delivers keynote speeches for businesses, associations and other organizations.
-                </p>
-                <p>
-                  No matter what Sudeep does, whether it is training a handful of people, life coaching session, or speaking to a large group, he gives 101% to the effort. He always concerns about people to feel that they have received more than their money's worth from his services.
-                </p>
-                <p>
-                  As a trainer for personal and organization effectiveness, Sudeep has guided people from different industry like; Pharmaceuticals, Financial Institutions, Insurance companies, IT industry, Manufacturing, Service Industry, Real Estate and many more.
-                </p>
+                {content.paragraph1 && <p>{content.paragraph1}</p>}
+                {content.paragraph2 && <p>{content.paragraph2}</p>}
+                {content.paragraph3 && <p>{content.paragraph3}</p>}
+                {content.paragraph4 && <p>{content.paragraph4}</p>}
              </div>
 
              {/* Footer Logos using actual image tags */}

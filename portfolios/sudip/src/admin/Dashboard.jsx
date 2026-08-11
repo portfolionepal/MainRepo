@@ -1,16 +1,9 @@
 import React from 'react';
 import { useAdminContext } from '../context/AdminContext';
-import { RefreshCcw, FileText, Layout, Activity, Settings, Sidebar, Edit3, Save, Globe, AlertTriangle } from 'lucide-react';
+import { FileText, Layout, Activity, Settings, Sidebar, Edit3, Save, Globe } from 'lucide-react';
 
 export default function Dashboard() {
-  const { siteContent, resetToDefaults } = useAdminContext();
-
-  const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset all website content to their original factory defaults? This cannot be undone.")) {
-      resetToDefaults();
-      alert("Content reset successfully!");
-    }
-  };
+  const { siteContent } = useAdminContext();
 
   return (
     <div className="max-w-6xl mx-auto py-4">
@@ -69,24 +62,6 @@ export default function Dashboard() {
           </ul>
         </div>
 
-        {/* Danger Zone */}
-        <div className="bg-gradient-to-br from-red-50 to-white rounded-2xl shadow-sm border border-red-100 p-8 relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-           <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-red-100 rounded-full opacity-50 blur-2xl group-hover:bg-red-200 transition-colors"></div>
-           <h2 className="text-2xl font-serif font-bold text-red-700 mb-6 flex items-center">
-             <AlertTriangle className="w-6 h-6 mr-3" />
-             Danger Zone
-           </h2>
-           <p className="text-gray-600 mb-10 leading-relaxed relative z-10 text-[15px]">
-             Need to start over? You can wipe the current local database and reset all content across the entire website back to the original factory defaults.
-           </p>
-           <button 
-             onClick={handleReset}
-             className="relative z-10 w-full flex items-center justify-center px-6 py-4 bg-white text-red-600 border-2 border-red-200 rounded-xl hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-300 font-bold shadow-sm group-hover:shadow-md"
-           >
-             <RefreshCcw className="w-5 h-5 mr-3" />
-             Reset All Content to Defaults
-           </button>
-        </div>
       </div>
     </div>
   );

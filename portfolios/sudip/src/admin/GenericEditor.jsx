@@ -1,30 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
-import { Plus, Trash2, Save, Check, X, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Save, Check } from 'lucide-react';
+import { uploadToCloudinary } from '../utils/cloudinary';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function GenericEditor() {
   const { pageId } = useParams();
   const { siteContent, updatePageContent } = useAdminContext();
   
-  // Local state for the form
   const [formData, setFormData] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
-  const handleFileUpload = (e, isArray, arrayKey, index, itemKey) => {
+  const handleFileUpload = async (e, isArray, arrayKey, index, itemKey) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64Str = event.target.result;
+    
+    setUploadingImage(true);
+    try {
+      const imageUrl = await uploadToCloudinary(file);
       if (isArray) {
-        handleArrayChange(arrayKey, index, itemKey, base64Str);
+        handleArrayChange(arrayKey, index, itemKey, imageUrl);
       } else {
-        handleChange(itemKey, base64Str); // For scalar, itemKey is the key
+        handleChange(itemKey, imageUrl); // For scalar, itemKey is the key
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Failed to upload image", error);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   // When the pageId changes, load the data for that page into the local form state
@@ -35,8 +42,12 @@ export default function GenericEditor() {
       // Handle case where page doesn't exist in context yet
       setFormData({ title: `Placeholder for ${pageId}` });
     }
-    setShowSuccess(false);
   }, [pageId, siteContent]);
+
+  // Reset success message when navigating to a different page
+  useEffect(() => {
+    setShowSuccess(false);
+  }, [pageId]);
 
   const handleChange = (key, value) => {
     setFormData(prev => ({
@@ -78,11 +89,13 @@ export default function GenericEditor() {
   };
 
   const handleRemoveItem = (arrayKey, index) => {
-    setFormData(prev => {
-      const newArray = [...prev[arrayKey]];
-      newArray.splice(index, 1);
-      return { ...prev, [arrayKey]: newArray };
-    });
+    if (window.confirm("Are you sure you want to delete this item? This action cannot be undone.")) {
+      setFormData(prev => {
+        const newArray = [...prev[arrayKey]];
+        newArray.splice(index, 1);
+        return { ...prev, [arrayKey]: newArray };
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -117,6 +130,21 @@ export default function GenericEditor() {
           Editing: {pageId.replace(/([A-Z])/g, " $1")}
         </h1>
       </div>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.8 } }}
+            className="fixed top-6 right-6 z-50 bg-[#0B7A38] text-white px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3"
+          >
+            <Check className="w-6 h-6" />
+            <span className="font-semibold text-lg">Changes saved successfully!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-8 space-y-8">
@@ -181,9 +209,11 @@ export default function GenericEditor() {
                                           type="file" 
                                           accept="image/*" 
                                           onChange={(e) => handleFileUpload(e, true, key, index, itemKey)}
-                                          className="text-xs text-gray-500 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors cursor-pointer"
+                                          disabled={uploadingImage}
+                                          className="text-xs text-gray-500 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors cursor-pointer disabled:opacity-50"
                                         />
-                                        {itemVal && itemVal.startsWith('data:image') && <span className="text-xs text-green-600 ml-2">Image loaded</span>}
+                                        {itemVal && (itemVal.startsWith('http') || itemVal.startsWith('data:image')) && <span className="text-xs text-green-600 ml-2">Image loaded</span>}
+                                        {uploadingImage && <span className="text-xs text-blue-600 ml-2 animate-pulse">Uploading...</span>}
                                       </div>
                                     )}
                                   </div>
@@ -238,9 +268,11 @@ export default function GenericEditor() {
                           type="file" 
                           accept="image/*" 
                           onChange={(e) => handleFileUpload(e, false, null, null, key)}
-                          className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors cursor-pointer"
+                          disabled={uploadingImage}
+                          className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors cursor-pointer disabled:opacity-50"
                         />
-                        {value && value.startsWith('data:image') && <span className="text-sm text-green-600 ml-2">Image loaded</span>}
+                        {value && (value.startsWith('http') || value.startsWith('data:image')) && <span className="text-sm text-green-600 ml-2">Image loaded</span>}
+                        {uploadingImage && <span className="text-sm text-blue-600 ml-2 animate-pulse">Uploading...</span>}
                       </div>
                     )}
                   </div>
@@ -250,20 +282,12 @@ export default function GenericEditor() {
           })}
         </div>
 
-        <div className="bg-gray-50 px-8 py-5 border-t border-gray-100 flex items-center justify-between">
-          <div>
-            {showSuccess && (
-              <span className="text-green-600 font-medium flex items-center text-sm animate-pulse">
-                <AlertCircle className="w-4 h-4 mr-1" />
-                Changes saved successfully!
-              </span>
-            )}
-          </div>
+        <div className="bg-gray-50 px-8 py-5 border-t border-gray-100 flex items-center justify-end">
           <button
             type="submit"
-            disabled={isSaving}
+            disabled={isSaving || uploadingImage}
             className={`flex items-center px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-md transition-all ${
-              isSaving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-light hover:-translate-y-0.5'
+              (isSaving || uploadingImage) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-light hover:-translate-y-0.5'
             }`}
           >
             <Save className="w-5 h-5 mr-2" />

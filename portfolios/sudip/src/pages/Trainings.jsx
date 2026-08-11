@@ -1,23 +1,36 @@
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
-import { trainingLinks, trainingData } from '../data/content';
 import { ArrowRight } from 'lucide-react';
+import { useAdminContext } from '../context/AdminContext';
 
 export default function Trainings() {
+  const { siteContent } = useAdminContext();
+  const content = siteContent.trainings;
+  
+  const trainingsList = [
+    { ...siteContent.managerCoach, path: '/trainings/manager-coach', id: 'manager-coach' },
+    { ...siteContent.leadershipDevelopment, path: '/trainings/leadership', id: 'leadership' },
+    { ...siteContent.letsPlaySales, path: '/trainings/sales', id: 'sales' },
+    { ...siteContent.teamBuilding, path: '/trainings/team-building', id: 'team-building' },
+    { ...siteContent.motivational, path: '/trainings/motivational', id: 'motivational' },
+    { ...siteContent.tot, path: '/trainings/tot', id: 'tot' },
+    { ...siteContent.wellbeing, path: '/trainings/wellbeing', id: 'wellbeing' },
+    { ...siteContent.customerService, path: '/trainings/customer-service', id: 'customer-service' }
+  ];
+
   return (
     <div className="py-24 bg-surface min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-5xl font-serif font-bold text-primary mb-6">Corporate Trainings</h1>
-          <p className="text-xl text-gray-600">Tailored corporate training solutions designed to elevate your team's performance, motivation, and leadership capabilities.</p>
+          <h1 className="text-5xl font-serif font-bold text-primary mb-6">{content.pageTitle || 'Corporate Trainings'}</h1>
+          <p className="text-xl text-gray-600">{content.pageSubtitle || "Tailored corporate training solutions designed to elevate your team's performance, motivation, and leadership capabilities."}</p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {trainingLinks.map((link, idx) => {
-            const data = trainingData[link.id];
+          {trainingsList.map((data, idx) => {
             return (
-              <AnimatedSection key={link.id} delay={idx * 0.1}>
-                <Link to={link.path} className="block h-full group">
+              <AnimatedSection key={data.id} delay={idx * 0.1}>
+                <Link to={data.path} className="block h-full group">
                   <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col overflow-hidden">
                     {/* Card Image */}
                     <div className="h-48 w-full overflow-hidden relative">

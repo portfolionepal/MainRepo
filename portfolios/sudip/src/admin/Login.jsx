@@ -4,13 +4,16 @@ import { Lock, User, AlertCircle } from 'lucide-react';
 
 export default function Login() {
   const { login } = useAdminContext();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = login(username, password);
+    setIsLoggingIn(true);
+    const success = await login(email, password);
+    setIsLoggingIn(false);
     if (!success) {
       setError(true);
       setPassword('');
@@ -40,19 +43,19 @@ export default function Login() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Username
+                Email Address
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={username}
-                  onChange={(e) => { setUsername(e.target.value); setError(false); }}
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setError(false); }}
                   className="focus:ring-primary focus:border-primary block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 px-3 border"
-                  placeholder="Enter admin"
+                  placeholder="admin@example.com"
                 />
               </div>
             </div>
@@ -71,7 +74,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(false); }}
                   className="focus:ring-primary focus:border-primary block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 px-3 border"
-                  placeholder="Enter admin123"
+                  placeholder="Enter password"
                 />
               </div>
             </div>
@@ -79,9 +82,10 @@ export default function Login() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+                disabled={isLoggingIn}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Sign in
+                {isLoggingIn ? 'Signing in...' : 'Sign in'}
               </button>
             </div>
           </form>

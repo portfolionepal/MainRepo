@@ -1,23 +1,30 @@
 import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
-import { coachingLinks, coachingData } from '../data/content';
 import { ArrowRight } from 'lucide-react';
+import { useAdminContext } from '../context/AdminContext';
 
 export default function Coaching() {
+  const { siteContent } = useAdminContext();
+  const content = siteContent.coaching;
+
+  const coachingList = [
+    { ...siteContent.whatIsCoaching, path: '/coaching/what-is', id: 'what-is' },
+    { ...siteContent.lifeCoaching, path: '/coaching/life', id: 'life' },
+    { ...siteContent.leadershipCoaching, path: '/coaching/leadership', id: 'leadership' }
+  ];
   return (
     <div className="py-24 bg-surface min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-5xl font-serif font-bold text-primary mb-6">Professional Coaching</h1>
-          <p className="text-xl text-gray-600">Unlock your true potential through tailored Life and Leadership Coaching.</p>
+          <h1 className="text-5xl font-serif font-bold text-primary mb-6">{content.pageTitle || 'Professional Coaching'}</h1>
+          <p className="text-xl text-gray-600">{content.pageSubtitle || 'Unlock your true potential through tailored Life and Leadership Coaching.'}</p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {coachingLinks.map((link, idx) => {
-            const data = coachingData[link.id];
+          {coachingList.map((data, idx) => {
             return (
-              <AnimatedSection key={link.id} delay={idx * 0.1}>
-                <Link to={link.path} className="block h-full group">
+              <AnimatedSection key={data.id} delay={idx * 0.1}>
+                <Link to={data.path} className="block h-full group">
                   <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col overflow-hidden">
                     {/* Card Image */}
                     <div className="h-48 w-full overflow-hidden relative">

@@ -2,12 +2,12 @@ import { useState } from 'react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
 
-const categories = ['All', 'Corporate Training', 'Team Building', 'Seminars', 'Coaching'];
-
 export default function Gallery() {
   const { siteContent } = useAdminContext();
-  const galleryItems = siteContent.gallery.items;
+  const galleryItems = siteContent.gallery.items || [];
   const [activeCategory, setActiveCategory] = useState('All');
+
+  const categories = ['All', ...new Set(galleryItems.map(item => item.category).filter(Boolean))];
 
   const filteredItems = activeCategory === 'All' 
     ? galleryItems 
@@ -19,9 +19,9 @@ export default function Gallery() {
         
         {/* Header */}
         <AnimatedSection className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-5xl font-serif font-bold text-primary mb-6">Our Gallery</h1>
+          <h1 className="text-5xl font-serif font-bold text-primary mb-6">{siteContent.gallery.pageTitle || 'Our Gallery'}</h1>
           <p className="text-xl text-gray-600">
-            A visual journey of our transformative training programs, seminars, and coaching sessions.
+            {siteContent.gallery.pageSubtitle || 'A visual journey of our transformative training programs, seminars, and coaching sessions.'}
           </p>
         </AnimatedSection>
 

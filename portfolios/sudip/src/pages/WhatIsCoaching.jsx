@@ -15,9 +15,9 @@ export default function WhatIsCoaching() {
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-50"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">What is Coaching?</h1>
+            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">{program.title || 'What is Coaching?'}</h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-              Coaching is a thought-provoking and creative process that inspires you to maximize your personal and professional potential.
+              {program.overview ? program.overview.split('.')[0] + '.' : 'Coaching is a thought-provoking and creative process that inspires you.'}
             </p>
           </AnimatedSection>
         </div>
@@ -35,32 +35,21 @@ export default function WhatIsCoaching() {
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
             <h2 className="text-3xl font-bold text-primary mb-6">Not Mentoring. Not Consulting. Coaching.</h2>
-            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-              Unlike consulting, where an expert tells you what to do, or mentoring, where a senior colleague shares their experience, coaching operates on the belief that you are the expert in your own life and business.
-            </p>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              A coach acts as a catalyst, using deep listening, powerful questioning, and actionable frameworks to help you uncover your own blind spots, overcome limiting beliefs, and forge a clear path forward.
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed whitespace-pre-line">
+              {program.overview}
             </p>
             
             <div className="space-y-6">
-              <div className="flex items-start">
-                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0 mr-4">
-                  <Target className="w-6 h-6 text-accent" />
+              {program.objectives && program.objectives.map((obj, i) => (
+                <div key={i} className="flex items-start">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0 mr-4 mt-1">
+                    {i % 2 === 0 ? <Target className="w-6 h-6 text-accent" /> : <Compass className="w-6 h-6 text-accent" />}
+                  </div>
+                  <div>
+                    <p className="text-gray-600 leading-relaxed pt-2">{obj}</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-gray-900 text-lg">Clarity of Purpose</h4>
-                  <p className="text-gray-600">Define exactly what you want and why it matters.</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0 mr-4">
-                  <Compass className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-gray-900 text-lg">Actionable Strategy</h4>
-                  <p className="text-gray-600">Break down massive goals into achievable daily steps.</p>
-                </div>
-              </div>
+              ))}
             </div>
           </AnimatedSection>
         </div>

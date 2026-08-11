@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { trainingData, coachingData } from '../data/content';
+import { db, auth } from '../firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 // Define the default content structure for ALL pages
 const defaultSiteContent = {
@@ -112,54 +115,69 @@ const defaultSiteContent = {
 const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-  // Try to load from localStorage first
-  const [siteContent, setSiteContent] = useState(() => {
-    try {
-      const saved = localStorage.getItem('successIncContent');
-      if (saved) {
-        const parsedSaved = JSON.parse(saved);
-        // We do a shallow merge so new keys from defaultSiteContent are included,
-        // but this doesn't deep-merge arrays.
-        const merged = { ...defaultSiteContent };
-        for (const key in parsedSaved) {
-          if (merged[key]) {
-            merged[key] = { ...merged[key], ...parsedSaved[key] };
-          }
-        }
-        return merged;
-      }
-    } catch (e) {
-      console.error("Failed to load content from localStorage", e);
-    }
-    return defaultSiteContent;
-  });
+  const [siteContent, setSiteContent] = useState(defaultSiteContent);
+  const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('adminAuth') === 'true';
-  });
-
-  const login = (username, password) => {
-    // Hardcoded credentials for now
-    if (username === 'admin' && password === 'admin123') {
-      setIsAuthenticated(true);
-      localStorage.setItem('adminAuth', 'true');
-      return true;
-    }
-    return false;
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('adminAuth');
-  };
-
-  // Save to localStorage whenever content changes
   useEffect(() => {
-    localStorage.setItem('successIncContent', JSON.stringify(siteContent));
-  }, [siteContent]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  const updatePageContent = (pageId, newData) => {
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const docRef = doc(db, 'content', 'website');
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const merged = { ...defaultSiteContent };
+          for (const key in data) {
+            if (merged[key] && typeof merged[key] === 'object' && typeof data[key] === 'object' && !Array.isArray(data[key])) {
+              merged[key] = { ...merged[key], ...data[key] };
+            } else {
+              merged[key] = data[key];
+            }
+          }
+          setSiteContent(merged);
+        } else {
+          // If no document exists, create it with default data
+          await setDoc(docRef, defaultSiteContent);
+        }
+      } catch (error) {
+        console.error("Error fetching content from Firestore:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, []);
+
+  const login = async (email, password) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      return true;
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      return false;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout failed:", error.message);
+    }
+  };
+
+  const updatePageContent = async (pageId, newData) => {
     setSiteContent(prev => ({
       ...prev,
       [pageId]: {
@@ -167,12 +185,28 @@ export const AdminProvider = ({ children }) => {
         ...newData
       }
     }));
+    
+    try {
+      const docRef = doc(db, 'content', 'website');
+      await setDoc(docRef, { [pageId]: newData }, { merge: true });
+    } catch (error) {
+      console.error("Error updating content in Firestore:", error);
+    }
   };
 
-  const resetToDefaults = () => {
+  const resetToDefaults = async () => {
     setSiteContent(defaultSiteContent);
-    localStorage.removeItem('successIncContent');
+    try {
+      const docRef = doc(db, 'content', 'website');
+      await setDoc(docRef, defaultSiteContent);
+    } catch (error) {
+      console.error("Error resetting content in Firestore:", error);
+    }
   };
+
+  if (loading || authLoading) {
+    return <div className="flex h-screen items-center justify-center text-gray-500">Loading website...</div>;
+  }
 
   return (
     <AdminContext.Provider value={{ siteContent, updatePageContent, resetToDefaults, isAuthenticated, login, logout }}>

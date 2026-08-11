@@ -4,34 +4,21 @@ import AnimatedSection from '../components/AnimatedSection';
 import Counter from '../components/Counter';
 import { useAdminContext } from '../context/AdminContext';
 
-const programs = [
-  { title: "Manager as a Coach", desc: "Transform managers into effective leaders who inspire.", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800" },
-  { title: "Leadership Development", desc: "Cultivate visionary leadership skills for modern challenges.", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800" },
-  { title: "Let's Play Sales", desc: "Gamified strategies to dramatically boost your sales performance.", image: "https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&q=80&w=800" },
-  { title: "Together We Can", desc: "High-impact team building to foster collaboration.", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800" },
-  { title: "Yes, I Can Do It!", desc: "Motivational training to unlock personal potential.", image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=800" },
-  { title: "Training of Trainers", desc: "Equip your internal experts to deliver powerful training.", image: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800" }
-];
-
-const industryLogos = [
-  { name: 'Finance', url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=200' },
-  { name: 'Technology', url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=200' },
-  { name: 'Healthcare', url: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&q=80&w=200' },
-  { name: 'Education', url: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=200' },
-  { name: 'Manufacturing', url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=200' },
-  { name: 'Retail', url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=200' },
-  { name: 'Hospitality', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=200' }
-];
-
-const testimonials = [
-  { name: "Sarah J.", role: "HR Director, TechCorp", image: "https://i.pravatar.cc/150?u=sarah", text: "Sudeep's leadership training completely transformed our management team's approach." },
-  { name: "Michael T.", role: "VP Sales, FinServe", image: "https://i.pravatar.cc/150?u=michael", text: "The 'Let's Play Sales' seminar was exactly the motivation my team needed this quarter." },
-  { name: "Priya M.", role: "CEO, Innovate Inc", image: "https://i.pravatar.cc/150?u=priya", text: "Exceptional life coaching that provided me with clarity and focus during a critical transition." }
-];
-
 export default function Home() {
   const { siteContent } = useAdminContext();
   const content = siteContent.home;
+  
+  const programs = [
+    { title: siteContent.managerCoach.title, desc: siteContent.managerCoach.overview, image: siteContent.managerCoach.image, path: '/trainings/manager-coach' },
+    { title: siteContent.leadershipDevelopment.title, desc: siteContent.leadershipDevelopment.overview, image: siteContent.leadershipDevelopment.image, path: '/trainings/leadership' },
+    { title: siteContent.letsPlaySales.title, desc: siteContent.letsPlaySales.overview, image: siteContent.letsPlaySales.image, path: '/trainings/sales' },
+    { title: siteContent.teamBuilding.title, desc: siteContent.teamBuilding.overview, image: siteContent.teamBuilding.image, path: '/trainings/team-building' },
+    { title: siteContent.motivational.title, desc: siteContent.motivational.overview, image: siteContent.motivational.image, path: '/trainings/motivational' },
+    { title: siteContent.tot.title, desc: siteContent.tot.overview, image: siteContent.tot.image, path: '/trainings/tot' }
+  ];
+
+  const industryLogos = siteContent.clients.items || [];
+  const testimonials = (siteContent.testimonials.items || []).slice(0, 3);
 
   return (
     <div className="overflow-hidden">
@@ -115,23 +102,25 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 divide-y md:divide-y-0 md:divide-x divide-primary-light">
             <AnimatedSection className="text-center md:text-left px-4">
               <p className="text-4xl font-serif font-bold text-white mb-2">
-                <Counter end={20} suffix="+" />
+                <Counter end={parseInt(content.statsExperience) || 20} suffix={content.statsExperience?.replace(/[0-9]/g, '') || "+"} />
               </p>
               <p className="text-gray-300 text-sm">Years of Experience</p>
             </AnimatedSection>
             <AnimatedSection delay={0.1} className="text-center md:text-left px-4 pt-8 md:pt-0">
-              <p className="text-4xl font-serif font-bold text-white mb-2">USA</p>
-              <p className="text-gray-300 text-sm">Certified Leadership Coach<br /><span className="text-xs opacity-75">(Academy of Leadership Coaching & NLP)</span></p>
+              <p className="text-4xl font-serif font-bold text-white mb-2">
+                <Counter end={parseInt(content.statsCountries) || 5} suffix={content.statsCountries?.replace(/[0-9]/g, '') || "+"} />
+              </p>
+              <p className="text-gray-300 text-sm">Countries Served</p>
             </AnimatedSection>
             <AnimatedSection delay={0.2} className="text-center md:text-left px-4 pt-8 md:pt-0">
               <p className="text-4xl font-serif font-bold text-white mb-2">
-                <Counter end={1000} suffix="s" />
+                <Counter end={parseInt(content.statsIndividuals?.replace(/,/g, '')) || 10000} suffix={content.statsIndividuals?.replace(/[0-9,]/g, '') || "+"} />
               </p>
               <p className="text-gray-300 text-sm">Professionals Trained Annually</p>
             </AnimatedSection>
             <AnimatedSection delay={0.3} className="text-center md:text-left px-4 pt-8 md:pt-0">
               <p className="text-4xl font-serif font-bold text-white mb-2">
-                <Counter end={15} suffix="+" />
+                <Counter end={parseInt(content.statsOrganizations) || 100} suffix={content.statsOrganizations?.replace(/[0-9]/g, '') || "+"} />
               </p>
               <p className="text-gray-300 text-sm">Industries Served</p>
             </AnimatedSection>
@@ -184,7 +173,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {programs.map((program, index) => (
               <AnimatedSection key={index} delay={index * 0.1}>
-                <Link to="/trainings" className="block h-full group">
+                <Link to={program.path} className="block h-full group">
                   <div className="relative h-96 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
                     <img
                       src={program.image}
@@ -194,7 +183,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     <div className="absolute bottom-0 left-0 p-8 w-full">
                       <h4 className="font-serif font-bold text-2xl text-white mb-3">{program.title}</h4>
-                      <p className="text-gray-200 text-sm mb-4">{program.desc}</p>
+                      <p className="text-gray-200 text-sm mb-4 line-clamp-2">{program.desc}</p>
                       <span className="text-white text-sm font-medium flex items-center opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-4 group-hover:translate-x-0">
                         Explore Program <ArrowRight className="ml-2 h-4 w-4" />
                       </span>
