@@ -52,12 +52,12 @@ const Properties = () => {
               className="bg-surface border border-surface-border rounded-md overflow-hidden hover:border-accent/50 transition-all cursor-pointer shadow-sm hover:shadow-md group flex flex-col"
               onClick={() => navigate(`/property/${prop.id}`)}
             >
-              <div className="w-full h-56 bg-base-alt relative overflow-hidden">
+              <div className="w-full aspect-[16/10] bg-base-alt relative overflow-hidden">
                 {prop.images && prop.images.length > 0 ? (
                   <img 
                     src={prop.images[0]} 
                     alt={prop.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
                   <div className="absolute inset-0 bg-base-alt flex items-center justify-center">

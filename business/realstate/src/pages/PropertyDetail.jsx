@@ -81,13 +81,13 @@ const PropertyDetail = () => {
 
         {/* Image Gallery */}
         <div className="bg-surface border border-surface-border rounded-xl overflow-hidden shadow-sm mb-12">
-          <div className="relative w-full h-[50vh] min-h-[400px] bg-base-alt flex items-center justify-center group">
+          <div className="relative w-full min-h-[400px] bg-base-alt flex items-center justify-center group">
             {property.images && property.images.length > 0 ? (
               <>
                 <img 
                   src={property.images[currentImageIndex]} 
                   alt={`${property.title} - view ${currentImageIndex + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto max-h-[75vh] object-contain"
                 />
                 {property.images.length > 1 && (
                   <>
