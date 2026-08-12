@@ -20,7 +20,15 @@ export default function Motivational() {
           <AnimatedSection>
             <h1 className="text-3xl font-bold tracking-widest text-accent uppercase mb-4">Training Program</h1>
             <h2 className="text-2xl lg:text-3xl font-serif font-bold text-white mb-6 leading-tight max-w-4xl">{program.title}</h2>
-            <p className="text-lg text-gray-200 max-w-3xl mb-10 leading-relaxed font-medium">
+          </AnimatedSection>
+        </div>
+      </div>
+
+      {/* Overview Section - Below Hero */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <AnimatedSection>
+            <p className="text-lg text-gray-700 max-w-3xl leading-relaxed font-medium">
               {program.overview}
             </p>
           </AnimatedSection>
