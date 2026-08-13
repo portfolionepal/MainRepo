@@ -1,8 +1,100 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { DataContext } from '../context/DataContext';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { MapPin, ArrowLeft, Search, SlidersHorizontal, X, ChevronDown, RotateCcw } from 'lucide-react';
+import { MapPin, ArrowLeft, Search, SlidersHorizontal, X, ChevronDown, RotateCcw, Calendar, ArrowUpDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// ── Premium custom sort dropdown ──
+// Replaces the native <select> with a fully styled trigger + panel,
+// while preserving the exact same value/onChange contract, so the
+// existing sort logic in the parent component doesn't change at all.
+const SortDropdown = ({ label, icon: Icon, value, options, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
+
+  const selectedOption = options.find((opt) => opt.value === value) || options[0];
+
+  return (
+    <div ref={containerRef} className="w-full sm:w-auto sm:min-w-[200px] relative">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-text-muted mb-2 flex items-center gap-1.5">
+        <Icon size={12} className="text-accent" />
+        {label}
+      </p>
+
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className={`w-full flex items-center justify-between gap-3 bg-base border rounded-xl pl-4 pr-3 py-2.5 text-sm font-medium text-text transition-all duration-200 cursor-pointer ${
+          open
+            ? 'border-accent ring-2 ring-accent/15 shadow-sm'
+            : 'border-surface-border hover:border-accent/40 shadow-sm'
+        }`}
+      >
+        <span className="truncate">{selectedOption?.label}</span>
+        <ChevronDown
+          size={14}
+          className={`shrink-0 transition-transform duration-300 ${open ? 'rotate-180 text-accent' : 'text-text-muted'}`}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.16, ease: [0.4, 0, 0.2, 1] }}
+            role="listbox"
+            className="absolute left-0 right-0 z-50 mt-2 min-w-[200px] bg-surface border border-surface-border rounded-xl shadow-lg shadow-black/5 overflow-hidden py-1.5"
+          >
+            {options.map((opt) => {
+              const isSelected = opt.value === value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  role="option"
+                  aria-selected={isSelected}
+                  onClick={() => {
+                    onChange(opt.value);
+                    setOpen(false); // hide immediately after applying
+                  }}
+                  className={`w-full flex items-center justify-between gap-2 px-4 py-2.5 text-sm text-left transition-colors duration-150 cursor-pointer ${
+                    isSelected
+                      ? 'text-accent bg-accent/[0.06] font-semibold'
+                      : 'text-text hover:bg-base-alt'
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {isSelected && <Check size={14} className="text-accent shrink-0" />}
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const PropertiesPage = () => {
   const navigate = useNavigate();
@@ -14,10 +106,20 @@ const PropertiesPage = () => {
   const [dateSort, setDateSort] = useState('Newest');
   const [priceSort, setPriceSort] = useState('Default');
   const [showFilters, setShowFilters] = useState(false);
+  // Tracks whether the collapsible panel's open animation has finished.
+  // While the height is animating we need overflow-hidden so the box doesn't
+  // flash its full content early; once it's settled we switch to overflow-visible
+  // so things like the sort dropdown can pop out below the panel instead of
+  // being clipped by it.
+  const [filtersSettled, setFiltersSettled] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (!showFilters) setFiltersSettled(false);
+  }, [showFilters]);
 
   const extractPrice = (priceString) => {
     if (!priceString) return 0;
@@ -183,9 +285,10 @@ const PropertiesPage = () => {
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                className="overflow-hidden"
+                onAnimationComplete={() => setFiltersSettled(true)}
+                className={filtersSettled ? 'overflow-visible' : 'overflow-hidden'}
               >
-                <div className="mt-3 bg-surface border border-surface-border rounded-2xl shadow-sm overflow-hidden">
+                <div className="mt-3 bg-surface border border-surface-border rounded-2xl shadow-sm overflow-visible">
                   <div className="p-5 sm:p-6 space-y-5">
 
                     {/* Row 1: Type + Status pills */}
@@ -233,44 +336,36 @@ const PropertiesPage = () => {
                     {/* Divider */}
                     <div className="border-t border-surface-border/60" />
 
-                    {/* Row 2: Sort selects + Clear */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-                      
-                      {/* Sort by Date */}
-                      <div className="w-full sm:w-auto sm:min-w-[180px]">
-                        <p className="text-[11px] font-semibold uppercase tracking-widest text-text-muted mb-2">Sort by Date</p>
-                        <div className="relative">
-                          <select 
-                            value={dateSort}
-                            onChange={(e) => setDateSort(e.target.value)}
-                            className="w-full appearance-none bg-base border border-surface-border rounded-lg px-4 py-2.5 pr-9 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent/15 focus:border-accent/40 transition-all cursor-pointer"
-                          >
-                            <option value="Newest">Newest First</option>
-                            <option value="Oldest">Oldest First</option>
-                          </select>
-                          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
-                        </div>
-                      </div>
+                    {/* Row 2: Sort dropdowns + Clear */}
+                    <div className="flex flex-col sm:flex-row items-start gap-4">
 
-                      {/* Sort by Price */}
-                      <div className="w-full sm:w-auto sm:min-w-[180px]">
-                        <p className="text-[11px] font-semibold uppercase tracking-widest text-text-muted mb-2">Sort by Price</p>
-                        <div className="relative">
-                          <select 
-                            value={priceSort}
-                            onChange={(e) => setPriceSort(e.target.value)}
-                            className="w-full appearance-none bg-base border border-surface-border rounded-lg px-4 py-2.5 pr-9 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent/15 focus:border-accent/40 transition-all cursor-pointer"
-                          >
-                            <option value="Default">Default</option>
-                            <option value="Low to High">Low to High</option>
-                            <option value="High to Low">High to Low</option>
-                          </select>
-                          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
-                        </div>
-                      </div>
+                      {/* Sort by Date — premium custom dropdown */}
+                      <SortDropdown
+                        label="Sort by Date"
+                        icon={Calendar}
+                        value={dateSort}
+                        onChange={setDateSort}
+                        options={[
+                          { value: 'Newest', label: 'Newest First' },
+                          { value: 'Oldest', label: 'Oldest First' },
+                        ]}
+                      />
+
+                      {/* Sort by Price — premium custom dropdown */}
+                      <SortDropdown
+                        label="Sort by Price"
+                        icon={ArrowUpDown}
+                        value={priceSort}
+                        onChange={setPriceSort}
+                        options={[
+                          { value: 'Default', label: 'Default' },
+                          { value: 'Low to High', label: 'Low to High' },
+                          { value: 'High to Low', label: 'High to Low' },
+                        ]}
+                      />
 
                       {/* Spacer + Clear all */}
-                      <div className="sm:ml-auto flex items-center gap-3 pt-1 sm:pt-0">
+                      <div className="sm:ml-auto flex items-center gap-3 pt-1 sm:pt-[26px]">
                         {activeFilterCount > 0 && (
                           <button
                             onClick={clearAllFilters}
@@ -285,7 +380,7 @@ const PropertiesPage = () => {
                   </div>
 
                   {/* Bottom results bar */}
-                  <div className="px-5 sm:px-6 py-3 bg-base/50 border-t border-surface-border/50 flex items-center justify-between">
+                  <div className="px-5 sm:px-6 py-3 bg-base/50 border-t border-surface-border/50 flex items-center justify-between rounded-b-2xl">
                     <span className="text-[13px] text-text-muted">
                       Showing <span className="font-semibold text-text">{filteredProperties.length}</span> of{' '}
                       <span className="font-semibold text-text">{properties.length}</span> properties
