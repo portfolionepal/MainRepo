@@ -43,10 +43,10 @@ const SortDropdown = ({ label, icon: Icon, value, options, onChange }) => {
         onClick={() => setOpen((prev) => !prev)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className={`w-full flex items-center justify-between gap-3 bg-base border rounded-xl pl-4 pr-3 py-2.5 text-sm font-medium text-text transition-all duration-200 cursor-pointer ${
+        className={`w-full flex items-center justify-between gap-3 bg-base/40 border rounded-xl pl-4 pr-3 py-2.5 text-sm font-medium text-text/80 transition-all duration-200 cursor-pointer ${
           open
-            ? 'border-accent ring-2 ring-accent/15 shadow-sm'
-            : 'border-surface-border hover:border-accent/40 shadow-sm'
+            ? 'border-accent ring-2 ring-accent/15 shadow-sm bg-base'
+            : 'border-surface-border/70 hover:border-accent/40 hover:bg-base shadow-sm'
         }`}
       >
         <span className="truncate">{selectedOption?.label}</span>
@@ -84,7 +84,7 @@ const SortDropdown = ({ label, icon: Icon, value, options, onChange }) => {
                       : 'text-text hover:bg-base-alt'
                   }`}
                 >
-                  <span>{opt.label}</span>
+                  <span className="opacity-80">{opt.label}</span>
                   {isSelected && <Check size={14} className="text-accent shrink-0" />}
                 </button>
               );

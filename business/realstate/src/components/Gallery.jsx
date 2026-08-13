@@ -90,7 +90,7 @@ const Gallery = () => {
                 <div className="p-6 flex flex-col flex-grow justify-between">
                   <div>
                     <h4 className="text-xl font-heading font-semibold text-text mb-2 group-hover:text-accent transition-colors line-clamp-1">{item.title}</h4>
-                    <p className="text-text-muted text-sm leading-relaxed mb-4 line-clamp-2 text-justify">{item.description}</p>
+                    <p className="text-text-muted text-sm leading-relaxed mb-4 line-clamp-2 text-left">{item.description}</p>
                   </div>
                   <div className="flex items-center text-accent text-sm font-medium mt-auto">
                     View Project <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
@@ -142,7 +142,7 @@ const Gallery = () => {
                   {selectedImage.category}
                 </span>
                 <h4 className="text-2xl font-heading font-semibold text-text mb-4 shrink-0">{selectedImage.title}</h4>
-                <div className="text-sm text-text-muted leading-relaxed mb-8 text-justify">
+                <div className="text-sm text-text-muted leading-relaxed mb-8 text-left">
                   {selectedImage.description}
                 </div>
                 <button 

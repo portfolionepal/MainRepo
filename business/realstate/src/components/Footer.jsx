@@ -1,11 +1,15 @@
 import { useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { DataContext } from '../context/DataContext';
 import { FaLinkedinIn, FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 import { MapPin, Phone, Mail } from 'lucide-react';
 
 const Footer = () => {
   const { siteConfig } = useContext(DataContext);
+  const location = useLocation();
   const currentYear = new Date().getFullYear();
+
+  const isHomePage = location.pathname === '/';
 
   return (
     <footer className="bg-base-alt border-t border-surface-border pt-16 pb-8">
@@ -21,23 +25,25 @@ const Footer = () => {
             <p className="text-text-muted mb-6 text-sm leading-relaxed">
               {siteConfig.subheading}
             </p>
-            <div className="flex space-x-4">
-              <a href={siteConfig.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#0a66c2] hover:opacity-80 transition-opacity" aria-label="LinkedIn">
-                <FaLinkedinIn size={20} />
-              </a>
-              <a href={siteConfig.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-[#1877f2] hover:opacity-80 transition-opacity" aria-label="Facebook">
-                <FaFacebookF size={20} />
-              </a>
-              <a href={siteConfig.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-[#E1306C] hover:opacity-80 transition-opacity" aria-label="Instagram">
-                <FaInstagram size={20} />
-              </a>
-              <a href={siteConfig.socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] hover:opacity-80 transition-opacity" aria-label="YouTube">
-                <FaYoutube size={20} />
-              </a>
-              <a href={siteConfig.socialLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="text-[#25D366] hover:opacity-80 transition-opacity" aria-label="WhatsApp">
-                <FaWhatsapp size={20} />
-              </a>
-            </div>
+            {!isHomePage && (
+              <div className="flex space-x-4">
+                <a href={siteConfig.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#0a66c2] hover:opacity-80 transition-opacity" aria-label="LinkedIn">
+                  <FaLinkedinIn size={20} />
+                </a>
+                <a href={siteConfig.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-[#1877f2] hover:opacity-80 transition-opacity" aria-label="Facebook">
+                  <FaFacebookF size={20} />
+                </a>
+                <a href={siteConfig.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-[#E1306C] hover:opacity-80 transition-opacity" aria-label="Instagram">
+                  <FaInstagram size={20} />
+                </a>
+                <a href={siteConfig.socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="text-[#ff0000] hover:opacity-80 transition-opacity" aria-label="YouTube">
+                  <FaYoutube size={20} />
+                </a>
+                <a href={siteConfig.socialLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="text-[#25D366] hover:opacity-80 transition-opacity" aria-label="WhatsApp">
+                  <FaWhatsapp size={20} />
+                </a>
+              </div>
+            )}
           </div>
           
           {/* Information Links */}

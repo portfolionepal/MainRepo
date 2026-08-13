@@ -57,7 +57,7 @@ const Services = () => {
                 <Link to={`/service/${slug}`} className="text-xl font-heading font-bold text-text mb-3 hover:text-accent transition-colors block">
                   {service.title}
                 </Link>
-                <p className="text-sm text-text-muted leading-relaxed mb-6 text-justify">
+                <p className="text-sm text-text-muted leading-relaxed mb-6 text-left">
                   {service.description}
                 </p>
                 

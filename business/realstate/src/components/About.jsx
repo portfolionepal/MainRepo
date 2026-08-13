@@ -76,7 +76,7 @@ const About = () => {
               {siteConfig.aboutTitle}
             </h3>
             
-            <div className="space-y-4 text-text-muted mb-8 leading-relaxed text-justify whitespace-pre-line">
+            <div className="space-y-4 text-text-muted mb-8 leading-relaxed text-left whitespace-pre-line">
               {siteConfig.aboutText}
             </div>
           </motion.div>

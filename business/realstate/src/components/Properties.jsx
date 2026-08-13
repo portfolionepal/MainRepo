@@ -78,7 +78,7 @@ const Properties = () => {
                   </div>
                   <h4 className="text-lg font-heading font-semibold text-text mb-2 line-clamp-2">{prop.title}</h4>
                   <p className="text-text font-medium mb-3">{prop.price}</p>
-                  <p className="text-text-muted text-sm mb-4 line-clamp-2 text-justify">{prop.description}</p>
+                  <p className="text-text-muted text-sm mb-4 line-clamp-2 text-left">{prop.description}</p>
                 </div>
                 
                 <div className="flex items-center pt-4 border-t border-surface-border/50 text-text-muted text-sm mt-auto">

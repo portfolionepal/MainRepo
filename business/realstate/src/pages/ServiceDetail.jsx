@@ -87,10 +87,10 @@ const ServiceDetail = () => {
             </span>
             
             <div className="prose prose-lg text-text-muted max-w-none">
-              <p className="text-xl font-medium text-text mb-6 leading-relaxed text-justify">
+              <p className="text-xl font-medium text-text mb-6 leading-relaxed text-left">
                 {service.description}
               </p>
-              <p className="whitespace-pre-line leading-relaxed text-justify">
+              <p className="whitespace-pre-line leading-relaxed text-left">
                 {service.fullDescription}
               </p>
             </div>

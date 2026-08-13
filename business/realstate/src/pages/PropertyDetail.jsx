@@ -37,12 +37,36 @@ const PropertyDetail = () => {
     }
   };
 
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
   const nextImage = () => {
+    if (!property?.images?.length) return;
     setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
   };
 
   const prevImage = () => {
+    if (!property?.images?.length) return;
     setCurrentImageIndex((prev) => (prev - 1 + property.images.length) % property.images.length);
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > 40) {
+      nextImage();
+    } else if (distance < -40) {
+      prevImage();
+    }
   };
 
   return (
@@ -81,29 +105,36 @@ const PropertyDetail = () => {
 
         {/* Image Gallery */}
         <div className="bg-surface border border-surface-border rounded-xl overflow-hidden shadow-sm mb-12">
-          <div className="relative w-full min-h-[400px] bg-base-alt flex items-center justify-center group">
+          <div 
+            className="relative w-full min-h-[300px] sm:min-h-[400px] bg-base-alt flex items-center justify-center group"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             {property.images && property.images.length > 0 ? (
               <>
                 <img 
                   src={property.images[currentImageIndex]} 
                   alt={`${property.title} - view ${currentImageIndex + 1}`}
-                  className="w-full h-auto max-h-[75vh] object-contain"
+                  className="w-full h-auto max-h-[75vh] object-contain select-none"
                 />
                 {property.images.length > 1 && (
                   <>
                     <button 
                       onClick={prevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-surface/80 hover:bg-surface text-text rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all border border-surface-border hover:border-accent"
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 sm:p-3 bg-surface/90 hover:bg-surface text-text rounded-full shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all border border-surface-border hover:border-accent z-10 cursor-pointer"
+                      aria-label="Previous image"
                     >
-                      <ChevronLeft size={24} />
+                      <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
                     </button>
                     <button 
                       onClick={nextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-surface/80 hover:bg-surface text-text rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all border border-surface-border hover:border-accent"
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 sm:p-3 bg-surface/90 hover:bg-surface text-text rounded-full shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all border border-surface-border hover:border-accent z-10 cursor-pointer"
+                      aria-label="Next image"
                     >
-                      <ChevronRight size={24} />
+                      <ChevronRight size={20} className="sm:w-6 sm:h-6" />
                     </button>
-                    <div className="absolute bottom-6 left-1/2 -translate-y-1/2 flex gap-3 p-2 bg-surface/60 rounded-full backdrop-blur-sm">
+                    <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 sm:gap-3 p-1.5 sm:p-2 bg-surface/75 rounded-full backdrop-blur-sm z-10">
                       {property.images.map((_, idx) => (
                         <button
                           key={idx} 
@@ -130,7 +161,7 @@ const PropertyDetail = () => {
             <div className="bg-surface border border-surface-border rounded-xl p-8 shadow-sm">
               <h2 className="text-2xl font-heading font-semibold text-text mb-6">Property Overview</h2>
               <div className="prose prose-lg text-text-muted max-w-none">
-                <p className="whitespace-pre-line leading-relaxed text-justify">
+                <p className="whitespace-pre-line leading-relaxed text-left">
                   {property.description}
                 </p>
               </div>
