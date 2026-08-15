@@ -141,9 +141,7 @@ export const coachingData = {
       'Develop a heightened sense of self-awareness and emotional intelligence.',
       'Create actionable, step-by-step plans for success.',
       'Establish a system of accountability to ensure consistent progress.'
-    ],
-    methodology: 'Sudeep’s coaching methodology is deeply rooted in Neuro-Linguistic Programming (NLP) and active inquiry. Sessions are strictly confidential, creating a safe space for vulnerability and honest reflection. Through one-on-one sessions, Sudeep guides you to reframe challenges and design your ideal future.',
-    audience: 'Anyone seeking profound personal transformation, clarity in their career, or the removal of mental roadblocks.'
+    ]
   },
   'life': {
     title: 'Life Coaching',
@@ -155,9 +153,7 @@ export const coachingData = {
       'Improve personal relationships through better communication.',
       'Achieve a sustainable work-life balance.',
       'Design a life roadmap with clear, achievable milestones.'
-    ],
-    methodology: 'Using deep listening and NLP techniques, Sudeep helps you uncover subconscious blocks. The process is highly personalized, moving at your pace while providing the necessary gentle push to get you out of your comfort zone.',
-    audience: 'Individuals facing life transitions, seeking personal fulfillment, or struggling to find balance and direction.'
+    ]
   },
   'leadership': {
     title: 'Leadership Coaching',
@@ -169,8 +165,6 @@ export const coachingData = {
       'Improve strategic decision-making under pressure.',
       'Navigate difficult conversations and resolve team conflicts.',
       'Transition smoothly into new, higher-level executive roles.'
-    ],
-    methodology: 'A rigorous, results-oriented partnership. Sudeep uses 360-degree feedback (when applicable), behavioral assessments, and focused goal-setting. The coaching is highly contextualized to the specific challenges the leader faces in their daily corporate environment.',
-    audience: 'C-Suite Executives, Founders, Directors, and High-Potential Managers preparing for executive transitions.'
+    ]
   }
 };

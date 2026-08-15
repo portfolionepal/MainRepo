@@ -37,14 +37,14 @@ export default function LifeCoaching() {
           <h3 className="text-3xl font-serif font-bold text-primary mb-4">How Life Coaching Helps</h3>
         </AnimatedSection>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-          {program.objectives && program.objectives.slice(0, 3).map((obj, i) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+          {program.objectives && program.objectives.map((obj, i) => {
             const icons = [<Heart className="w-8 h-8 text-accent" />, <Sun className="w-8 h-8 text-accent" />, <Activity className="w-8 h-8 text-accent" />];
             return (
               <AnimatedSection key={i} delay={(i + 1) * 0.1}>
                 <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-all h-full text-center group flex flex-col items-center">
                   <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                    {icons[i]}
+                    {icons[i % icons.length]}
                   </div>
                   <p className="text-gray-600 leading-relaxed">{obj}</p>
                 </div>

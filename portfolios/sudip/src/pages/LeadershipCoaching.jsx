@@ -42,7 +42,7 @@ export default function LeadershipCoaching() {
               {program.audience || 'This specialized coaching track is designed exclusively for C-Suite Executives, Founders, Directors, and High-Potential Managers preparing for significant transitions.'}
             </p>
             <ul className="space-y-4 text-gray-700">
-              {program.objectives && program.objectives.slice(0, 4).map((obj, i) => (
+              {program.objectives && program.objectives.map((obj, i) => (
                 <li key={i} className="flex items-start">
                   <span className="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0 mr-3 mt-1 text-sm font-bold">✓</span>
                   <span className="leading-relaxed text-gray-600">{obj}</span>

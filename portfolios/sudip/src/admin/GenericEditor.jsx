@@ -155,6 +155,7 @@ export default function GenericEditor() {
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-8 space-y-8">
           {Object.entries(formData).map(([key, value]) => {
+            if (key === 'methodology' || key === 'audience') return null;
             if (Array.isArray(value)) {
               return (
                 <div key={key} className="border border-gray-200 rounded-xl bg-gray-50 p-6 space-y-6">
