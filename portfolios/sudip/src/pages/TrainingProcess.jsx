@@ -2,6 +2,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { Search, PenTool, PlayCircle, BarChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function TrainingProcess() {
   const { siteContent } = useAdminContext();
@@ -15,8 +16,8 @@ export default function TrainingProcess() {
       {/* Hero Banner */}
       <div className="relative pt-32 pb-24 bg-primary text-white overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-50"
-          style={{ backgroundImage: `url('${content.heroImage || 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=2000'}')` }}
+          className="absolute inset-0 bg-cover bg-[center_top] opacity-50"
+          style={{ backgroundImage: `url('${getImageUrl(content.heroImage) || 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=2000'}')` }}
         ></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>

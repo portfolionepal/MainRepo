@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function Gallery() {
   const { siteContent } = useAdminContext();
@@ -52,7 +53,7 @@ export default function Gallery() {
                 
                 {/* Image */}
                 <img 
-                  src={item.url} 
+                  src={getImageUrl(item.url || item.image || item.imageUrl)} 
                   alt={item.title} 
                   className="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
                 />

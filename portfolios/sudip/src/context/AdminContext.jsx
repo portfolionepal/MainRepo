@@ -101,8 +101,8 @@ const defaultSiteContent = {
     pageTitle: "Insights & Articles",
     pageSubtitle: "Thoughts on leadership, growth, and success.",
     items: [
-      { id: 1, title: 'The Shift from Managing to Coaching', date: 'August 5, 2026', category: 'Leadership', excerpt: 'Why the traditional management style is failing in modern corporate environments and how coaching bridges the gap.', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800', content: 'The days of the command-and-control manager are over. Transitioning from a traditional manager to a coach requires a fundamental shift in mindset.' },
-      { id: 2, title: '5 NLP Techniques for Better Communication', date: 'July 22, 2026', category: 'Communication', excerpt: 'Neuro-Linguistic Programming offers incredible tools for connecting with your team.', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800', content: 'Here are 5 actionable NLP techniques to improve your workplace communication immediately: Mirroring, Pacing, Reframing, Anchoring, and Sensory Predicates.' }
+      { id: 1, title: 'The Shift from Managing to Coaching', date: 'August 5, 2026', category: 'Leadership', excerpt: 'Why the traditional management style is failing in modern corporate environments and how coaching bridges the gap.', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800', url: 'https://medium.com' },
+      { id: 2, title: '5 NLP Techniques for Better Communication', date: 'July 22, 2026', category: 'Communication', excerpt: 'Neuro-Linguistic Programming offers incredible tools for connecting with your team.', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800', url: 'https://medium.com' }
     ]
   },
   // Dynamic injection of Training Pages
@@ -235,19 +235,25 @@ export const AdminProvider = ({ children }) => {
   };
 
   const updatePageContent = async (pageId, newData) => {
-    setSiteContent(prev => ({
-      ...prev,
-      [pageId]: {
-        ...prev[pageId],
-        ...newData
-      }
-    }));
+    console.log(`[Firestore] Saving page "${pageId}"...`);
     
     try {
       const docRef = doc(db, 'content', 'website');
       await setDoc(docRef, { [pageId]: newData }, { merge: true });
+      
+      // Only update local state AFTER Firestore succeeds
+      setSiteContent(prev => ({
+        ...prev,
+        [pageId]: {
+          ...prev[pageId],
+          ...newData
+        }
+      }));
+      
+      console.log(`[Firestore] Save successful for "${pageId}"`);
     } catch (error) {
-      console.error("Error updating content in Firestore:", error);
+      console.error(`[Firestore] Save failed for "${pageId}":`, error);
+      throw error; // Propagate so the editor can show an alert
     }
   };
 

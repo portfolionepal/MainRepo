@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
 import { Plus, Trash2, Save, Check } from 'lucide-react';
-import { uploadToCloudinary } from '../utils/cloudinary';
+import { uploadToCloudinary, getImageUrl, generateStablePublicId } from '../utils/cloudinary';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function GenericEditor() {
@@ -12,37 +12,95 @@ export default function GenericEditor() {
   const [formData, setFormData] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingField, setUploadingField] = useState(null); // Track WHICH field is uploading
 
+  /**
+   * Handles file upload for both array and non-array image fields.
+   *
+   * CRITICAL DESIGN DECISIONS:
+   * 1. For NON-ARRAY fields (e.g. about.bgImage): stores as string URL (not object).
+   *    This is simpler and backward-compatible with all existing frontend pages.
+   * 2. For ARRAY fields (e.g. blog.items[0].image): stores as string URL directly
+   *    on the item field. Does NOT wrap in { imageUrl, publicId } object because
+   *    that creates nested objects that break rendering and subsequent edits.
+   * 3. Upload always succeeds or fails cleanly — no silent failures.
+   */
   const handleFileUpload = async (e, isArray, arrayKey, index, itemKey) => {
     const file = e.target.files[0];
     if (!file) return;
     
-    setUploadingImage(true);
+    // Track which specific field is uploading (for per-field loading indicators)
+    const fieldId = isArray ? `${arrayKey}-${index}-${itemKey}` : itemKey;
+    setUploadingField(fieldId);
+    const targetInput = e.target; // Save reference before async work
+    
     try {
-      const imageUrl = await uploadToCloudinary(file);
+      // Generate a descriptive prefix for the Cloudinary public_id
+      let existingItem = null;
       if (isArray) {
-        handleArrayChange(arrayKey, index, itemKey, imageUrl);
-      } else {
-        handleChange(itemKey, imageUrl); // For scalar, itemKey is the key
+        existingItem = formData[arrayKey] ? formData[arrayKey][index] : null;
       }
+
+      const prefix = generateStablePublicId(pageId, arrayKey, index, existingItem, itemKey);
+      
+      console.log(`[Upload] Starting upload for field: ${fieldId}, prefix: ${prefix}`);
+
+      // Upload to Cloudinary (always creates a NEW unique asset)
+      const uploadResult = await uploadToCloudinary(file, prefix);
+
+      console.log(`[Upload] Success! URL: ${uploadResult.imageUrl}`);
+
+      // Store the plain URL string — keeps data flat and compatible with all frontend pages
+      const newUrl = uploadResult.imageUrl;
+
+      if (isArray) {
+        // For array items: set item[itemKey] = url string directly
+        setFormData(prev => {
+          const newArray = [...(prev[arrayKey] || [])];
+          newArray[index] = { ...newArray[index], [itemKey]: newUrl };
+          return { ...prev, [arrayKey]: newArray };
+        });
+      } else {
+        // For top-level fields: set formData[itemKey] = url string directly
+        setFormData(prev => ({ ...prev, [itemKey]: newUrl }));
+      }
+
+      console.log(`[Upload] State updated for ${fieldId}`);
     } catch (error) {
-      console.error("Failed to upload image", error);
-      alert("Failed to upload image. Please try again.");
+      console.error(`[Upload] Failed for ${fieldId}:`, error);
+      alert(`Failed to upload image: ${error.message || 'Unknown error'}. Please try again.`);
     } finally {
-      setUploadingImage(false);
+      setUploadingField(null);
+      // Reset the file input so the same file can be selected again
+      if (targetInput) {
+        targetInput.value = '';
+      }
     }
   };
 
-  // When the pageId changes, load the data for that page into the local form state
+  // Load page data into local form state when navigating to a different page.
+  // ONLY depends on pageId — NOT siteContent — so uploads and edits are never wiped out
+  // by background context updates.
   useEffect(() => {
-    if (siteContent[pageId]) {
-      setFormData(siteContent[pageId]);
+    if (siteContent && siteContent[pageId]) {
+      let data = JSON.parse(JSON.stringify(siteContent[pageId]));
+      
+      // Data migration for blog items: remove 'content', add 'url'
+      if (pageId === 'blog' && data.items) {
+        data.items = data.items.map(item => {
+          const { content, ...rest } = item;
+          if (!('url' in rest)) {
+            rest.url = '';
+          }
+          return rest;
+        });
+      }
+      
+      setFormData(data);
     } else {
-      // Handle case where page doesn't exist in context yet
       setFormData({ title: `Placeholder for ${pageId}` });
     }
-  }, [pageId, siteContent]);
+  }, [pageId]);
 
   // Reset success message when navigating to a different page
   useEffect(() => {
@@ -58,7 +116,7 @@ export default function GenericEditor() {
 
   const handleArrayChange = (arrayKey, index, itemKey, value) => {
     setFormData(prev => {
-      const newArray = [...prev[arrayKey]];
+      const newArray = [...(prev[arrayKey] || [])];
       if (itemKey === null) {
         // It's an array of strings/primitives
         newArray[index] = value;
@@ -67,6 +125,44 @@ export default function GenericEditor() {
       }
       return { ...prev, [arrayKey]: newArray };
     });
+  };
+
+  const handleFetchMetadata = async (arrayKey, index, url) => {
+    if (!url) return alert('Please enter a valid URL first.');
+    try {
+      setUploadingField(`${arrayKey}-${index}-fetchMetadata`);
+      const response = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
+      const data = await response.json();
+      
+      if (data.status === 'success' && data.data) {
+        const metadata = data.data;
+        setFormData(prev => {
+          const newArray = [...(prev[arrayKey] || [])];
+          const item = { ...newArray[index] };
+          
+          if (metadata.title) item.title = metadata.title;
+          if (metadata.description) {
+            if (item.excerpt !== undefined) item.excerpt = metadata.description;
+            else if (item.description !== undefined) item.description = metadata.description;
+            else item.excerpt = metadata.description; // fallback
+          }
+          if (metadata.image?.url) {
+            item.image = metadata.image.url;
+          }
+          
+          newArray[index] = item;
+          return { ...prev, [arrayKey]: newArray };
+        });
+        alert('Metadata fetched successfully!');
+      } else {
+        alert('Could not fetch metadata for this URL.');
+      }
+    } catch (error) {
+      console.error('Fetch metadata error:', error);
+      alert('Error fetching metadata. The site might be blocking it.');
+    } finally {
+      setUploadingField(null);
+    }
   };
 
   const handleAddItem = (arrayKey) => {
@@ -78,10 +174,27 @@ export default function GenericEditor() {
       if (typeof templateItem === 'string') {
         newItem = '';
       } else {
+        // Create a blank copy of the template's shape
         newItem = Object.keys(templateItem).reduce((acc, k) => {
-          acc[k] = typeof templateItem[k] === 'number' ? 0 : '';
+          const templateVal = templateItem[k];
+          if (k === 'id') {
+            acc[k] = Date.now();
+          } else if (typeof templateVal === 'number') {
+            acc[k] = 0;
+          } else if (typeof templateVal === 'object' && templateVal !== null) {
+            // If the template value is an object (e.g. nested image data from legacy),
+            // create an empty string to keep it simple
+            acc[k] = '';
+          } else {
+            acc[k] = '';
+          }
           return acc;
-        }, { id: Date.now() });
+        }, {});
+        
+        // Explicitly inject url field for blog items if missing in legacy data
+        if (pageId === 'blog' && !('url' in newItem)) {
+          newItem.url = '';
+        }
       }
 
       return { ...prev, [arrayKey]: [...currentArray, newItem] };
@@ -91,26 +204,31 @@ export default function GenericEditor() {
   const handleRemoveItem = (arrayKey, index) => {
     if (window.confirm("Are you sure you want to delete this item? This action cannot be undone.")) {
       setFormData(prev => {
-        const newArray = [...prev[arrayKey]];
+        const newArray = [...(prev[arrayKey] || [])];
         newArray.splice(index, 1);
         return { ...prev, [arrayKey]: newArray };
       });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSaving || uploadingField) return; // Prevent double-submit
+
     setIsSaving(true);
     
-    // Simulate network delay
-    setTimeout(() => {
-      updatePageContent(pageId, formData);
-      setIsSaving(false);
+    try {
+      console.log(`[Save] Saving page "${pageId}" to Firestore...`);
+      await updatePageContent(pageId, formData);
+      console.log(`[Save] Success!`);
       setShowSuccess(true);
-      
-      // Hide success message after 3 seconds
       setTimeout(() => setShowSuccess(false), 3000);
-    }, 600);
+    } catch (err) {
+      console.error(`[Save] Failed:`, err);
+      alert(`Failed to save changes: ${err.message || 'Unknown error'}. Please try again.`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Helper to format camelCase keys into Readable Labels
@@ -125,9 +243,48 @@ export default function GenericEditor() {
     return k.includes('image') || k.includes('url') || k.includes('logo') || k.includes('photo') || k.includes('pic') || k.includes('bg') || k.includes('sign') || k.includes('portrait') || k.includes('banner') || k.includes('avatar');
   };
 
+  /**
+   * Extract a display-ready string from any field value.
+   * Handles: plain strings, { imageUrl, publicId } objects, and other legacy shapes.
+   */
+  const getDisplayValue = (val) => {
+    if (typeof val === 'string') return val;
+    if (typeof val === 'object' && val !== null) {
+      return getImageUrl(val);
+    }
+    return String(val ?? '');
+  };
+
+  /**
+   * Sort object keys into a consistent display order for array items:
+   * 1. Title / Name fields first
+   * 2. Short text fields (role, category, date, type, location, etc.)
+   * 3. Long text fields (description, content, excerpt, overview, text, etc.)
+   * 4. Image / URL fields last
+   * This prevents the random key ordering that Object.entries can produce.
+   */
+  const sortItemKeys = (entries) => {
+    const getPriority = (key) => {
+      const k = key.toLowerCase();
+      // Title/name always first
+      if (k === 'title' || k === 'name') return 0;
+      // Short metadata fields
+      if (k === 'role' || k === 'category' || k === 'date' || k === 'type' || k === 'location') return 1;
+      // Image/URL fields always last
+      if (isImageKey(key)) return 3;
+      // Long text fields near the end but before images
+      if (k === 'description' || k === 'content' || k === 'excerpt' || k === 'overview' || k === 'text' || k === 'desc') return 2;
+      // Everything else in the middle
+      return 1.5;
+    };
+    return [...entries].sort((a, b) => getPriority(a[0]) - getPriority(b[0]));
+  };
+
   if (!siteContent[pageId] && Object.keys(formData).length === 0) {
     return <div className="text-gray-500">Loading editor for {pageId}...</div>;
   }
+
+  const isUploading = uploadingField !== null;
 
   return (
     <div className="max-w-4xl pb-20">
@@ -171,7 +328,7 @@ export default function GenericEditor() {
                   </div>
                   
                   {value.map((item, index) => (
-                    <div key={item.id || index} className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 relative">
+                    <div key={item?.id || index} className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 relative">
                       <button 
                         type="button" 
                         onClick={() => handleRemoveItem(key, index)}
@@ -184,11 +341,16 @@ export default function GenericEditor() {
                       
                       <div className="space-y-4">
                         {typeof item === 'object' && item !== null ? (
-                          Object.entries(item).map(([itemKey, itemVal]) => {
+                          sortItemKeys(Object.entries(item)).map(([itemKey, itemVal]) => {
                             if (itemKey === 'id') return null; // Don't edit internal IDs
+                            // Skip publicId fields that leaked from legacy uploads
+                            if (itemKey === 'publicId' || itemKey === 'imageUrl') return null;
                             
                             const isImageField = isImageKey(itemKey);
-                            const isLongText = !isImageField && typeof itemVal === 'string' && itemVal.length > 50;
+                            const displayVal = getDisplayValue(itemVal);
+                            const isLongText = !isImageField && typeof displayVal === 'string' && displayVal.length > 50;
+                            const thisFieldId = `${key}-${index}-${itemKey}`;
+                            const isThisUploading = uploadingField === thisFieldId;
                             
                             return (
                               <div key={itemKey}>
@@ -197,30 +359,44 @@ export default function GenericEditor() {
                                 </label>
                                 {isLongText ? (
                                   <textarea
-                                    value={itemVal}
+                                    value={displayVal}
                                     onChange={(e) => handleArrayChange(key, index, itemKey, e.target.value)}
                                     className="w-full px-3 py-2 rounded-md border border-gray-300 focus:ring-1 focus:ring-primary focus:border-primary transition-colors min-h-[80px] text-sm text-gray-800"
                                   />
                                 ) : (
                                   <div>
-                                    <input
-                                      type="text"
-                                      value={itemVal}
-                                      onChange={(e) => handleArrayChange(key, index, itemKey, e.target.value)}
-                                      placeholder={isImageField ? "Enter image URL or upload below" : ""}
-                                      className="w-full px-3 py-2 rounded-md border border-gray-300 focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-sm text-gray-800"
-                                    />
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="text"
+                                        value={displayVal}
+                                        onChange={(e) => handleArrayChange(key, index, itemKey, e.target.value)}
+                                        placeholder={isImageField ? "Enter image URL or upload below" : ""}
+                                        className="w-full px-3 py-2 rounded-md border border-gray-300 focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-sm text-gray-800"
+                                      />
+                                      {itemKey.toLowerCase() === 'url' && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleFetchMetadata(key, index, displayVal)}
+                                          disabled={isThisUploading || !displayVal}
+                                          className={`shrink-0 px-3 py-2 bg-secondary text-white text-xs font-bold rounded-md transition-colors ${
+                                            (isThisUploading || !displayVal) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-secondary-light'
+                                          }`}
+                                        >
+                                          {isThisUploading ? 'Fetching...' : 'Fetch Metadata'}
+                                        </button>
+                                      )}
+                                    </div>
                                     {isImageField && (
                                       <div className="mt-2 flex items-center">
                                         <input 
                                           type="file" 
                                           accept="image/*" 
                                           onChange={(e) => handleFileUpload(e, true, key, index, itemKey)}
-                                          disabled={uploadingImage}
+                                          disabled={isUploading}
                                           className="text-xs text-gray-500 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors cursor-pointer disabled:opacity-50"
                                         />
-                                        {itemVal && (itemVal.startsWith('http') || itemVal.startsWith('data:image')) && <span className="text-xs text-green-600 ml-2">Image loaded</span>}
-                                        {uploadingImage && <span className="text-xs text-blue-600 ml-2 animate-pulse">Uploading...</span>}
+                                        {displayVal && (displayVal.startsWith('http') || displayVal.startsWith('data:image')) && <span className="text-xs text-green-600 ml-2">Image loaded</span>}
+                                        {isThisUploading && <span className="text-xs text-blue-600 ml-2 animate-pulse">Uploading...</span>}
                                       </div>
                                     )}
                                   </div>
@@ -245,9 +421,15 @@ export default function GenericEditor() {
               );
             }
 
-            // Determine if it should be a textarea or input based on string length
+            // --- Non-array fields ---
             const isImageField = isImageKey(key);
-            const isLongText = !isImageField && typeof value === 'string' && value.length > 60;
+            // Skip publicId/imageUrl keys that leaked to top-level from legacy uploads
+            if (key === 'publicId' || (key === 'imageUrl' && formData[key.replace('imageUrl', '')] !== undefined)) return null;
+            
+            const displayVal = getDisplayValue(value);
+            const isLongText = !isImageField && typeof displayVal === 'string' && displayVal.length > 60;
+            const thisFieldId = key;
+            const isThisUploading = uploadingField === thisFieldId;
             
             return (
               <div key={key}>
@@ -256,7 +438,7 @@ export default function GenericEditor() {
                 </label>
                 {isLongText ? (
                   <textarea
-                    value={value}
+                    value={displayVal}
                     onChange={(e) => handleChange(key, e.target.value)}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-colors min-h-[120px] text-gray-800"
                   />
@@ -264,7 +446,7 @@ export default function GenericEditor() {
                   <div>
                     <input
                       type="text"
-                      value={value}
+                      value={displayVal}
                       onChange={(e) => handleChange(key, e.target.value)}
                       placeholder={isImageField ? "Enter image URL or upload below" : ""}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-colors text-gray-800"
@@ -275,11 +457,11 @@ export default function GenericEditor() {
                           type="file" 
                           accept="image/*" 
                           onChange={(e) => handleFileUpload(e, false, null, null, key)}
-                          disabled={uploadingImage}
+                          disabled={isUploading}
                           className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors cursor-pointer disabled:opacity-50"
                         />
-                        {value && (value.startsWith('http') || value.startsWith('data:image')) && <span className="text-sm text-green-600 ml-2">Image loaded</span>}
-                        {uploadingImage && <span className="text-sm text-blue-600 ml-2 animate-pulse">Uploading...</span>}
+                        {displayVal && (displayVal.startsWith('http') || displayVal.startsWith('data:image')) && <span className="text-sm text-green-600 ml-2">Image loaded</span>}
+                        {isThisUploading && <span className="text-sm text-blue-600 ml-2 animate-pulse">Uploading...</span>}
                       </div>
                     )}
                   </div>
@@ -292,9 +474,9 @@ export default function GenericEditor() {
         <div className="bg-gray-50 px-8 py-5 border-t border-gray-100 flex items-center justify-end">
           <button
             type="submit"
-            disabled={isSaving || uploadingImage}
+            disabled={isSaving || isUploading}
             className={`flex items-center px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-md transition-all ${
-              (isSaving || uploadingImage) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-light hover:-translate-y-0.5'
+              (isSaving || isUploading) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-light hover:-translate-y-0.5'
             }`}
           >
             <Save className="w-5 h-5 mr-2" />

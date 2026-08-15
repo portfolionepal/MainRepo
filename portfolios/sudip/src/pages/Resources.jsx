@@ -3,6 +3,7 @@ import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
 import { Calendar, ArrowRight, BookOpen, X } from 'lucide-react';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 function Events() {
   const { siteContent } = useAdminContext();
@@ -44,7 +45,7 @@ function Blog() {
           <AnimatedSection key={blog.id || index} delay={index * 0.1}>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all h-full flex flex-col group overflow-hidden">
               <div className="relative h-48 overflow-hidden cursor-pointer" onClick={() => setSelectedBlog(blog)}>
-                <img src={blog.image} alt={blog.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
+                <img src={getImageUrl(blog.image || blog.imageUrl || blog.coverImage)} alt={blog.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
               </div>
               <div className="p-8 flex flex-col flex-grow relative">
                 <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/5 rounded-bl-[60px] -z-10 group-hover:bg-secondary/10 transition-colors"></div>
@@ -81,7 +82,7 @@ function Blog() {
           >
             {/* Modal Header Image */}
             <div className="relative h-64 w-full shrink-0">
-              <img src={selectedBlog.image} alt={selectedBlog.title} className="w-full h-full object-cover" />
+              <img src={getImageUrl(selectedBlog.image || selectedBlog.imageUrl || selectedBlog.coverImage)} alt={selectedBlog.title} className="w-full h-full object-cover" />
               <button 
                 onClick={() => setSelectedBlog(null)}
                 className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white p-2 rounded-full transition-colors"

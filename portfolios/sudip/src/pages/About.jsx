@@ -1,5 +1,6 @@
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function About() {
   const { siteContent } = useAdminContext();
@@ -10,8 +11,8 @@ export default function About() {
       
       {/* The Background Image (Right) */}
       <div 
-        className="absolute top-20 right-0 w-full lg:w-[65%] h-[calc(100vh-5rem)] bg-cover bg-right"
-        style={{ backgroundImage: `url('${content.bgImage || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=2000'}')` }}
+        className="absolute top-20 right-0 w-full lg:w-[65%] h-[calc(100vh-5rem)] bg-cover bg-[center_top] lg:bg-[top_right]"
+        style={{ backgroundImage: `url('${getImageUrl(content.bgImage) || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=2000'}')` }}
       >
         <div className="absolute inset-0 bg-black/10 lg:hidden"></div>
       </div>
@@ -42,7 +43,7 @@ export default function About() {
                 {/* NLP Logo */}
                 {content.nlpLogo && (
                   <img 
-                    src={content.nlpLogo} 
+                    src={getImageUrl(content.nlpLogo)} 
                     alt="Academy of Leadership Coaching & NLP" 
                     className="h-10 md:h-12 w-[150px] object-cover border border-gray-100 rounded-sm p-1"
                     onError={(e) => { e.target.style.display = 'none'; }}
@@ -52,7 +53,7 @@ export default function About() {
                 {/* ICF Logo */}
                 {content.icfLogo && (
                   <img 
-                    src={content.icfLogo} 
+                    src={getImageUrl(content.icfLogo)} 
                     alt="International Coach Federation" 
                     className="h-10 md:h-12 object-contain"
                     onError={(e) => { e.target.style.display = 'none'; }}
@@ -63,7 +64,7 @@ export default function About() {
                 <div className="ml-auto text-right flex flex-col items-end">
                   {content.signatureImage && (
                     <img 
-                      src={content.signatureImage} 
+                      src={getImageUrl(content.signatureImage)} 
                       alt="Signature" 
                       className="h-10 md:h-12 object-contain mb-0.5"
                       onError={(e) => { e.target.style.display = 'none'; }}

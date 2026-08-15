@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
 import { ArrowRight } from 'lucide-react';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function Trainings() {
   const { siteContent } = useAdminContext();
@@ -35,7 +36,7 @@ export default function Trainings() {
                     {/* Card Image */}
                     <div className="h-48 w-full overflow-hidden relative">
                       <img 
-                        src={data.image} 
+                        src={getImageUrl(data.image)} 
                         alt={data.title} 
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
                       />

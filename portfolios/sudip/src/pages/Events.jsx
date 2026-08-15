@@ -3,6 +3,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { Calendar, X, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function Events() {
   const { siteContent } = useAdminContext();
@@ -14,7 +15,6 @@ export default function Events() {
   const getDisplayedEvents = () => {
     if (filterType === 'upcoming') return events;
     if (filterType === 'previous') return pastEvents;
-    if (filterType === 'recent') return pastEvents.slice(0, 2);
     return [...events, ...pastEvents];
   };
 
@@ -33,7 +33,7 @@ export default function Events() {
 
         {/* Filter Buttons */}
         <AnimatedSection delay={0.1} className="flex flex-wrap justify-center gap-4 mb-12">
-          {['All', 'Upcoming', 'Recent', 'Previous'].map((type) => (
+          {['All', 'Upcoming', 'Previous'].map((type) => (
             <button
               key={type}
               onClick={() => setFilterType(type.toLowerCase())}
@@ -67,7 +67,7 @@ export default function Events() {
                   {/* Image Section */}
                   <div className="h-48 w-full overflow-hidden relative">
                     <img 
-                      src={event.image} 
+                      src={getImageUrl(event.image || event.imageUrl)} 
                       alt={event.title} 
                       className={`w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ${isPast ? 'grayscale group-hover:grayscale-0' : ''}`}
                       onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800" }}
@@ -129,7 +129,7 @@ export default function Events() {
                 {/* Header Image */}
                 <div className="relative h-64 sm:h-80 w-full">
                   <img 
-                    src={selectedEvent.image} 
+                    src={getImageUrl(selectedEvent.image || selectedEvent.imageUrl)} 
                     alt={selectedEvent.title} 
                     className="w-full h-full object-cover" 
                     onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800" }}

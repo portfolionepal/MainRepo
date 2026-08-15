@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle2, TrendingUp, Users, Target, Award, Play, Chevr
 import AnimatedSection from '../components/AnimatedSection';
 import Counter from '../components/Counter';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function Home() {
   const { siteContent } = useAdminContext();
@@ -73,9 +74,9 @@ export default function Home() {
 
               <div className="relative rounded-[40px] rounded-br-[120px] rounded-tl-[120px] overflow-hidden shadow-2xl border-8 border-white transform rotate-3 hover:rotate-0 transition-transform duration-500">
                 <img
-                  src={content.heroImage || "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"}
+                  src={getImageUrl(content.heroImage) || "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"}
                   alt="Professional Coaching"
-                  className="w-full h-[500px] lg:h-[600px] object-cover"
+                  className="w-full h-[500px] lg:h-[600px] object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
               </div>
@@ -135,9 +136,9 @@ export default function Home() {
             <AnimatedSection>
               <div className="aspect-[4/5] bg-gray-200 rounded-2xl overflow-hidden relative shadow-xl">
                 <img
-                  src={siteContent.about?.coachPhoto || siteContent.about?.bgImage || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800'}
+                  src={getImageUrl(siteContent.about?.coachPhoto || siteContent.about?.bgImage) || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800'}
                   alt={siteContent.about?.title || 'Sudeep Basnet'}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
                 <div className="absolute bottom-0 left-0 bg-white/95 backdrop-blur-md p-6 rounded-tr-2xl shadow-md border-t border-r border-gray-100">
                   <p className="font-serif font-bold text-primary text-xl">{siteContent.about?.title || 'Sudeep Basnet'}</p>
@@ -177,7 +178,7 @@ export default function Home() {
                 <Link to={program.path} className="block h-full group">
                   <div className="relative h-96 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
                     <img
-                      src={program.image}
+                      src={getImageUrl(program.image)}
                       alt={program.title}
                       className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                     />
@@ -220,7 +221,7 @@ export default function Home() {
                 <div className="absolute inset-4 rounded-full border border-gray-600 p-8">
                   <div className="absolute inset-4 rounded-full bg-primary-light flex items-center justify-center text-center shadow-inner overflow-hidden group">
                     <img
-                      src={content.coachingSectionImage || "https://successinc.com.np/wp-content/uploads/2023/11/coaches.jpg"}
+                      src={getImageUrl(content.coachingSectionImage) || "https://successinc.com.np/wp-content/uploads/2023/11/coaches.jpg"}
                       alt="Coaching success"
                       className="absolute inset-0 w-full h-full object-cover"
                       onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800"; }}
@@ -255,7 +256,7 @@ export default function Home() {
                 className="mx-6 w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-50 shrink-0 p-0 overflow-hidden transform transition-transform hover:scale-105"
               >
                 <img
-                  src={logo.url}
+                  src={getImageUrl(logo.url || logo.imageUrl || logo)}
                   alt={logo.name}
                   className="w-full h-full object-cover rounded-full"
                   onError={(e) => { e.target.src = `https://placehold.co/200x200/F8F9FA/333?text=${logo.name.charAt(0)}`; }}
@@ -284,7 +285,7 @@ export default function Home() {
                   <p className="text-gray-600 italic mb-8 flex-grow">{t.text}</p>
                   <div className="flex items-center gap-4">
                     <img
-                      src={t.image}
+                      src={getImageUrl(t.image || t.imageUrl || t)}
                       alt={t.name}
                       className="w-14 h-14 rounded-full object-cover border-2 border-gray-100 shadow-sm"
                     />

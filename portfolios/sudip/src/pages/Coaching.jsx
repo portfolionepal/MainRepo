@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
 import { ArrowRight } from 'lucide-react';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function Coaching() {
   const { siteContent } = useAdminContext();
@@ -29,7 +30,7 @@ export default function Coaching() {
                     {/* Card Image */}
                     <div className="h-48 w-full overflow-hidden relative">
                       <img 
-                        src={data.image || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800'} 
+                        src={getImageUrl(data.image) || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800'} 
                         alt={data.title} 
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
                       />

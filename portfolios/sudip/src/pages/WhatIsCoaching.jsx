@@ -2,6 +2,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { Target, Lightbulb, Compass, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function WhatIsCoaching() {
   const { siteContent } = useAdminContext();
@@ -13,8 +14,8 @@ export default function WhatIsCoaching() {
       {/* Hero Banner */}
       <div className="relative pt-32 pb-24 bg-primary text-white overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-50"
-          style={{ backgroundImage: `url('${program.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000'}')` }}
+          className="absolute inset-0 bg-cover bg-[center_top] opacity-50"
+          style={{ backgroundImage: `url('${getImageUrl(program.image) || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000'}')` }}
         ></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
@@ -31,9 +32,9 @@ export default function WhatIsCoaching() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24">
           <AnimatedSection>
             <img 
-              src={program.image || "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"} 
+              src={getImageUrl(program.image) || "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"} 
               alt="Coaching Session" 
-              className="rounded-3xl shadow-xl w-full object-cover h-[500px]"
+              className="rounded-3xl shadow-xl w-full object-cover object-top h-[500px]"
             />
           </AnimatedSection>
           <AnimatedSection delay={0.2}>

@@ -2,6 +2,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { Briefcase, TrendingUp, Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
+import { getImageUrl } from '../utils/cloudinary';
 
 export default function LeadershipCoaching() {
   const { siteContent } = useAdminContext();
@@ -13,8 +14,8 @@ export default function LeadershipCoaching() {
       {/* Dark Hero Section */}
       <div className="bg-[#1A2634] pt-32 pb-24 text-white relative overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-50"
-          style={{ backgroundImage: `url('${program.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000'}')` }}
+          className="absolute inset-0 bg-cover bg-[center_top] opacity-50"
+          style={{ backgroundImage: `url('${getImageUrl(program.image) || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000'}')` }}
         ></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl">
