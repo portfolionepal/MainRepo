@@ -12,7 +12,10 @@ export default function LifeCoaching() {
       
       {/* Hero Banner */}
       <div className="relative pt-32 pb-24 bg-[#1A2634] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-50"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-50"
+          style={{ backgroundImage: `url('${program.image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000'}')` }}
+        ></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
             <h1 className="text-4xl lg:text-5xl font-bold tracking-widest text-accent uppercase mb-4">Personal Growth</h1>

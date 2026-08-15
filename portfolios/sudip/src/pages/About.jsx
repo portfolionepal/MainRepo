@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
 
@@ -12,7 +11,7 @@ export default function About() {
       {/* The Background Image (Right) */}
       <div 
         className="absolute top-20 right-0 w-full lg:w-[65%] h-[calc(100vh-5rem)] bg-cover bg-right"
-        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=2000')` }}
+        style={{ backgroundImage: `url('${content.bgImage || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=2000'}')` }}
       >
         <div className="absolute inset-0 bg-black/10 lg:hidden"></div>
       </div>
@@ -40,28 +39,37 @@ export default function About() {
              {/* Footer Logos using actual image tags */}
              <div className="flex-shrink-0 pt-6 mt-4 flex items-center justify-between gap-4">
                 
-                {/* NLP Logo Placeholder (Random Image) */}
-                <img 
-                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=220&h=70" 
-                  alt="Academy of Leadership Coaching & NLP" 
-                  className="h-10 md:h-12 w-[150px] object-cover border border-gray-100 rounded-sm p-1"
-                />
+                {/* NLP Logo */}
+                {content.nlpLogo && (
+                  <img 
+                    src={content.nlpLogo} 
+                    alt="Academy of Leadership Coaching & NLP" 
+                    className="h-10 md:h-12 w-[150px] object-cover border border-gray-100 rounded-sm p-1"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                )}
                 
                 {/* ICF Logo */}
-                <img 
-                  src="https://coachingfederation.org/app/themes/icf/assets/images/icf-logo.svg" 
-                  alt="International Coach Federation" 
-                  className="h-10 md:h-12 object-contain"
-                />
-                
-                {/* Signature Logo (Real URL) */}
-                <div className="ml-auto text-right flex flex-col items-end">
+                {content.icfLogo && (
                   <img 
-                    src="https://successinc.com.np/wp-content/uploads/2023/10/sudeep-sign.png" 
-                    alt="Sudeep Basnet Signature" 
-                    className="h-10 md:h-12 object-contain mb-0.5"
+                    src={content.icfLogo} 
+                    alt="International Coach Federation" 
+                    className="h-10 md:h-12 object-contain"
+                    onError={(e) => { e.target.style.display = 'none'; }}
                   />
-                  <p className="text-[7px] md:text-[9px] tracking-[0.2em] text-gray-400 uppercase font-medium">Leadership Coach</p>
+                )}
+                
+                {/* Signature Logo */}
+                <div className="ml-auto text-right flex flex-col items-end">
+                  {content.signatureImage && (
+                    <img 
+                      src={content.signatureImage} 
+                      alt="Signature" 
+                      className="h-10 md:h-12 object-contain mb-0.5"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  )}
+                  <p className="text-[7px] md:text-[9px] tracking-[0.2em] text-gray-400 uppercase font-medium">{content.signatureTitle || 'Leadership Coach'}</p>
                 </div>
                 
              </div>

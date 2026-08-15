@@ -6,6 +6,8 @@ const mainPages = [
   { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
   { name: 'Home Page', path: '/admin/pages/home', icon: FileText },
   { name: 'About Page', path: '/admin/pages/about', icon: Users },
+  { name: 'Training Process', path: '/admin/pages/trainingProcess', icon: FileText },
+  { name: 'Mission & Vision', path: '/admin/pages/missionVision', icon: FileText },
   { name: 'Contact Page', path: '/admin/pages/contact', icon: Phone },
   { name: 'Clients', path: '/admin/pages/clients', icon: Briefcase },
   { name: 'Testimonials', path: '/admin/pages/testimonials', icon: MessageSquare },
@@ -68,7 +70,7 @@ export default function AdminSidebar() {
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-full flex flex-col shadow-sm flex-shrink-0">
       <div className="h-16 flex items-center px-6 border-b border-gray-200">
-        <span className="text-2xl font-bold font-serif text-primary">Success<span className="text-accent">Inc</span></span>
+        <span className="text-2xl font-bold font-serif text-primary">Sudip <span className="text-accent">Basnet</span></span>
       </div>
       
       <div className="flex-1 overflow-y-auto py-4 px-3 space-y-6">

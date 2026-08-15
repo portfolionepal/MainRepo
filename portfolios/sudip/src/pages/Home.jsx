@@ -73,7 +73,7 @@ export default function Home() {
 
               <div className="relative rounded-[40px] rounded-br-[120px] rounded-tl-[120px] overflow-hidden shadow-2xl border-8 border-white transform rotate-3 hover:rotate-0 transition-transform duration-500">
                 <img
-                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"
+                  src={content.heroImage || "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"}
                   alt="Professional Coaching"
                   className="w-full h-[500px] lg:h-[600px] object-cover"
                 />
@@ -86,8 +86,8 @@ export default function Home() {
                   <Target className="w-6 h-6 text-accent" />
                 </div>
                 <div>
-                  <p className="font-bold text-primary text-lg leading-tight">20+ Years</p>
-                  <p className="text-sm text-gray-500">Experience</p>
+                  <p className="font-bold text-primary text-lg leading-tight">{content.statsExperience || "20+"}</p>
+                  <p className="text-sm text-gray-500">Years Experience</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -133,25 +133,26 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <AnimatedSection>
-              <div className="aspect-[4/5] bg-gray-200 rounded-2xl overflow-hidden relative">
-                {/* Placeholder for Sudeep's Portrait */}
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                  <span className="text-lg font-medium">[ Portrait Placeholder ]</span>
-                </div>
-                <div className="absolute bottom-0 left-0 bg-white p-6 rounded-tr-2xl">
-                  <p className="font-serif font-bold text-primary text-xl">Sudeep Basnet</p>
-                  <p className="text-sm text-secondary font-medium">Master Trainer & Coach</p>
+              <div className="aspect-[4/5] bg-gray-200 rounded-2xl overflow-hidden relative shadow-xl">
+                <img
+                  src={siteContent.about?.coachPhoto || siteContent.about?.bgImage || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800'}
+                  alt={siteContent.about?.title || 'Sudeep Basnet'}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 bg-white/95 backdrop-blur-md p-6 rounded-tr-2xl shadow-md border-t border-r border-gray-100">
+                  <p className="font-serif font-bold text-primary text-xl">{siteContent.about?.title || 'Sudeep Basnet'}</p>
+                  <p className="text-sm text-secondary font-medium">{siteContent.about?.subtitle || 'Master Trainer & Coach'}</p>
                 </div>
               </div>
             </AnimatedSection>
             <AnimatedSection delay={0.2}>
               <h2 className="text-xl font-bold tracking-widest text-secondary uppercase mb-3">About The Coach</h2>
-              <h3 className="text-4xl font-serif font-bold text-primary mb-6 leading-tight">Insight, Humor, and Real Transformation</h3>
+              <h3 className="text-4xl font-serif font-bold text-primary mb-6 leading-tight">{siteContent.about?.title || 'Sudeep Basnet'}</h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Sudeep brings a unique ability to connect with audiences about real issues. His listeners receive practical techniques that can be used immediately, delivered with powerful content mixed with humor for an unforgettable experience.
+                {siteContent.about?.paragraph1 || siteContent.about?.paragraph2}
               </p>
               <p className="text-gray-600 mb-8 leading-relaxed">
-                Whether training a handful of executives or speaking to a large auditorium, his mission is to empower people with the skills and attitudes needed to reach new heights in their personal and professional lives.
+                {siteContent.about?.paragraph3 || siteContent.about?.paragraph4}
               </p>
               <Link to="/about" className="inline-flex items-center text-accent font-medium hover:text-accent-hover transition-colors group">
                 Read Full Bio <ChevronRight className="ml-1 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
@@ -218,12 +219,8 @@ export default function Home() {
               <div className="aspect-square rounded-full border border-gray-700 p-8 flex items-center justify-center relative">
                 <div className="absolute inset-4 rounded-full border border-gray-600 p-8">
                   <div className="absolute inset-4 rounded-full bg-primary-light flex items-center justify-center text-center shadow-inner overflow-hidden group">
-                    {/* 
-                          To change this image, simply update the src URL below. 
-                          The classes 'w-full h-full object-cover' ensure ANY image perfectly fills the circle! 
-                        */}
                     <img
-                      src="https://successinc.com.np/wp-content/uploads/2023/11/coaches.jpg"
+                      src={content.coachingSectionImage || "https://successinc.com.np/wp-content/uploads/2023/11/coaches.jpg"}
                       alt="Coaching success"
                       className="absolute inset-0 w-full h-full object-cover"
                       onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800"; }}
@@ -231,7 +228,7 @@ export default function Home() {
                     {/* Dark overlay to make the text readable */}
                     <div className="absolute inset-0 bg-primary/70 group-hover:bg-primary/50 transition-colors duration-500"></div>
 
-                    <p className="font-serif text-2xl italic relative z-10 p-8">"Success begins from within."</p>
+                    <p className="font-serif text-2xl italic relative z-10 p-8">{content.coachingSectionQuote || '"Success begins from within."'}</p>
                   </div>
                 </div>
               </div>
@@ -308,10 +305,10 @@ export default function Home() {
         <div className="absolute top-0 left-0 w-full h-full bg-secondary/5 -z-10"></div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
-            <h2 className="text-4xl font-serif font-bold text-primary mb-6">Ready to Elevate Your Team?</h2>
-            <p className="text-xl text-gray-600 mb-10">Connect with us today to discuss how we can customize a training or coaching program to meet your specific goals.</p>
+            <h2 className="text-4xl font-serif font-bold text-primary mb-6">{content.ctaTitle || 'Ready to Elevate Your Team?'}</h2>
+            <p className="text-xl text-gray-600 mb-10">{content.ctaSubtitle || 'Connect with us today to discuss how we can customize a training or coaching program to meet your specific goals.'}</p>
             <Link to="/contact" className="inline-block px-10 py-5 bg-accent text-white rounded-full font-medium text-lg hover:bg-accent-hover transition-colors shadow-lg hover:shadow-xl">
-              Request a Consultation
+              {content.ctaButton || 'Request a Consultation'}
             </Link>
           </AnimatedSection>
         </div>

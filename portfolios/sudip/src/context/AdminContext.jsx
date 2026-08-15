@@ -10,19 +10,32 @@ const defaultSiteContent = {
     heroTitle: "Transforming Potential into",
     heroHighlight: "Performance",
     heroSubtitle: "Empowering individuals and organizations for over 20 years. Sudeep Basnet is a certified leadership coach and motivational trainer dedicated to facilitating real transformation.",
+    heroImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200",
     heroButtonPrimary: "Book a Training",
     heroButtonSecondary: "Explore Coaching",
     statsOrganizations: "100+",
     statsIndividuals: "10,000+",
     statsExperience: "20+",
     statsCountries: "5+",
+    coachingSectionImage: "https://successinc.com.np/wp-content/uploads/2023/11/coaches.jpg",
+    coachingSectionQuote: "Success begins from within.",
+    ctaTitle: "Ready to Elevate Your Team?",
+    ctaSubtitle: "Connect with us today to discuss how we can customize a training or coaching program to meet your specific goals.",
+    ctaButton: "Request a Consultation"
   },
   about: {
     title: "Sudeep Basnet",
     subtitle: "Inspirational Business Speaker & Certified Leadership Coach",
+    bgImage: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=2000",
+    coachPhoto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800",
     paragraph1: "For over 17 years, Sudeep has been working with hundreds of organization to improve teamwork, increase motivation, and develop customer service strategies.",
     paragraph2: "Sudeep is recognized for his unique ability to connect with audiences about real issues. His listeners receive practical techniques that can be used immediately.",
     paragraph3: "He knows that personal and professional success begins from within, therefore his mission is to empower people with the skill and attitudes needed in order to reach new height.",
+    paragraph4: "Whether training a handful of executives or speaking to a large auditorium, his mission is to empower people with the skills and attitudes needed to reach new heights in their personal and professional lives.",
+    nlpLogo: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=220&h=70",
+    icfLogo: "https://coachingfederation.org/app/themes/icf/assets/images/icf-logo.svg",
+    signatureImage: "https://successinc.com.np/wp-content/uploads/2023/10/sudeep-sign.png",
+    signatureTitle: "Leadership Coach"
   },
   contact: {
     title: "Get in touch",
@@ -108,8 +121,53 @@ const defaultSiteContent = {
   lifeCoaching: coachingData['life'],
   leadershipCoaching: coachingData['leadership'],
 
-  trainingProcess: { title: "Training Process", description: "How we deliver results." },
-  missionVision: { title: "Mission & Vision", description: "Our guiding principles." }
+  trainingProcess: {
+    pageTitle: "Our Training Process",
+    pageSubtitle: "A proven, four-step methodology designed to deliver measurable results and lasting behavioral change.",
+    heroImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=2000",
+    steps: [
+      {
+        id: 1,
+        title: 'Discovery & Needs Analysis',
+        desc: 'We start by deeply understanding your organizational goals, culture, and specific pain points. Through stakeholder interviews and surveys, we pinpoint the exact skills your team needs to develop.',
+      },
+      {
+        id: 2,
+        title: 'Custom Curriculum Design',
+        desc: 'No two teams are alike. We build a tailored curriculum incorporating real-world scenarios, gamified modules, and relevant NLP techniques to ensure maximum engagement and relevance.',
+      },
+      {
+        id: 3,
+        title: 'Interactive Delivery',
+        desc: 'Sudeep delivers the training with high energy, humor, and interactive experiential learning. We move beyond traditional lectures to ensure concepts are immediately applied and understood.',
+      },
+      {
+        id: 4,
+        title: 'Evaluation & Follow-up',
+        desc: 'Learning doesn\'t stop when the session ends. We provide post-training assessments, follow-up coaching, and actionable feedback to ensure long-term behavioral change and ROI.',
+      }
+    ],
+    ctaTitle: "Ready to start the process?",
+    ctaSubtitle: "Let's work together to design a training program that perfectly aligns with your team's needs.",
+    ctaButton: "Book a Discovery Call"
+  },
+  missionVision: {
+    pageTitle: "Mission, Vision & Values",
+    pageSubtitle: "The foundational principles that drive our coaching and training philosophy.",
+    heroImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000",
+    missionTitle: "Our Mission",
+    missionDescription: "To empower individuals and organizations to unlock their highest potential through transformative coaching, practical NLP techniques, and highly engaging training experiences. We exist to turn potential into performance.",
+    visionTitle: "Our Vision",
+    visionDescription: "To be the leading catalyst for corporate and personal transformation in Nepal and beyond, creating a future where every leader is a coach, and every workplace thrives on empathy, accountability, and continuous growth.",
+    valuesTitle: "Our Core Values",
+    valuesSubtitle: "These values are not just words on a page; they are the standard by which we operate every single day.",
+    values: [
+      { id: 1, title: 'Excellence', desc: 'We deliver nothing but the highest standard in every session.' },
+      { id: 2, title: 'Empathy', desc: 'Understanding the human element is at the core of all our coaching.' },
+      { id: 3, title: 'Integrity', desc: 'We maintain absolute confidentiality and ethical standards.' },
+      { id: 4, title: 'Growth', desc: 'We are committed to continuous learning and adaptation.' }
+    ]
+  }
 };
 
 const AdminContext = createContext();

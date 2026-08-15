@@ -12,7 +12,10 @@ export default function WhatIsCoaching() {
       
       {/* Hero Banner */}
       <div className="relative pt-32 pb-24 bg-primary text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-50"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-50"
+          style={{ backgroundImage: `url('${program.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000'}')` }}
+        ></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
             <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">{program.title || 'What is Coaching?'}</h1>
@@ -28,7 +31,7 @@ export default function WhatIsCoaching() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24">
           <AnimatedSection>
             <img 
-              src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200" 
+              src={program.image || "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"} 
               alt="Coaching Session" 
               className="rounded-3xl shadow-xl w-full object-cover h-[500px]"
             />

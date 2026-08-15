@@ -119,6 +119,12 @@ export default function GenericEditor() {
     return result.charAt(0).toUpperCase() + result.slice(1);
   };
 
+  const isImageKey = (key) => {
+    if (typeof key !== 'string') return false;
+    const k = key.toLowerCase();
+    return k.includes('image') || k.includes('url') || k.includes('logo') || k.includes('photo') || k.includes('pic') || k.includes('bg') || k.includes('sign') || k.includes('portrait') || k.includes('banner') || k.includes('avatar');
+  };
+
   if (!siteContent[pageId] && Object.keys(formData).length === 0) {
     return <div className="text-gray-500">Loading editor for {pageId}...</div>;
   }
@@ -180,7 +186,7 @@ export default function GenericEditor() {
                           Object.entries(item).map(([itemKey, itemVal]) => {
                             if (itemKey === 'id') return null; // Don't edit internal IDs
                             
-                            const isImageField = itemKey.toLowerCase().includes('image') || itemKey.toLowerCase().includes('url');
+                            const isImageField = isImageKey(itemKey);
                             const isLongText = !isImageField && typeof itemVal === 'string' && itemVal.length > 50;
                             
                             return (
@@ -239,7 +245,7 @@ export default function GenericEditor() {
             }
 
             // Determine if it should be a textarea or input based on string length
-            const isImageField = key.toLowerCase().includes('image') || key.toLowerCase().includes('url');
+            const isImageField = isImageKey(key);
             const isLongText = !isImageField && typeof value === 'string' && value.length > 60;
             
             return (
