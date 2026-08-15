@@ -42,10 +42,9 @@ const defaultSiteContent = {
     subtitle: "We will get back to you within 24 hours, or call us everyday.",
     phone: "01-4599799",
     email: "bd@successinc.com.np",
-    address: "Sangam Chowk, New baneshwor, Kathmandu",
     facebookUrl: "#",
     linkedinUrl: "#",
-    twitterUrl: "#",
+    whatsappUrl: "https://wa.me/9779800000000",
     instagramUrl: "#",
     youtubeUrl: "#"
   },

@@ -18,7 +18,9 @@ export default function LifeCoaching() {
         ></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedSection>
-            <h1 className="text-4xl lg:text-5xl font-bold tracking-widest text-accent uppercase mb-4">Personal Growth</h1>
+           <h1 className="text-4xl lg:text-5xl font-bold tracking-widest text-white uppercase mb-4">
+  Personal Growth
+</h1>
             <h2 className="text-2xl font-serif font-bold text-white mb-6 leading-tight">{program.title || 'Design a Life You Actually Love.'}</h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10 leading-relaxed whitespace-pre-line">
               {program.overview || 'Life coaching is a dedicated partnership to help you navigate transitions, overcome personal barriers, and find profound fulfillment and balance in your everyday life.'}

@@ -88,7 +88,7 @@ export default function TeamBuilding() {
                 <p className="text-gray-600 mb-8">
                   Book this training program today or customize it to fit your exact organizational needs.
                 </p>
-                <a href="/contact" className="inline-block bg-[#F5f7f6] text-black font-bold px-8 py-4 rounded-full hover:bg-[#A8A8A8] transition-colors w-full shadow-md">
+                <a href="/contact" className="inline-block bg-[#00a651] text-white font-bold px-8 py-4 rounded-full hover:bg-[#008f45] transition-colors w-full shadow-md">
                   Request a Quote
                 </a>
               </div>
