@@ -1,7 +1,7 @@
 import { MapPin, Phone, Mail, CheckCircle2, Loader2 } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
 export default function Contact() {
@@ -10,6 +10,33 @@ export default function Contact() {
   const form = useRef();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  
+  // Custom Dropdown State
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const topics = [
+    siteContent.managerCoach?.title,
+    siteContent.leadershipDevelopment?.title,
+    siteContent.letsPlaySales?.title,
+    siteContent.teamBuilding?.title,
+    siteContent.motivational?.title,
+    siteContent.tot?.title,
+    siteContent.wellbeing?.title,
+    siteContent.customerService?.title,
+  ].filter(Boolean);
+  topics.push("Other Enquiry");
 
   const sendEmail = (e) => {
     e.preventDefault();
@@ -136,26 +163,47 @@ export default function Contact() {
                 className="w-full bg-[#F5F7F6] border-0 rounded-xl px-6 py-4 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-[#0B7A38] outline-none transition-all"
               />
 
-              <div className="relative">
-                <select name="topic" required defaultValue="" className="w-full bg-[#F5F7F6] border-0 rounded-xl px-6 py-4 text-gray-500 appearance-none focus:ring-2 focus:ring-[#0B7A38] outline-none transition-all">
-                  <option value="" disabled>Select an Enquiry Topic</option>
-                  {[
-                    siteContent.managerCoach?.title,
-                    siteContent.leadershipDevelopment?.title,
-                    siteContent.letsPlaySales?.title,
-                    siteContent.teamBuilding?.title,
-                    siteContent.motivational?.title,
-                    siteContent.tot?.title,
-                    siteContent.wellbeing?.title,
-                    siteContent.customerService?.title,
-                  ].filter(Boolean).map((title, idx) => (
-                    <option key={idx} value={title}>{title}</option>
-                  ))}
-                  <option value="Other Enquiry">Other Enquiry</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-6 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <div className="relative z-50" ref={dropdownRef}>
+                <input type="hidden" name="topic" value={selectedTopic} required />
+                
+                <div 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className={`w-full bg-white border ${isDropdownOpen ? 'border-[#0B7A38] ring-4 ring-[#0B7A38]/10' : 'border-gray-200'} rounded-2xl px-5 py-[17px] pr-14 shadow-sm hover:border-gray-300 transition-all duration-200 cursor-pointer flex items-center justify-between`}
+                >
+                  <span className={selectedTopic ? "text-gray-800 font-semibold" : "text-gray-600 font-medium"}>
+                    {selectedTopic || "Select an Enquiry Topic"}
+                  </span>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${isDropdownOpen ? 'bg-[#0B7A38]/15' : 'bg-[#0B7A38]/10'}`}>
+                    <svg className={`w-4 h-4 text-[#0B7A38] transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 10l5 5 5-5" />
+                    </svg>
+                  </div>
                 </div>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden origin-top animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="max-h-60 overflow-y-auto">
+                      {topics.map((topic, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            setSelectedTopic(topic);
+                            setIsDropdownOpen(false);
+                          }}
+                          className={`px-5 py-3.5 cursor-pointer transition-colors flex items-center justify-between ${
+                            selectedTopic === topic 
+                              ? 'bg-[#0B7A38]/10 text-[#0B7A38] font-bold' 
+                              : 'text-gray-800 font-medium hover:bg-gray-100 hover:text-black'
+                          }`}
+                        >
+                          {topic}
+                          {selectedTopic === topic && <CheckCircle2 className="w-4 h-4 text-[#0B7A38]" />}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <textarea
