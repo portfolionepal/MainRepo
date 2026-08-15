@@ -101,8 +101,8 @@ const defaultSiteContent = {
     pageTitle: "Insights & Articles",
     pageSubtitle: "Thoughts on leadership, growth, and success.",
     items: [
-      { id: 1, title: 'The Shift from Managing to Coaching', date: 'August 5, 2026', category: 'Leadership', excerpt: 'Why the traditional management style is failing in modern corporate environments and how coaching bridges the gap.', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800', url: 'https://medium.com' },
-      { id: 2, title: '5 NLP Techniques for Better Communication', date: 'July 22, 2026', category: 'Communication', excerpt: 'Neuro-Linguistic Programming offers incredible tools for connecting with your team.', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800', url: 'https://medium.com' }
+      { id: 1, title: 'The Shift from Managing to Coaching', date: 'August 5, 2026', category: 'Leadership', description: 'Why the traditional management style is failing in modern corporate environments and how coaching bridges the gap.', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800', url: 'https://medium.com', content: 'The days of the command-and-control manager are over. Transitioning from a traditional manager to a coach requires a fundamental shift in mindset.' },
+      { id: 2, title: '5 NLP Techniques for Better Communication', date: 'July 22, 2026', category: 'Communication', image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800', url: '', content: 'Here are 5 actionable NLP techniques to improve your workplace communication immediately:\n\n1. Mirroring\n2. Pacing\n3. Reframing\n4. Anchoring\n5. Sensory Predicates\n\nNeuro-Linguistic Programming offers incredible tools for connecting with your team.' }
     ]
   },
   // Dynamic injection of Training Pages

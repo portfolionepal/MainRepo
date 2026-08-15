@@ -90,14 +90,16 @@ export default function GenericEditor() {
     if (siteContent && siteContent[pageId]) {
       let data = JSON.parse(JSON.stringify(siteContent[pageId]));
       
-      // Data migration for blog items: remove 'content', add 'url'
+      // Data migration for blog items: ensure both 'url' and 'content' exist
       if (pageId === 'blog' && data.items) {
         data.items = data.items.map(item => {
-          const { content, ...rest } = item;
-          if (!('url' in rest)) {
-            rest.url = '';
+          if (!('url' in item)) item.url = '';
+          if (!('content' in item)) item.content = '';
+          if ('excerpt' in item) {
+            item.description = item.excerpt;
+            delete item.excerpt;
           }
-          return rest;
+          return item;
         });
       }
       
@@ -147,14 +149,11 @@ export default function GenericEditor() {
           
           if (metadata.title) item.title = metadata.title;
           if (metadata.description) {
-            if (item.excerpt !== undefined) item.excerpt = metadata.description;
-            else if (item.description !== undefined) item.description = metadata.description;
-            else item.excerpt = metadata.description; // fallback
+            item.description = metadata.description;
           }
           if (metadata.image?.url) {
             item.image = metadata.image.url;
           }
-          
           newArray[index] = item;
           return { ...prev, [arrayKey]: newArray };
         });
@@ -196,9 +195,10 @@ export default function GenericEditor() {
           return acc;
         }, {});
         
-        // Explicitly inject url field for blog items if missing in legacy data
-        if (pageId === 'blog' && !('url' in newItem)) {
-          newItem.url = '';
+        // Explicitly inject url and content fields for blog items if missing in legacy data
+        if (pageId === 'blog') {
+          if (!('url' in newItem)) newItem.url = '';
+          if (!('content' in newItem)) newItem.content = '';
         }
       }
 
