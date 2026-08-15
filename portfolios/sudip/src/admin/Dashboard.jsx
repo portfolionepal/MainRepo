@@ -18,25 +18,25 @@ export default function Dashboard() {
     <div className="max-w-6xl mx-auto py-4">
 
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-10 mb-10 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-white p-10 mb-10 border border-gray-200 shadow-sm">
 
         <div className="relative z-10">
-          <h1 className="text-4xl font-serif font-bold mb-4">
+          <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">
             Manage your Dashboard
           </h1>
 
-          <p className="text-slate-300 text-lg max-w-xl leading-relaxed">
+          <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
             Manage the content of your website quickly and easily.
           </p>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute -top-24 -right-24 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl"></div>
+        {/* Subtle Background */}
+        <div className="absolute -top-24 -right-24 w-72 h-72 bg-gray-100 rounded-full blur-3xl"></div>
 
-        <div className="absolute -bottom-32 right-20 w-64 h-64 bg-indigo-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 right-20 w-64 h-64 bg-gray-50 rounded-full blur-3xl"></div>
 
-        {/* Left Accent */}
-        <div className="absolute top-0 left-0 w-1 h-full bg-blue-400/70"></div>
+        {/* Subtle Accent */}
+        <div className="absolute top-0 left-0 w-1 h-full bg-gray-300"></div>
       </div>
 
 
@@ -68,7 +68,7 @@ export default function Dashboard() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center group cursor-default"
+            className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-center group"
           >
             <div
               className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mr-5 group-hover:scale-110 transition-transform duration-300`}
@@ -81,7 +81,7 @@ export default function Dashboard() {
                 {stat.label}
               </p>
 
-              <p className="text-2xl font-bold text-gray-800 tracking-tight">
+              <p className="text-2xl font-bold text-gray-900 tracking-tight">
                 {stat.value}
               </p>
             </div>
@@ -94,12 +94,12 @@ export default function Dashboard() {
       {/* How To Use Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 overflow-hidden relative group hover:shadow-lg transition-all duration-300">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 overflow-hidden relative group hover:shadow-lg transition-all duration-300">
 
-          <div className="absolute top-0 right-0 w-32 h-32 bg-slate-100 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform duration-500"></div>
 
-          <h2 className="text-2xl font-serif font-bold text-gray-800 mb-8 flex items-center">
-            <Settings className="w-6 h-6 mr-3 text-slate-700" />
+          <h2 className="text-2xl font-serif font-bold text-gray-900 mb-8 flex items-center">
+            <Settings className="w-6 h-6 mr-3 text-gray-700" />
             How to use this CMS
           </h2>
 
@@ -111,7 +111,7 @@ export default function Dashboard() {
                 text: (
                   <>
                     Use the{' '}
-                    <strong className="text-slate-800">
+                    <strong className="text-gray-900">
                       sidebar on the left
                     </strong>{' '}
                     to navigate.
@@ -127,7 +127,7 @@ export default function Dashboard() {
                 text: (
                   <>
                     Click{' '}
-                    <strong className="text-slate-800">
+                    <strong className="text-gray-900">
                       Save Changes
                     </strong>{' '}
                     to apply.
@@ -143,7 +143,7 @@ export default function Dashboard() {
                 key={i}
                 className="flex items-start text-gray-600"
               >
-                <div className="mt-1 bg-gray-50 p-2 rounded-lg mr-4 text-gray-500 border border-gray-100 shadow-sm">
+                <div className="mt-1 bg-gray-50 p-2 rounded-lg mr-4 text-gray-500 border border-gray-200 shadow-sm">
                   <item.icon className="w-4 h-4" />
                 </div>
 
