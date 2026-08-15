@@ -103,6 +103,21 @@ export default function GenericEditor() {
         });
       }
       
+      // Data migration for gallery items to support up to 3 images
+      if (pageId === 'gallery' && data.items) {
+        data.items = data.items.map(item => {
+          if (!('image1' in item)) {
+            item.image1 = item.url || item.image || item.imageUrl || '';
+            delete item.url;
+            delete item.image;
+            delete item.imageUrl;
+          }
+          if (!('image2' in item)) item.image2 = '';
+          if (!('image3' in item)) item.image3 = '';
+          return item;
+        });
+      }
+      
       setFormData(data);
     } else {
       setFormData({ title: `Placeholder for ${pageId}` });
@@ -199,6 +214,13 @@ export default function GenericEditor() {
         if (pageId === 'blog') {
           if (!('url' in newItem)) newItem.url = '';
           if (!('content' in newItem)) newItem.content = '';
+        }
+        
+        // Explicitly inject multiple images for gallery
+        if (pageId === 'gallery') {
+          if (!('image1' in newItem)) newItem.image1 = '';
+          if (!('image2' in newItem)) newItem.image2 = '';
+          if (!('image3' in newItem)) newItem.image3 = '';
         }
       }
 

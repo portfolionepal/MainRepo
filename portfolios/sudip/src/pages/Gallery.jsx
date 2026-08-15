@@ -1,7 +1,98 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
 import { getImageUrl } from '../utils/cloudinary';
+
+const GalleryCard = ({ item }) => {
+  const scrollRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Extract up to 3 valid images, falling back to legacy keys if necessary
+  const images = [item.image1, item.image2, item.image3, item.url, item.image, item.imageUrl]
+    .filter(Boolean)
+    .map(getImageUrl)
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .slice(0, 3); // Max 3 images
+
+  // Auto-scroll loop every 3 seconds
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const next = (prev + 1) % images.length;
+        if (scrollRef.current) {
+          scrollRef.current.scrollTo({
+            left: next * scrollRef.current.offsetWidth,
+            behavior: 'smooth'
+          });
+        }
+        return next;
+      });
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  // Handle manual scroll to update dots
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const scrollPosition = scrollRef.current.scrollLeft;
+    const width = scrollRef.current.offsetWidth;
+    const newIndex = Math.round(scrollPosition / width);
+    if (newIndex !== currentIndex) {
+      setCurrentIndex(newIndex);
+    }
+  };
+
+  return (
+    <div className="relative group overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 h-[350px] flex flex-col bg-white">
+      {/* Scrollable Image Container */}
+      <div 
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {images.length > 0 ? (
+          images.map((img, idx) => (
+            <div key={idx} className="w-full h-full shrink-0 snap-center relative">
+              <img 
+                src={img} 
+                alt={item.title} 
+                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out"
+              />
+            </div>
+          ))
+        ) : (
+          <div className="w-full h-full shrink-0 snap-center bg-gray-200 flex items-center justify-center text-gray-400">
+            No Image
+          </div>
+        )}
+      </div>
+
+      {/* Pagination Dots (The "Scroll Bar" indicator) */}
+      {images.length > 1 && (
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-30">
+          {images.map((_, idx) => (
+            <div 
+              key={idx} 
+              className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-6 bg-white' : 'w-2 bg-white/50'}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 pointer-events-none z-20">
+        <span className="text-accent text-sm font-bold tracking-wider uppercase mb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+          {item.category}
+        </span>
+        <h3 className="text-white text-xl font-serif font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
+          {item.title}
+        </h3>
+      </div>
+    </div>
+  );
+};
 
 export default function Gallery() {
   const { siteContent } = useAdminContext();
@@ -45,30 +136,11 @@ export default function Gallery() {
           </div>
         </AnimatedSection>
 
-        {/* Masonry/Grid Gallery */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+        {/* Grid Gallery */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredItems.map((item, index) => (
-            <AnimatedSection key={item.id} delay={index * 0.05} className="break-inside-avoid">
-              <div className="relative group overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer mb-6">
-                
-                {/* Image */}
-                <img 
-                  src={getImageUrl(item.url || item.image || item.imageUrl)} 
-                  alt={item.title} 
-                  className="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                />
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <span className="text-accent text-sm font-bold tracking-wider uppercase mb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    {item.category}
-                  </span>
-                  <h3 className="text-white text-xl font-serif font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
-                    {item.title}
-                  </h3>
-                </div>
-
-              </div>
+            <AnimatedSection key={item.id} delay={index * 0.05}>
+              <GalleryCard item={item} />
             </AnimatedSection>
           ))}
         </div>

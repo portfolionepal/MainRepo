@@ -80,9 +80,9 @@ const defaultSiteContent = {
     pageTitle: "Gallery",
     pageSubtitle: "Moments from our transformative sessions.",
     items: [
-      { id: 1, category: 'Corporate Training', title: 'Leadership Workshop', url: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=1200' },
-      { id: 2, category: 'Team Building', title: 'Outdoor Activities', url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200' },
-      { id: 3, category: 'Seminars', title: 'Keynote Speech', url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800' }
+      { id: 1, category: 'Corporate Training', title: 'Leadership Workshop', image1: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=1200', image2: '', image3: '' },
+      { id: 2, category: 'Team Building', title: 'Outdoor Activities', image1: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200', image2: '', image3: '' },
+      { id: 3, category: 'Seminars', title: 'Keynote Speech', image1: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800', image2: '', image3: '' }
     ]
   },
   events: {
