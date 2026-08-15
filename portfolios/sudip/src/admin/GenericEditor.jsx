@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
-import { Plus, Trash2, Save, Check } from 'lucide-react';
+import { Plus, Trash2, Save, Check, AlertCircle } from 'lucide-react';
 import { uploadToCloudinary, getImageUrl, generateStablePublicId } from '../utils/cloudinary';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -11,8 +11,13 @@ export default function GenericEditor() {
   
   const [formData, setFormData] = useState({});
   const [isSaving, setIsSaving] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [toast, setToast] = useState(null); // { message: string, type: 'success' | 'error' }
   const [uploadingField, setUploadingField] = useState(null); // Track WHICH field is uploading
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   /**
    * Handles file upload for both array and non-array image fields.
@@ -68,7 +73,7 @@ export default function GenericEditor() {
       console.log(`[Upload] State updated for ${fieldId}`);
     } catch (error) {
       console.error(`[Upload] Failed for ${fieldId}:`, error);
-      alert(`Failed to upload image: ${error.message || 'Unknown error'}. Please try again.`);
+      showToast(`Failed to upload image: ${error.message || 'Unknown error'}`, 'error');
     } finally {
       setUploadingField(null);
       // Reset the file input so the same file can be selected again
@@ -104,7 +109,7 @@ export default function GenericEditor() {
 
   // Reset success message when navigating to a different page
   useEffect(() => {
-    setShowSuccess(false);
+    setToast(null);
   }, [pageId]);
 
   const handleChange = (key, value) => {
@@ -128,7 +133,7 @@ export default function GenericEditor() {
   };
 
   const handleFetchMetadata = async (arrayKey, index, url) => {
-    if (!url) return alert('Please enter a valid URL first.');
+    if (!url) return showToast('Please enter a valid URL first.', 'error');
     try {
       setUploadingField(`${arrayKey}-${index}-fetchMetadata`);
       const response = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
@@ -153,13 +158,13 @@ export default function GenericEditor() {
           newArray[index] = item;
           return { ...prev, [arrayKey]: newArray };
         });
-        alert('Metadata fetched successfully!');
+        showToast('Metadata fetched successfully!', 'success');
       } else {
-        alert('Could not fetch metadata for this URL.');
+        showToast('Could not fetch metadata for this URL.', 'error');
       }
     } catch (error) {
       console.error('Fetch metadata error:', error);
-      alert('Error fetching metadata. The site might be blocking it.');
+      showToast('Error fetching metadata. The site might be blocking it.', 'error');
     } finally {
       setUploadingField(null);
     }
@@ -221,11 +226,10 @@ export default function GenericEditor() {
       console.log(`[Save] Saving page "${pageId}" to Firestore...`);
       await updatePageContent(pageId, formData);
       console.log(`[Save] Success!`);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      showToast('Changes saved successfully!', 'success');
     } catch (err) {
       console.error(`[Save] Failed:`, err);
-      alert(`Failed to save changes: ${err.message || 'Unknown error'}. Please try again.`);
+      showToast(`Failed to save changes: ${err.message || 'Unknown error'}`, 'error');
     } finally {
       setIsSaving(false);
     }
@@ -296,15 +300,17 @@ export default function GenericEditor() {
 
       {/* Toast Notification */}
       <AnimatePresence>
-        {showSuccess && (
+        {toast && (
           <motion.div 
             initial={{ opacity: 0, y: -20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.8 } }}
-            className="fixed top-6 right-6 z-50 bg-[#0B7A38] text-white px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3"
+            className={`fixed top-6 right-6 z-50 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 ${
+              toast.type === 'error' ? 'bg-red-600' : 'bg-[#0B7A38]'
+            }`}
           >
-            <Check className="w-6 h-6" />
-            <span className="font-semibold text-lg">Changes saved successfully!</span>
+            {toast.type === 'error' ? <AlertCircle className="w-6 h-6" /> : <Check className="w-6 h-6" />}
+            <span className="font-semibold text-lg">{toast.message}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -378,8 +384,8 @@ export default function GenericEditor() {
                                           type="button"
                                           onClick={() => handleFetchMetadata(key, index, displayVal)}
                                           disabled={isThisUploading || !displayVal}
-                                          className={`shrink-0 px-3 py-2 bg-secondary text-white text-xs font-bold rounded-md transition-colors ${
-                                            (isThisUploading || !displayVal) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-secondary-light'
+                                          className={`shrink-0 px-3 py-2 bg-red-600 text-white text-xs font-bold rounded-md transition-colors ${
+                                            (isThisUploading || !displayVal) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
                                           }`}
                                         >
                                           {isThisUploading ? 'Fetching...' : 'Fetch Metadata'}
