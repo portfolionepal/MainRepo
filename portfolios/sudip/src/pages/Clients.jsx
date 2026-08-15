@@ -22,11 +22,11 @@ export default function Clients() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
           {clientLogos.map((client, index) => (
             <AnimatedSection key={index} delay={index * 0.05}>
-              <div className="bg-white rounded-full w-36 h-36 mx-auto flex items-center justify-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] border border-gray-50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative">
+              <div className="bg-white rounded-full w-36 h-36 mx-auto flex items-center justify-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] border border-gray-50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative p-4">
                 <img 
                   src={getImageUrl(client.url || client.imageUrl || client)} 
                   alt={client.name} 
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all duration-500 rounded-full"
+                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
             </AnimatedSection>
