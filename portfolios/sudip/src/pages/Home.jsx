@@ -253,12 +253,12 @@ export default function Home() {
             {[...industryLogos, ...industryLogos, ...industryLogos, ...industryLogos].map((logo, index) => (
               <div
                 key={index}
-                className="mx-6 w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-50 shrink-0 p-0 overflow-hidden transform transition-transform hover:scale-105"
+                className="mx-6 w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-50 shrink-0 p-4 overflow-hidden transform transition-transform hover:scale-105"
               >
                 <img
                   src={getImageUrl(logo.url || logo.imageUrl || logo)}
                   alt={logo.name}
-                  className="w-full h-full object-cover rounded-full"
+                  className="w-full h-full object-contain"
                   onError={(e) => { e.target.src = `https://placehold.co/200x200/F8F9FA/333?text=${logo.name.charAt(0)}`; }}
                 />
               </div>
