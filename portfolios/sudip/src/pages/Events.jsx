@@ -137,9 +137,9 @@ export default function Events() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                   <button 
                     onClick={() => setSelectedEvent(null)}
-                    className="absolute top-4 right-4 p-2 bg-black/40 hover:bg-black/70 text-white rounded-full transition-colors backdrop-blur-md"
+                    className="absolute top-4 right-4 z-50 p-3 bg-black/40 hover:bg-black/70 text-white rounded-full transition-colors backdrop-blur-md cursor-pointer"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-6 h-6" />
                   </button>
                   <div className="absolute bottom-6 left-8 right-8">
                     <span className="inline-block px-3 py-1 bg-accent text-white rounded-full text-xs font-bold uppercase tracking-wider mb-3">
@@ -162,18 +162,7 @@ export default function Events() {
                     <p className="whitespace-pre-wrap">{selectedEvent.description}</p>
                   </div>
                   
-                  {/* Actions */}
-                  <div className="flex items-center justify-end gap-4 mt-auto pt-6 border-t border-gray-100">
-                    <button 
-                      onClick={() => setSelectedEvent(null)} 
-                      className="px-6 py-3 bg-white border border-gray-200 hover:bg-gray-50 hover:text-primary text-gray-600 rounded-full font-medium transition-all"
-                    >
-                      Close
-                    </button>
-                    <button className="px-8 py-3 bg-primary hover:bg-primary-light text-white rounded-full font-medium transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                      Reserve Spot Now
-                    </button>
-                  </div>
+
                 </div>
               </motion.div>
             </div>
