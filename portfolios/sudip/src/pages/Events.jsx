@@ -124,7 +124,7 @@ export default function Events() {
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden z-10 flex flex-col"
+                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[95vh] overflow-hidden z-10 flex flex-col"
               >
                 {/* Header Image */}
                 <div className="relative h-64 sm:h-80 w-full">
@@ -152,7 +152,7 @@ export default function Events() {
                 </div>
 
                 {/* Body */}
-                <div className="p-8">
+                <div className="p-8 overflow-y-auto">
                   <div className="flex flex-wrap items-center gap-6 text-sm font-semibold text-gray-700 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
                     <span className="flex items-center"><Calendar className="w-5 h-5 mr-2 text-accent"/> {selectedEvent.date}</span>
                     <span className="flex items-center"><MapPin className="w-5 h-5 mr-2 text-accent"/> {selectedEvent.location}</span>

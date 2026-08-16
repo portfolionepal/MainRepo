@@ -111,19 +111,19 @@ export default function Home() {
               <p className="text-4xl font-serif font-bold text-white mb-2">
                 <Counter end={parseInt(content.statsCountries) || 5} suffix={content.statsCountries?.replace(/[0-9]/g, '') || "+"} />
               </p>
-              <p className="text-gray-300 text-sm">Countries Served</p>
+              <p className="text-gray-300 text-sm">Recognized Training</p>
             </AnimatedSection>
             <AnimatedSection delay={0.2} className="text-center md:text-left px-4 pt-8 md:pt-0">
               <p className="text-4xl font-serif font-bold text-white mb-2">
                 <Counter end={parseInt(content.statsIndividuals?.replace(/,/g, '')) || 10000} suffix={content.statsIndividuals?.replace(/[0-9,]/g, '') || "+"} />
               </p>
-              <p className="text-gray-300 text-sm">Professionals Trained Annually</p>
+              <p className="text-gray-300 text-sm">Happy Clientele</p>
             </AnimatedSection>
             <AnimatedSection delay={0.3} className="text-center md:text-left px-4 pt-8 md:pt-0">
               <p className="text-4xl font-serif font-bold text-white mb-2">
                 <Counter end={parseInt(content.statsOrganizations) || 100} suffix={content.statsOrganizations?.replace(/[0-9]/g, '') || "+"} />
               </p>
-              <p className="text-gray-300 text-sm">Industries Served</p>
+              <p className="text-gray-300 text-sm">Professionals Trained</p>
             </AnimatedSection>
           </div>
         </div>
@@ -271,7 +271,7 @@ export default function Home() {
       <section className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
-            <h2 className="text-4xl font-serif font-bold text-primary">Client Success Stories</h2>
+            <h2 className="text-4xl font-serif font-bold text-primary">Words of Appreciation</h2>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((t, index) => (

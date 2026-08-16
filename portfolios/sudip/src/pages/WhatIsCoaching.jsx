@@ -12,24 +12,22 @@ export default function WhatIsCoaching() {
     <div className="bg-surface min-h-screen">
       
       {/* Hero Banner */}
-      <div className="relative pt-32 pb-24 bg-primary text-white overflow-hidden">
+      <div className="relative pt-32 pb-24 bg-[#1A2634] text-white overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-[center_top] opacity-50"
           style={{ backgroundImage: `url('${getImageUrl(program.image) || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000'}')` }}
         ></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A2634] via-transparent to-transparent opacity-80"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">{program.title || 'What is Coaching?'}</h1>
-            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-              {program.overview ? program.overview.split('.')[0] + '.' : 'Coaching is a thought-provoking and creative process that inspires you.'}
-            </p>
+            <h2 className="text-2xl lg:text-3xl font-serif font-bold text-white mb-6 leading-tight max-w-4xl">{program.title || 'What is Coaching?'}</h2>
           </AnimatedSection>
         </div>
       </div>
 
       <div className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-24">
           <AnimatedSection>
             <img 
               src={getImageUrl(program.image) || "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200"} 
@@ -38,7 +36,7 @@ export default function WhatIsCoaching() {
             />
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
-            <h2 className="text-3xl font-bold text-primary mb-6">Not Mentoring. Not Consulting. Coaching.</h2>
+            <h2 className="text-3xl font-bold text-primary mb-6">What is coaching?</h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed whitespace-pre-line">
               {program.overview}
             </p>

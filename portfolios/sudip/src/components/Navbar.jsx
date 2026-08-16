@@ -37,7 +37,7 @@ const navLinks = [
       { name: 'Leadership Coaching', path: '/coaching/leadership' }
     ]
   },
-  { name: 'Clients', path: '/clients' },
+  { name: 'Clientele', path: '/clients' },
   { name: 'Testimonials', path: '/testimonials' },
   {
     name: 'Resources',

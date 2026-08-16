@@ -12,28 +12,39 @@ export default function LeadershipCoaching() {
     <div className="bg-surface min-h-screen">
       
       {/* Dark Hero Section */}
-      <div className="bg-[#1A2634] pt-32 pb-24 text-white relative overflow-hidden">
+      <div className="relative pt-32 pb-24 bg-[#1A2634] text-white overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-[center_top] opacity-50"
           style={{ backgroundImage: `url('${getImageUrl(program.image) || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=2000'}')` }}
         ></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
-            <AnimatedSection>
-              <h1 className="text-3xl font-bold tracking-widest text-white uppercase mb-4">Executive & Leadership</h1>
-              <h2 className="text-3xl lg:text-4xl font-serif font-bold text-white mb-6 leading-tight">{program.title || 'Elevate Your Executive Presence.'}</h2>
-              <p className="text-xl text-gray-300 leading-relaxed mb-10 whitespace-pre-line">
-                {program.overview || 'Leadership can be lonely. Executive Coaching provides a confidential sounding board for senior professionals to enhance their decision-making, emotional intelligence, and strategic vision.'}
-              </p>
-              <Link to="/contact" className="inline-flex items-center bg-accent text-white font-bold px-8 py-4 rounded-full hover:bg-accent-hover transition-colors shadow-lg">
-                Schedule a Consultation <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-            </AnimatedSection>
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A2634] via-transparent to-transparent opacity-80"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <h2 className="text-2xl lg:text-3xl font-serif font-bold text-white mb-6 leading-tight max-w-4xl">{program.title || 'Elevate Your Executive Presence.'}</h2>
+          </AnimatedSection>
         </div>
       </div>
 
       <div className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-24">
+          <AnimatedSection>
+            <img 
+              src={getImageUrl(program.image) || "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=1200"} 
+              alt="Leadership Coaching" 
+              className="rounded-3xl shadow-xl w-full object-cover object-top h-[500px]"
+            />
+          </AnimatedSection>
+          <AnimatedSection delay={0.2}>
+            <h2 className="text-3xl font-bold text-primary mb-6">Executive & Leadership</h2>
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed whitespace-pre-line">
+              {program.overview || 'Leadership can be lonely. Executive Coaching provides a confidential sounding board for senior professionals to enhance their decision-making, emotional intelligence, and strategic vision.'}
+            </p>
+            <Link to="/contact" className="inline-flex items-center bg-accent text-white font-bold px-8 py-4 rounded-full hover:bg-accent-hover transition-colors shadow-lg">
+              Schedule a Consultation <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+          </AnimatedSection>
+        </div>
         
         {/* Core Focus Areas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-24">

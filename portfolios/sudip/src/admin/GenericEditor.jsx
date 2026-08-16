@@ -83,6 +83,39 @@ export default function GenericEditor() {
     }
   };
 
+  const handleMultiFileUpload = async (e, arrayKey, index, itemKey, currentArray) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    
+    const fieldId = `${arrayKey}-${index}-${itemKey}`;
+    setUploadingField(fieldId);
+    const targetInput = e.target;
+    
+    try {
+      const uploadPromises = files.map((file, i) => {
+        const prefix = `multi_${Date.now()}_${i}`;
+        return uploadToCloudinary(file, prefix);
+      });
+      
+      const results = await Promise.all(uploadPromises);
+      const newUrls = results.map(r => r.imageUrl);
+      
+      setFormData(prev => {
+        const newArray = [...(prev[arrayKey] || [])];
+        const updatedItem = { ...newArray[index] };
+        updatedItem[itemKey] = [...(currentArray || []), ...newUrls];
+        newArray[index] = updatedItem;
+        return { ...prev, [arrayKey]: newArray };
+      });
+    } catch (error) {
+      console.error(`[Upload] Failed for ${fieldId}:`, error);
+      showToast(`Failed to upload images: ${error.message || 'Unknown error'}`, 'error');
+    } finally {
+      setUploadingField(null);
+      if (targetInput) targetInput.value = '';
+    }
+  };
+
   // Load page data into local form state when navigating to a different page.
   // ONLY depends on pageId — NOT siteContent — so uploads and edits are never wiped out
   // by background context updates.
@@ -103,17 +136,24 @@ export default function GenericEditor() {
         });
       }
       
-      // Data migration for gallery items to support up to 3 images
+      // Data migration for gallery items to support unbounded images array
       if (pageId === 'gallery' && data.items) {
         data.items = data.items.map(item => {
-          if (!('image1' in item)) {
-            item.image1 = item.url || item.image || item.imageUrl || '';
-            delete item.url;
-            delete item.image;
-            delete item.imageUrl;
+          if (!item.images) {
+            item.images = [];
+            if (item.image1) item.images.push(item.image1);
+            if (item.image2) item.images.push(item.image2);
+            if (item.image3) item.images.push(item.image3);
+            if (item.url) item.images.push(item.url);
+            if (item.image) item.images.push(item.image);
+            if (item.imageUrl) item.images.push(item.imageUrl);
           }
-          if (!('image2' in item)) item.image2 = '';
-          if (!('image3' in item)) item.image3 = '';
+          delete item.image1;
+          delete item.image2;
+          delete item.image3;
+          delete item.url;
+          delete item.image;
+          delete item.imageUrl;
           return item;
         });
       }
@@ -218,9 +258,7 @@ export default function GenericEditor() {
         
         // Explicitly inject multiple images for gallery
         if (pageId === 'gallery') {
-          if (!('image1' in newItem)) newItem.image1 = '';
-          if (!('image2' in newItem)) newItem.image2 = '';
-          if (!('image3' in newItem)) newItem.image3 = '';
+          newItem.images = [];
         }
       }
 
@@ -374,11 +412,51 @@ export default function GenericEditor() {
                             // Skip publicId fields that leaked from legacy uploads
                             if (itemKey === 'publicId' || itemKey === 'imageUrl') return null;
                             
+                            const thisFieldId = `${key}-${index}-${itemKey}`;
+                            const isThisUploading = uploadingField === thisFieldId;
+
+                            if (Array.isArray(itemVal)) {
+                              return (
+                                <div key={itemKey} className="col-span-full">
+                                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                                    {formatLabel(itemKey)}
+                                  </label>
+                                  <div className="flex flex-wrap gap-2 mb-2">
+                                    {itemVal.map((imgUrl, imgIdx) => (
+                                      <div key={imgIdx} className="relative w-20 h-20 group">
+                                        <img src={getImageUrl(imgUrl)} alt="Preview" className="w-full h-full object-cover rounded" />
+                                        <button 
+                                          type="button"
+                                          onClick={() => {
+                                            const newArr = [...itemVal];
+                                            newArr.splice(imgIdx, 1);
+                                            handleArrayChange(key, index, itemKey, newArr);
+                                          }}
+                                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                        >
+                                          <Trash2 className="w-3 h-3" />
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <div className="flex items-center">
+                                    <input 
+                                      type="file" 
+                                      accept="image/*" 
+                                      multiple
+                                      onChange={(e) => handleMultiFileUpload(e, key, index, itemKey, itemVal)}
+                                      disabled={isThisUploading}
+                                      className="text-xs text-gray-500 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors cursor-pointer disabled:opacity-50"
+                                    />
+                                    {isThisUploading && <span className="text-xs text-blue-600 ml-2 animate-pulse">Uploading...</span>}
+                                  </div>
+                                </div>
+                              );
+                            }
+                            
                             const isImageField = isImageKey(itemKey);
                             const displayVal = getDisplayValue(itemVal);
                             const isLongText = !isImageField && typeof displayVal === 'string' && displayVal.length > 50;
-                            const thisFieldId = `${key}-${index}-${itemKey}`;
-                            const isThisUploading = uploadingField === thisFieldId;
                             
                             return (
                               <div key={itemKey}>

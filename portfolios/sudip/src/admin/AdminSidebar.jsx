@@ -9,7 +9,7 @@ const mainPages = [
   { name: 'Training Process', path: '/admin/pages/trainingProcess', icon: FileText },
   { name: 'Mission & Vision', path: '/admin/pages/missionVision', icon: FileText },
   { name: 'Contact Page', path: '/admin/pages/contact', icon: Phone },
-  { name: 'Clients', path: '/admin/pages/clients', icon: Briefcase },
+  { name: 'Clientele', path: '/admin/pages/clients', icon: Briefcase },
   { name: 'Testimonials', path: '/admin/pages/testimonials', icon: MessageSquare },
   { name: 'Gallery', path: '/admin/pages/gallery', icon: Image },
   { name: 'Events', path: '/admin/pages/events', icon: Calendar },

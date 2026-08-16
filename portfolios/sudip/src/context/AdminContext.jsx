@@ -57,7 +57,7 @@ const defaultSiteContent = {
     pageSubtitle: "Unlock your true potential with personalized coaching programs.",
   },
   clients: {
-    pageTitle: "Our Clients",
+    pageTitle: "Our Clientele",
     pageSubtitle: "Trusted by leading organizations worldwide.",
     items: [
       { id: 1, name: 'Apple', url: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=200' },

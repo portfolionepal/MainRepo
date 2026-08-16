@@ -7,12 +7,11 @@ const GalleryCard = ({ item }) => {
   const scrollRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Extract up to 3 valid images, falling back to legacy keys if necessary
-  const images = [item.image1, item.image2, item.image3, item.url, item.image, item.imageUrl]
+  // Extract unlimited images, supporting new images array and falling back to legacy keys
+  const images = (item.images || [item.image1, item.image2, item.image3, item.url, item.image, item.imageUrl])
     .filter(Boolean)
     .map(getImageUrl)
-    .filter((v, i, a) => a.indexOf(v) === i)
-    .slice(0, 3); // Max 3 images
+    .filter((v, i, a) => a.indexOf(v) === i);
 
   // Auto-scroll loop every 3 seconds
   useEffect(() => {

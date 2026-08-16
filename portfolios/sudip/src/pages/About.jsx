@@ -70,7 +70,6 @@ export default function About() {
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
                   )}
-                  <p className="text-[7px] md:text-[9px] tracking-[0.2em] text-gray-400 uppercase font-medium">{content.signatureTitle || 'Leadership Coach'}</p>
                 </div>
                 
              </div>

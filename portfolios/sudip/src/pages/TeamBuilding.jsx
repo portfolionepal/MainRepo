@@ -19,7 +19,6 @@ export default function TeamBuilding() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A2634] via-transparent to-transparent opacity-80"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <h1 className="text-3xl font-bold tracking-widest text-accent uppercase mb-4">Training Program</h1>
             <h2 className="text-2xl lg:text-3xl font-serif font-bold text-white mb-6 leading-tight max-w-4xl">{program.title}</h2>
           </AnimatedSection>
         </div>
