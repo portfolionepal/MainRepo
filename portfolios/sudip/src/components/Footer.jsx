@@ -16,7 +16,7 @@ export default function Footer() {
               <span className="font-serif font-bold text-2xl tracking-tight text-white">Sudeep Basnet</span>
             </Link>
             <p className="text-gray-300 text-sm leading-relaxed mb-6">
-              Empowering individuals and organizations to reach new heights through high-impact training, leadership development, and certified coaching.
+              Empowering individuals and organizations to reach new heights through high-impact training, leadership development, and coaching.
             </p>
             <div className="flex space-x-4">
               <a href={contact.facebookUrl || '#'} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#1877F2] hover:bg-gray-100 transition-colors shadow-sm group">
@@ -90,10 +90,7 @@ export default function Footer() {
           <p className="text-sm text-gray-400">
             &copy; {new Date().getFullYear()} Sudeep Basnet. All rights reserved.
           </p>
-          <div className="mt-4 md:mt-0 flex space-x-4 text-sm text-gray-400">
-            <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
-          </div>
+      
         </div>
       </div>
     </footer>
