@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaPlane, FaBriefcase, FaCircleCheck, FaArrowRight, FaShieldHalved, FaClock, FaUsers, FaEarthEurope } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
 
 const Services = () => {
   const containerVariants = {
@@ -58,6 +59,46 @@ const Services = () => {
           viewport={{ once: true, margin: "-100px" }}
           className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto mb-20"
         >
+          {/* Work Visa */}
+          <motion.div variants={itemVariants} className="h-full">
+            <div className="bg-white rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-premium h-full flex flex-col overflow-hidden group/card relative z-10">
+              <div className="w-full h-56 overflow-hidden bg-gray-100">
+                <img 
+                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Work Visa" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" 
+                />
+              </div>
+              
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
+                <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Working Visa</h4>
+                <p className="text-gray-500 mb-8 leading-relaxed text-base">
+                  Comprehensive support for employment and long-stay visas. Navigate European labor regulations and consulate requirements with our specialized guidance.
+                </p>
+                
+                <motion.ul 
+                  variants={listContainerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="space-y-4 mb-10 flex-grow"
+                >
+                  {['Contract Review Assistance', 'Legalization & Translation', 'Permit Navigation'].map((item, i) => (
+                    <motion.li variants={listItemVariants} key={i} className="flex items-center text-gray-600 font-medium text-sm">
+                      <FaCircleCheck size={18} className="text-brand-blue mr-3 shrink-0" />
+                      {item}
+                    </motion.li>
+                  ))}
+                </motion.ul>
+
+                <Link to="/work-visa" className="px-8 py-3.5 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3 group mt-auto w-fit">
+                  Learn More
+                  <FaArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+
           {/* Travel Visa */}
           <motion.div variants={itemVariants} className="h-full">
             <div className="bg-white rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-premium h-full flex flex-col overflow-hidden group/card relative z-10">
@@ -90,56 +131,10 @@ const Services = () => {
                   ))}
                 </motion.ul>
 
-                <a href="#contact" className="relative inline-flex items-center justify-center px-6 py-3 text-brand-blue font-bold text-sm uppercase tracking-wider rounded-full border-2 border-brand-blue/20 overflow-hidden group/link mt-auto w-fit transition-all duration-300 hover:border-transparent hover:shadow-[0_6px_20px_rgba(6,97,221,0.4)] hover:-translate-y-0.5">
-                  <span className="absolute inset-0 bg-gradient-to-r from-brand-blue to-brand-sky opacity-0 group-hover/link:opacity-100 transition-opacity duration-300"></span>
-                  <span className="relative z-10 flex items-center group-hover/link:text-white transition-colors duration-300">
-                    Get Started
-                    <FaArrowRight size={16} className="ml-2 group-hover/link:translate-x-1 transition-transform" />
-                  </span>
-                </a>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Work Visa */}
-          <motion.div variants={itemVariants} className="h-full">
-            <div className="bg-white rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-premium h-full flex flex-col overflow-hidden group/card relative z-10">
-              <div className="w-full h-56 overflow-hidden bg-gray-100">
-                <img 
-                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop" 
-                  alt="Work Visa" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" 
-                />
-              </div>
-              
-              <div className="p-8 md:p-10 flex flex-col flex-grow">
-                <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Work Visa</h4>
-                <p className="text-gray-500 mb-8 leading-relaxed text-base">
-                  Comprehensive support for employment and long-stay visas. Navigate European labor regulations and consulate requirements with our specialized guidance.
-                </p>
-                
-                <motion.ul 
-                  variants={listContainerVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  className="space-y-4 mb-10 flex-grow"
-                >
-                  {['Contract Review Assistance', 'Legalization & Translation', 'Permit Navigation'].map((item, i) => (
-                    <motion.li variants={listItemVariants} key={i} className="flex items-center text-gray-600 font-medium text-sm">
-                      <FaCircleCheck size={18} className="text-brand-blue mr-3 shrink-0" />
-                      {item}
-                    </motion.li>
-                  ))}
-                </motion.ul>
-
-                <a href="#contact" className="relative inline-flex items-center justify-center px-6 py-3 text-brand-blue font-bold text-sm uppercase tracking-wider rounded-full border-2 border-brand-blue/20 overflow-hidden group/link mt-auto w-fit transition-all duration-300 hover:border-transparent hover:shadow-[0_6px_20px_rgba(6,97,221,0.4)] hover:-translate-y-0.5">
-                  <span className="absolute inset-0 bg-gradient-to-r from-brand-blue to-brand-sky opacity-0 group-hover/link:opacity-100 transition-opacity duration-300"></span>
-                  <span className="relative z-10 flex items-center group-hover/link:text-white transition-colors duration-300">
-                    Learn More
-                    <FaArrowRight size={16} className="ml-2 group-hover/link:translate-x-1 transition-transform" />
-                  </span>
-                </a>
+                <Link to="/travel-visa" className="px-8 py-3.5 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3 group mt-auto w-fit">
+                  Learn More
+                  <FaArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+                </Link>
               </div>
             </div>
           </motion.div>

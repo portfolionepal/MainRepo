@@ -2,6 +2,12 @@ import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import { FaMapLocationDot, FaPhoneVolume, FaEnvelope, FaPaperPlane, FaSpinner, FaUser, FaTag, FaCommentDots, FaCircleCheck, FaInstagram, FaTiktok, FaWhatsapp, FaPhone, FaLocationDot } from 'react-icons/fa6';
+const instagramIcon = "https://img.icons8.com/color/96/instagram-new--v1.png";
+const tiktokIcon = "https://img.icons8.com/color/96/tiktok--v1.png";
+const whatsappIcon = "https://img.icons8.com/color/96/whatsapp--v1.png";
+const mobileIcon = "https://img.icons8.com/color/96/phone.png";
+const gmailIcon = "https://img.icons8.com/color/96/gmail-new.png";
+const googleMapsIcon = "https://img.icons8.com/color/96/google-maps-new.png";
 const Contact = () => {
   const form = useRef();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,21 +94,21 @@ const Contact = () => {
 
               <div className="mt-12">
                 <h5 className="text-brand-navy font-bold mb-4">Follow Us</h5>
-                <div className="flex flex-wrap gap-3">
-                  <a href="#" className="w-11 h-11 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] rounded-xl flex items-center justify-center text-white hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(220,39,67,0.4)] transition-all">
-                    <FaInstagram size={20} />
+                <div className="flex flex-wrap gap-5">
+                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
+                    <FaInstagram className="text-2xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-11 h-11 bg-black rounded-xl flex items-center justify-center text-white hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(0,0,0,0.4)] transition-all">
-                    <FaTiktok size={18} />
+                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-black hover:-translate-y-1 group">
+                    <FaTiktok className="text-2xl text-black group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-11 h-11 bg-[#25D366] rounded-xl flex items-center justify-center text-white hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(37,211,102,0.4)] transition-all">
-                    <FaWhatsapp size={22} />
+                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
+                    <FaWhatsapp className="text-2xl text-[#25D366] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-11 h-11 bg-brand-blue rounded-xl flex items-center justify-center text-white hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(6,97,221,0.4)] transition-all">
-                    <FaPhone size={18} />
+                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#0661DD] hover:-translate-y-1 group">
+                    <FaPhone className="text-xl text-[#0661DD] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-11 h-11 bg-brand-sky rounded-xl flex items-center justify-center text-white hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(43,158,245,0.4)] transition-all">
-                    <FaEnvelope size={18} />
+                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#EA4335] hover:-translate-y-1 group">
+                    <FaEnvelope className="text-xl text-[#EA4335] group-hover:text-white transition-colors duration-300" />
                   </a>
                 </div>
               </div>
@@ -229,8 +235,8 @@ const Contact = () => {
 
           {/* Location Info Card Popup */}
           <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-[0_10px_30px_rgba(2,25,91,0.15)] border border-white z-10 flex items-center gap-4 max-w-[280px]">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-blue to-brand-sky flex items-center justify-center shrink-0 shadow-inner text-white">
-              <FaLocationDot size={22} />
+            <div className="w-12 h-12 flex items-center justify-center shrink-0">
+              <img src={googleMapsIcon} alt="Location" className="w-full h-full object-contain" />
             </div>
             <div>
               <h5 className="text-brand-navy font-extrabold text-sm mb-0.5">TrustEuroHR Office</h5>

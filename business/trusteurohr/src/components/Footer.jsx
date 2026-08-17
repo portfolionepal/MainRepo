@@ -1,6 +1,12 @@
 import React from 'react';
 import logoImg from '../assets/logo.png';
-import { FaInstagram, FaTiktok, FaWhatsapp, FaPhone, FaEnvelope, FaLocationDot } from 'react-icons/fa6';
+import { FaPhone, FaEnvelope, FaLocationDot, FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa6';
+const instagramIcon = "https://img.icons8.com/color/96/instagram-new--v1.png";
+const tiktokIcon = "https://img.icons8.com/color/96/tiktok--v1.png";
+const whatsappIcon = "https://img.icons8.com/color/96/whatsapp--v1.png";
+const mobileIcon = "https://img.icons8.com/color/96/phone.png";
+const gmailIcon = "https://img.icons8.com/color/96/gmail-new.png";
+const googleMapsIcon = "https://img.icons8.com/color/96/google-maps-new.png";
 
 const Footer = () => {
   return (
@@ -64,15 +70,15 @@ const Footer = () => {
           {/* Social */}
           <div>
             <h5 className="text-white font-bold tracking-widest uppercase text-xs mb-6">Connect With Us</h5>
-            <div className="flex flex-wrap gap-3">
-              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:-translate-y-1 transition-all shadow-sm duration-300">
-                <FaInstagram size={18} />
+            <div className="flex flex-wrap gap-5">
+              <a href="#" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
+                <FaInstagram className="text-xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-[#010101] hover:-translate-y-1 transition-all shadow-sm duration-300">
-                <FaTiktok size={16} />
+              <a href="#" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-black hover:-translate-y-1 group">
+                <FaTiktok className="text-xl text-black group-hover:text-white transition-colors duration-300" />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-[#25D366] hover:-translate-y-1 transition-all shadow-sm duration-300">
-                <FaWhatsapp size={20} />
+              <a href="#" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
+                <FaWhatsapp className="text-xl text-[#25D366] group-hover:text-white transition-colors duration-300" />
               </a>
             </div>
           </div>

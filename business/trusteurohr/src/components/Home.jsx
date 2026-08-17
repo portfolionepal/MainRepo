@@ -18,7 +18,7 @@ const Home = () => {
       <section id="home" className="relative w-full pt-32 lg:pt-40 pb-16 lg:pb-40 bg-gradient-to-br from-[#EAF4FC] to-[#D9EAF7]" onMouseMove={handleMouseMove}>
         {/* Background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <motion.div 
+          <motion.div
             className="absolute inset-[-10%] z-0"
             animate={{ x: mousePos.x * -0.5, y: mousePos.y * -0.5 }}
             transition={{ type: "spring", stiffness: 50, damping: 20 }}
@@ -32,7 +32,7 @@ const Home = () => {
         </div>
 
         <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col xl:flex-row items-center gap-12 xl:gap-8">
-          
+
           {/* Left Column: Text & CTA */}
           <div className="w-full xl:w-5/12 max-w-2xl mt-8 xl:mt-0 lg:pl-28 xl:pl-32 z-20">
             <motion.div
@@ -47,7 +47,7 @@ const Home = () => {
                   Premium Foreign Consultancy
                 </span>
               </div>
-              
+
               <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold text-brand-blue leading-[1.1] mb-6 tracking-tight font-serif drop-shadow-sm">
                 Your Gateway to <br />
                 European Opportunities
@@ -92,15 +92,14 @@ const Home = () => {
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ duration: 1 }}
               viewport={{ once: true }}
               className="relative w-full max-w-[800px] h-full"
               animate={{ x: mousePos.x * 1, y: mousePos.y * 1 }}
-              transition={{ type: "spring", stiffness: 75, damping: 20 }}
+              transition={{ duration: 1, type: "spring", stiffness: 75, damping: 20 }}
             >
-              
+
               {/* Main Right Image */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
@@ -112,7 +111,7 @@ const Home = () => {
               </motion.div>
 
               {/* Top Left Image */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: -30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
@@ -124,7 +123,7 @@ const Home = () => {
               </motion.div>
 
               {/* Bottom Left Image */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.7 }}
@@ -136,7 +135,7 @@ const Home = () => {
               </motion.div>
 
               {/* Floating Glass Widget */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.9, type: 'spring' }}
@@ -148,11 +147,11 @@ const Home = () => {
                     <FaGlobe size={20} />
                   </div>
                   <div className="font-bold text-brand-navy leading-tight">
-                    European<br/>Visa Experts
+                    European<br />Visa Experts
                   </div>
                 </div>
                 <ul className="space-y-3">
-                  {['Work Visa', 'Travel Visa', 'Business Visa', 'Study Visa'].map((item, i) => (
+                  {['Working Visa', 'Travel Visa'].map((item, i) => (
                     <li key={i} className="flex items-center gap-2 text-sm font-semibold text-brand-navy/80">
                       <FaCircleCheck className="text-brand-blue" size={16} /> {item}
                     </li>
@@ -184,14 +183,14 @@ const Home = () => {
                     <div>
                       <div className="text-xl font-black text-brand-navy flex items-baseline">
                         {stat.num !== '24/7' ? <><AnimatedCounter to={parseInt(stat.num)} />+</> : stat.num}
-                        {stat.suffix && stat.suffix}
+                        {stat.suffix && <span>{stat.suffix}</span>}
                       </div>
                       <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{stat.title}</div>
                     </div>
                   </div>
                 ))}
               </div>
-              
+
               {/* Right Trust Section */}
               <div className="bg-brand-blue rounded-b-3xl lg:rounded-r-3xl lg:rounded-bl-none text-white py-6 px-8 flex items-center justify-center gap-4 min-w-[300px]">
                 <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center">

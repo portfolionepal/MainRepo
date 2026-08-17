@@ -103,32 +103,68 @@ const Navbar = () => {
       {/* Mobile Nav */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 overflow-hidden shadow-xl z-50 origin-top"
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="md:hidden fixed inset-0 z-[100] bg-white flex flex-col h-dvh overflow-hidden shadow-2xl"
           >
-            <div className="flex flex-col py-4 px-6 gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href.substring(1))}
-                  className="text-gray-800 font-semibold text-lg py-2 border-b border-gray-50 hover:text-brand-blue"
-                >
-                  {link.name}
-                </a>
-              ))}
-              <a
-                href="#contact"
-                onClick={(e) => handleNavClick(e, 'contact')}
-                className="mt-4 px-6 py-3 bg-brand-navy text-white text-center font-bold rounded-full shadow-md hover:bg-brand-blue transition-colors"
-              >
-                Get Started
-              </a>
+            {/* Header section with pattern */}
+            <div className="relative bg-[#F4F9FF] border-b border-[#E5F0FF] px-6 py-5 flex items-center justify-between overflow-hidden shrink-0">
+               <div className="absolute inset-0 bg-pattern-grid opacity-40 pointer-events-none mix-blend-overlay"></div>
+               
+               <a href="#home" onClick={(e) => handleNavClick(e, 'home')} className="relative z-10 flex items-center gap-3">
+                  <div className="w-11 h-11 bg-gradient-to-br from-brand-navy to-brand-dark rounded-xl flex items-center justify-center shadow-md overflow-hidden shrink-0">
+                    <img src={logoImg} alt="Logo" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xl font-black tracking-tight text-brand-navy leading-none">
+                      TRUSTEURO<span className="text-brand-blue">HR</span>
+                    </span>
+                    <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">Your Gateway to Europe</span>
+                  </div>
+               </a>
+
+               <button onClick={() => setMobileMenuOpen(false)} className="relative z-10 text-brand-navy p-2 hover:bg-black/5 rounded-full transition-colors shrink-0">
+                 <FaXmark size={26} />
+               </button>
             </div>
-          </motion.nav>
+
+            {/* Links section */}
+            <div className="flex-1 flex flex-col py-6 px-4 bg-white overflow-y-auto">
+              <div className="flex flex-col space-y-1 mb-10">
+                {navLinks.map((link, index) => (
+                  <motion.a
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + index * 0.05, duration: 0.4 }}
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href.substring(1))}
+                    className="text-brand-navy font-bold text-[19px] py-4 border-b border-gray-100 flex items-center justify-between active:bg-gray-50 px-4 rounded-lg transition-colors"
+                  >
+                    {link.name}
+                  </motion.a>
+                ))}
+              </div>
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+                className="mt-auto mb-8 px-4"
+              >
+                <a
+                  href="#contact"
+                  onClick={(e) => handleNavClick(e, 'contact')}
+                  className="block w-full py-4 bg-[#0F172A] text-white text-center font-bold text-lg rounded-2xl shadow-xl hover:bg-brand-blue transition-colors hover:-translate-y-1 active:scale-95"
+                >
+                  Get Started
+                </a>
+              </motion.div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </header>
