@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowRight, FaGlobe, FaCircleCheck, FaUserGroup, FaShieldHalved, FaEarthEurope, FaHeadset, FaWhatsapp, FaPlane } from 'react-icons/fa6';
 import AnimatedFlags from './AnimatedFlags';
 import AnimatedCounter from './AnimatedCounter';
 import MagneticButton from './MagneticButton';
+
+// Memoized Airplane component to prevent re-renders when mousePos changes in Home
+const FlyingAirplane = React.memo(() => {
+  return (
+    <motion.div
+      className="absolute top-[60%] lg:top-[55%] left-0 text-brand-blue z-50 pointer-events-none"
+      initial={{ x: '-20vw', y: 0 }}
+      animate={{ x: '130vw', y: typeof window !== 'undefined' && window.innerWidth < 768 ? -550 : -300 }}
+      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+    >
+      <img src="/airplane.png" alt="Flying Airplane" className="w-32 md:w-64 h-auto opacity-70 rotate-[-10deg]" />
+    </motion.div>
+  );
+});
 
 const Home = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -27,15 +41,7 @@ const Home = () => {
             <div className="absolute inset-0 bg-pattern-dots opacity-5"></div>
           </motion.div>
 
-          {/* Animated Airplanes (Independent of mouse parallax so they don't jerk) */}
-          <motion.div
-            className="absolute top-[60%] lg:top-[55%] left-0 text-brand-blue"
-            initial={{ x: '-20vw', y: 0 }}
-            animate={{ x: '130vw', y: typeof window !== 'undefined' && window.innerWidth < 768 ? -550 : -300 }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          >
-            <img src="/airplane.png" alt="Flying Airplane" className="w-32 md:w-64 h-auto opacity-70 rotate-[-10deg]" />
-          </motion.div>
+          <FlyingAirplane />
         </div>
 
         <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col xl:flex-row items-center gap-12 xl:gap-8">
