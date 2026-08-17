@@ -25,7 +25,7 @@ export const uploadMedia = async (file, descriptivePrefix = null) => {
     );
 
     const response = await fetch(
-      "https://sudeepbasnet.com/upload.php",
+      "https://media.sudeepbasnet.com/upload.php",
       {
         method: "POST",
         body: formData,
