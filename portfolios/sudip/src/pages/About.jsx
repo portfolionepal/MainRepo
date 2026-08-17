@@ -30,6 +30,14 @@ className="w-full h-full object-cover object-[center_26%]"
 
 
 
+{/* for fine tuning */}
+
+{/* object-[center_10%]  // more of the top/head, less waist
+object-[center_20%]  // balanced
+object-[center_30%]  // moves image upward, shows more waist
+object-[center_40%]  // even more lower body */}
+
+
 
 
 
