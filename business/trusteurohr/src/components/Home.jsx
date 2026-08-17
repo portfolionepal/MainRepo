@@ -31,8 +31,6 @@ const Home = () => {
           </motion.div>
         </div>
 
-        <AnimatedFlags />
-
         <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col xl:flex-row items-center gap-12 xl:gap-8">
           
           {/* Left Column: Text & CTA */}
@@ -164,6 +162,8 @@ const Home = () => {
             </motion.div>
           </div>
         </div>
+
+        <AnimatedFlags />
 
         {/* Bottom Stats Bar */}
         <div className="relative lg:absolute lg:bottom-0 left-0 right-0 px-6 md:px-12 z-40 lg:transform lg:translate-y-1/2 mt-16 lg:mt-0">
