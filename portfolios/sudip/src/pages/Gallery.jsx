@@ -1,106 +1,51 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
 import { getImageUrl } from '../utils/upload';
 
-const GalleryCard = ({ item, onImageClick }) => {
-  const scrollRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Extract unlimited images, supporting new images array and falling back to legacy keys
+const GalleryCard = ({ item, onAlbumClick }) => {
   const images = (item.images || [item.image1, item.image2, item.image3, item.url, item.image, item.imageUrl])
     .filter(Boolean)
     .map(getImageUrl)
     .filter((v, i, a) => a.indexOf(v) === i);
 
-  // Handle manual scroll to update dots
-  const handleScroll = () => {
-    if (!scrollRef.current) return;
-    const scrollPosition = scrollRef.current.scrollLeft;
-    const width = scrollRef.current.offsetWidth;
-    const newIndex = Math.round(scrollPosition / width);
-    if (newIndex !== currentIndex) {
-      setCurrentIndex(newIndex);
-    }
-  };
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const scrollLeft = (e) => {
-    e.stopPropagation();
-    if (scrollRef.current) {
-      const width = scrollRef.current.offsetWidth;
-      scrollRef.current.scrollBy({ left: -width, behavior: 'smooth' });
-    }
-  };
-
-  const scrollRight = (e) => {
-    e.stopPropagation();
-    if (scrollRef.current) {
-      const width = scrollRef.current.offsetWidth;
-      scrollRef.current.scrollBy({ left: width, behavior: 'smooth' });
-    }
-  };
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images.length]);
 
   return (
-    <div className="relative group overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 h-[350px] flex flex-col bg-white">
-      {/* Scrollable Image Container */}
-      <div 
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
+    <div 
+      className="relative group overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 h-[350px] flex flex-col bg-white cursor-pointer"
+      onClick={() => onAlbumClick(item)}
+    >
+      <div className="w-full h-full relative bg-gray-100">
         {images.length > 0 ? (
-          images.map((img, idx) => (
-            <div 
-              key={idx} 
-              className="w-full h-full shrink-0 snap-center relative cursor-pointer"
-              onClick={() => onImageClick(img)}
-            >
-              <img 
-                src={img} 
-                alt={item.title} 
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out"
-              />
-            </div>
-          ))
+          <AnimatePresence mode="popLayout">
+            <motion.img
+              key={currentIndex}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              src={images[currentIndex]}
+              alt={item.title}
+              className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out"
+            />
+          </AnimatePresence>
         ) : (
-          <div className="w-full h-full shrink-0 snap-center bg-gray-200 flex items-center justify-center text-gray-400">
+          <div className="w-full h-full flex items-center justify-center text-gray-400">
             No Image
           </div>
         )}
       </div>
-
-      {/* Navigation Arrows */}
-      {images.length > 1 && (
-        <>
-          <button 
-            onClick={scrollLeft}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-30"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={scrollRight}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-30"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </>
-      )}
-
-      {/* Pagination Dots (The "Scroll Bar" indicator) */}
-      {images.length > 1 && (
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-30">
-          {images.map((_, idx) => (
-            <div 
-              key={idx} 
-              className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-6 bg-white' : 'w-2 bg-white/50'}`}
-            />
-          ))}
-        </div>
-      )}
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 pointer-events-none z-20">
@@ -110,8 +55,91 @@ const GalleryCard = ({ item, onImageClick }) => {
         <h3 className="text-white text-xl font-serif font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
           {item.title}
         </h3>
+        {images.length > 1 && (
+          <span className="text-white/80 text-xs mt-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-100">
+            {images.length} Photos
+          </span>
+        )}
       </div>
     </div>
+  );
+};
+
+const AlbumPopup = ({ item, onClose }) => {
+  const images = (item.images || [item.image1, item.image2, item.image3, item.url, item.image, item.imageUrl])
+    .filter(Boolean)
+    .map(getImageUrl)
+    .filter((v, i, a) => a.indexOf(v) === i);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Close on escape key
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-8"
+      onClick={onClose}
+    >
+      <button
+        onClick={(e) => { e.stopPropagation(); onClose(); }}
+        className="absolute top-4 right-4 text-white/70 hover:text-white bg-black/50 hover:bg-black rounded-full p-2 transition-colors z-[60]"
+      >
+        <X className="w-8 h-8" />
+      </button>
+
+      <div 
+        className="w-full h-[90vh] max-w-[1400px] flex flex-col md:flex-row gap-6 md:gap-8 items-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Thumbnails */}
+        <div className="w-full md:w-32 shrink-0 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto scrollbar-hide p-2 max-h-[15vh] md:max-h-full">
+          {images.map((img, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActiveIndex(idx)}
+              className={`relative shrink-0 w-20 h-20 md:w-full md:h-24 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                idx === activeIndex 
+                  ? 'border-white scale-100 opacity-100 shadow-[0_0_15px_rgba(255,255,255,0.3)]' 
+                  : 'border-transparent opacity-40 hover:opacity-100 hover:scale-[0.98]'
+              }`}
+            >
+              <img src={img} alt={`${item.title} - thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+
+        {/* Big Image Viewer */}
+        <div className="flex-1 w-full h-full relative flex items-center justify-center overflow-hidden group bg-[#0a0a0a] rounded-2xl shadow-2xl border border-white/5">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={activeIndex}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              src={images[activeIndex]}
+              alt={item.title}
+              className="w-full h-full object-cover"
+            />
+          </AnimatePresence>
+          
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent p-6 md:p-10 text-white pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <h3 className="text-2xl md:text-4xl font-serif font-bold mb-2 drop-shadow-lg">{item.title}</h3>
+            {item.category && <p className="text-white/80 text-sm md:text-base font-semibold tracking-wide uppercase drop-shadow-md">{item.category}</p>}
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -119,7 +147,7 @@ export default function Gallery() {
   const { siteContent } = useAdminContext();
   const galleryItems = siteContent.gallery.items || [];
   const [activeCategory, setActiveCategory] = useState('All');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
 
   const categories = ['All', ...new Set(galleryItems.map(item => item.category).filter(Boolean))];
 
@@ -162,7 +190,7 @@ export default function Gallery() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredItems.map((item, index) => (
             <AnimatedSection key={item.id} delay={index * 0.05}>
-              <GalleryCard item={item} onImageClick={setSelectedImage} />
+              <GalleryCard item={item} onAlbumClick={setSelectedAlbum} />
             </AnimatedSection>
           ))}
         </div>
@@ -175,33 +203,10 @@ export default function Gallery() {
 
       </div>
 
-      {/* Lightbox / Popup */}
+      {/* Album Lightbox / Popup */}
       <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 md:p-8"
-          >
-            <button
-              onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
-              className="absolute top-4 right-4 text-white/70 hover:text-white bg-black/50 hover:bg-black rounded-full p-2 transition-colors z-[60]"
-            >
-              <X className="w-8 h-8" />
-            </button>
-            <motion.img
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              src={selectedImage}
-              alt="Enlarged gallery view"
-              onClick={(e) => e.stopPropagation()}
-              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl z-[55]"
-            />
-          </motion.div>
+        {selectedAlbum && (
+          <AlbumPopup item={selectedAlbum} onClose={() => setSelectedAlbum(null)} />
         )}
       </AnimatePresence>
     </div>
