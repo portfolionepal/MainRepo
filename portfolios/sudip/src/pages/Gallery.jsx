@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
 import { getImageUrl } from '../utils/upload';
 
-const GalleryCard = ({ item }) => {
+const GalleryCard = ({ item, onImageClick }) => {
   const scrollRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -13,24 +15,6 @@ const GalleryCard = ({ item }) => {
     .map(getImageUrl)
     .filter((v, i, a) => a.indexOf(v) === i);
 
-  // Auto-scroll loop every 3 seconds
-  useEffect(() => {
-    if (images.length <= 1) return;
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const next = (prev + 1) % images.length;
-        if (scrollRef.current) {
-          scrollRef.current.scrollTo({
-            left: next * scrollRef.current.offsetWidth,
-            behavior: 'smooth'
-          });
-        }
-        return next;
-      });
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [images.length]);
-
   // Handle manual scroll to update dots
   const handleScroll = () => {
     if (!scrollRef.current) return;
@@ -39,6 +23,22 @@ const GalleryCard = ({ item }) => {
     const newIndex = Math.round(scrollPosition / width);
     if (newIndex !== currentIndex) {
       setCurrentIndex(newIndex);
+    }
+  };
+
+  const scrollLeft = (e) => {
+    e.stopPropagation();
+    if (scrollRef.current) {
+      const width = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollBy({ left: -width, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = (e) => {
+    e.stopPropagation();
+    if (scrollRef.current) {
+      const width = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollBy({ left: width, behavior: 'smooth' });
     }
   };
 
@@ -53,7 +53,11 @@ const GalleryCard = ({ item }) => {
       >
         {images.length > 0 ? (
           images.map((img, idx) => (
-            <div key={idx} className="w-full h-full shrink-0 snap-center relative">
+            <div 
+              key={idx} 
+              className="w-full h-full shrink-0 snap-center relative cursor-pointer"
+              onClick={() => onImageClick(img)}
+            >
               <img 
                 src={img} 
                 alt={item.title} 
@@ -67,6 +71,24 @@ const GalleryCard = ({ item }) => {
           </div>
         )}
       </div>
+
+      {/* Navigation Arrows */}
+      {images.length > 1 && (
+        <>
+          <button 
+            onClick={scrollLeft}
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-30"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={scrollRight}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white rounded-full p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-30"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
 
       {/* Pagination Dots (The "Scroll Bar" indicator) */}
       {images.length > 1 && (
@@ -97,6 +119,7 @@ export default function Gallery() {
   const { siteContent } = useAdminContext();
   const galleryItems = siteContent.gallery.items || [];
   const [activeCategory, setActiveCategory] = useState('All');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const categories = ['All', ...new Set(galleryItems.map(item => item.category).filter(Boolean))];
 
@@ -139,7 +162,7 @@ export default function Gallery() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredItems.map((item, index) => (
             <AnimatedSection key={item.id} delay={index * 0.05}>
-              <GalleryCard item={item} />
+              <GalleryCard item={item} onImageClick={setSelectedImage} />
             </AnimatedSection>
           ))}
         </div>
@@ -151,6 +174,36 @@ export default function Gallery() {
         )}
 
       </div>
+
+      {/* Lightbox / Popup */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 md:p-8"
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
+              className="absolute top-4 right-4 text-white/70 hover:text-white bg-black/50 hover:bg-black rounded-full p-2 transition-colors z-[60]"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <motion.img
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              src={selectedImage}
+              alt="Enlarged gallery view"
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl z-[55]"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
