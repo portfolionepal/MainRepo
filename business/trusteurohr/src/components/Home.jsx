@@ -25,9 +25,16 @@ const Home = () => {
           >
             {/* Faint map pattern placeholder */}
             <div className="absolute inset-0 bg-pattern-dots opacity-5"></div>
-            {/* Airplanes */}
-            <FaPlane className="absolute top-1/4 left-1/4 text-brand-blue opacity-10 rotate-45" size={32} />
-            <FaPlane className="absolute bottom-1/4 right-1/4 text-brand-blue opacity-10 -rotate-45" size={32} />
+          </motion.div>
+
+          {/* Animated Airplanes (Independent of mouse parallax so they don't jerk) */}
+          <motion.div
+            className="absolute top-[60%] lg:top-[55%] left-0 text-brand-blue"
+            initial={{ x: '-20vw', y: 0 }}
+            animate={{ x: '130vw', y: typeof window !== 'undefined' && window.innerWidth < 768 ? -550 : -300 }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          >
+            <img src="/airplane.png" alt="Flying Airplane" className="w-32 md:w-64 h-auto opacity-70 rotate-[-10deg]" />
           </motion.div>
         </div>
 
@@ -106,7 +113,7 @@ const Home = () => {
                 className="absolute right-0 top-0 w-[55%] h-full z-10 -skew-x-[10deg] rounded-[2rem] overflow-hidden shadow-2xl border-[8px] border-white/40"
               >
                 <div className="absolute top-0 -left-[30%] w-[160%] h-full skew-x-[10deg]">
-                  <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=1200&auto=format&fit=crop" alt="Eiffel Tower" className="w-full h-full object-cover" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Oia_sunset_-_panoramio_%282%29.jpg/1280px-Oia_sunset_-_panoramio_%282%29.jpg" alt="Santorini, Greece" className="w-full h-full object-cover" />
                 </div>
               </motion.div>
 
@@ -118,7 +125,7 @@ const Home = () => {
                 className="absolute left-[12%] top-[5%] w-[35%] h-[35%] z-20 -skew-x-[10deg] rounded-3xl overflow-hidden shadow-xl border-[6px] border-white/60 bg-white"
               >
                 <div className="absolute top-0 -left-[30%] w-[160%] h-full skew-x-[10deg]">
-                  <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80" alt="Paris" className="w-full h-full object-cover" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Castelul_Bran2.jpg/1280px-Castelul_Bran2.jpg" alt="Bran Castle, Romania" className="w-full h-full object-cover" />
                 </div>
               </motion.div>
 
@@ -130,7 +137,7 @@ const Home = () => {
                 className="absolute left-[5%] bottom-[5%] w-[40%] h-[40%] z-20 -skew-x-[10deg] rounded-3xl overflow-hidden shadow-xl border-[6px] border-white/60 bg-white"
               >
                 <div className="absolute top-0 -left-[30%] w-[160%] h-full skew-x-[10deg]">
-                  <img src="https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=800&q=80" alt="Amsterdam Canal" className="w-full h-full object-cover" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Russian_church_%2837591925970%29.jpg/1280px-Russian_church_%2837591925970%29.jpg" alt="Sofia, Bulgaria" className="w-full h-full object-cover" />
                 </div>
               </motion.div>
 

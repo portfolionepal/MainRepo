@@ -41,10 +41,10 @@ const WorkVisa = () => {
                 ))}
               </ul>
               
-              <a href="/#contact" className="inline-flex items-center gap-3 px-8 py-4 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+              <Link to="/#contact" className="inline-flex items-center gap-3 px-8 py-4 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 Book a Consultation
                 <FaArrowRight />
-              </a>
+              </Link>
             </div>
             
             <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] md:h-auto">

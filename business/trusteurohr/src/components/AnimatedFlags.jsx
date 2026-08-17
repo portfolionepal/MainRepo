@@ -9,10 +9,10 @@ import rsGif from '../assets/flags/serbia.gif';
 
 const flags = [
   { img: bgGif, name: 'Bulgaria' },
-  { img: grGif, name: 'Greece' },
-  { img: skGif, name: 'Slovakia' },
   { img: roGif, name: 'Romania' },
+  { img: grGif, name: 'Greece' },
   { img: rsGif, name: 'Serbia' },
+  { img: skGif, name: 'Slovakia' },
 ];
 
 const AnimatedFlags = () => {
