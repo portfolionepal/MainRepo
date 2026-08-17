@@ -157,6 +157,20 @@ export default function GenericEditor() {
           return item;
         });
       }
+
+      // Data migration for clients items: ensure 'name' and 'url' exist
+      if (pageId === 'clients' && data.items) {
+        data.items = data.items.map(item => {
+          if (typeof item === 'string') {
+            return { name: '', url: item };
+          }
+          if (typeof item === 'object' && item !== null) {
+            if (!('name' in item)) item.name = '';
+            if (!('url' in item) && !('imageUrl' in item) && !('image' in item)) item.url = '';
+          }
+          return item;
+        });
+      }
       
       setFormData(data);
     } else {
@@ -259,6 +273,12 @@ export default function GenericEditor() {
         // Explicitly inject multiple images for gallery
         if (pageId === 'gallery') {
           newItem.images = [];
+        }
+
+        // Explicitly inject name and url fields for clients
+        if (pageId === 'clients') {
+          if (!('name' in newItem)) newItem.name = '';
+          if (!('url' in newItem) && !('imageUrl' in newItem) && !('image' in newItem)) newItem.url = '';
         }
       }
 
