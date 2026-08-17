@@ -1,7 +1,6 @@
 import React from 'react';
 import logoImg from '../assets/logo.png';
-import { FaInstagram, FaTiktok, FaWhatsapp, FaPhone, FaEnvelope } from 'react-icons/fa6';
-import { MapPin } from 'lucide-react';
+import { FaInstagram, FaTiktok, FaWhatsapp, FaPhone, FaEnvelope, FaLocationDot } from 'react-icons/fa6';
 
 const Footer = () => {
   return (
@@ -48,7 +47,7 @@ const Footer = () => {
             <h5 className="text-white font-bold tracking-widest uppercase text-xs mb-6">Contact Us</h5>
             <ul className="space-y-4 text-brand-white/70 text-sm font-medium">
               <li className="flex items-start gap-3">
-                <MapPin size={18} className="text-brand-blue shrink-0 mt-0.5" />
+                <FaLocationDot size={18} className="text-brand-blue shrink-0 mt-0.5" />
                 <span>New Baneshwor<br />Kathmandu, Nepal</span>
               </li>
               <li className="flex items-center gap-3">
@@ -66,13 +65,13 @@ const Footer = () => {
           <div>
             <h5 className="text-white font-bold tracking-widest uppercase text-xs mb-6">Connect With Us</h5>
             <div className="flex flex-wrap gap-3">
-              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-[#f09433] hover:-translate-y-1 transition-all shadow-sm">
+              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:-translate-y-1 transition-all shadow-sm duration-300">
                 <FaInstagram size={18} />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-black hover:-translate-y-1 transition-all shadow-sm">
+              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-[#010101] hover:-translate-y-1 transition-all shadow-sm duration-300">
                 <FaTiktok size={16} />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-[#25D366] hover:-translate-y-1 transition-all shadow-sm">
+              <a href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-[#25D366] hover:-translate-y-1 transition-all shadow-sm duration-300">
                 <FaWhatsapp size={20} />
               </a>
             </div>

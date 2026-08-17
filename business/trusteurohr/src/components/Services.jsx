@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Plane, Briefcase, CheckCircle2, ArrowRight, Shield, Clock, Users, Globe } from 'lucide-react';
+import { FaPlane, FaBriefcase, FaCircleCheck, FaArrowRight, FaShieldHalved, FaClock, FaUsers, FaEarthEurope } from 'react-icons/fa6';
 
 const Services = () => {
   const containerVariants = {
@@ -30,9 +30,8 @@ const Services = () => {
   };
 
   return (
-    <section id="services" className="py-24 relative overflow-hidden bg-transparent">
-      {/* Background gradient blob for texture */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-sky/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <section id="services" className="py-24 relative overflow-hidden bg-white">
+      <div className="absolute inset-0 bg-pattern-dots opacity-[0.04] pointer-events-none"></div>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <motion.div 
@@ -43,11 +42,11 @@ const Services = () => {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <div className="flex flex-col items-center justify-center mb-4">
-            <div className="w-12 h-1 bg-gradient-to-r from-brand-gold to-brand-red rounded-full mb-3 shadow-[0_0_10px_rgba(251,228,40,0.5)]"></div>
-            <h2 className="text-brand-blue font-bold tracking-widest uppercase text-sm">Our Expertise</h2>
+            <div className="w-12 h-1 bg-gradient-to-r from-brand-accent to-brand-gold rounded-full mb-3 shadow-[0_0_10px_rgba(245,158,11,0.4)]"></div>
+            <h2 className="text-brand-accent font-bold tracking-widest uppercase text-sm font-sans">Our Expertise</h2>
           </div>
-          <h3 className="text-4xl md:text-5xl font-extrabold text-brand-navy mb-6 tracking-tight">Dedicated Visa Services</h3>
-          <p className="text-gray-600 text-lg leading-relaxed">
+          <h3 className="text-3xl md:text-4xl font-extrabold text-brand-navy mb-6 tracking-tight">Dedicated Visa Services</h3>
+          <p className="text-gray-600 text-base md:text-lg leading-relaxed">
             We specialize in streamlining your journey to Europe, ensuring a smooth and hassle-free visa application process.
           </p>
         </motion.div>
@@ -60,74 +59,88 @@ const Services = () => {
           className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto mb-20"
         >
           {/* Travel Visa */}
-          <motion.div variants={itemVariants} className="group h-full">
-            <div className="bg-[#F7F9FC]/80 backdrop-blur-sm border border-white p-8 md:p-10 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:border-brand-sky hover:shadow-[0_20px_60px_-15px_rgba(6,97,221,0.25)] h-full shadow-[0_10px_40px_-15px_rgba(6,97,221,0.1)] flex flex-col relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-sky/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-brand-sky/10 transition-colors"></div>
-              
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-blue to-brand-sky rounded-2xl flex items-center justify-center mb-8 shadow-[0_8px_16px_rgba(6,97,221,0.3)]">
-                <Plane className="text-white" size={32} strokeWidth={1.75} />
+          <motion.div variants={itemVariants} className="h-full">
+            <div className="bg-white rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-premium h-full flex flex-col overflow-hidden group/card relative z-10">
+              <div className="w-full h-56 overflow-hidden bg-gray-100">
+                <img 
+                  src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Travel Visa" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" 
+                />
               </div>
               
-              <h4 className="text-2xl font-bold text-brand-navy mb-4">Travel Visa</h4>
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Expert assistance for securing tourist and short-stay visas. We handle the complexities of documentation and appointments so you can focus on your itinerary.
-              </p>
-              
-              <motion.ul 
-                variants={listContainerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="space-y-4 mb-10 flex-grow"
-              >
-                {['Document Verification', 'Application Processing', 'Interview Preparation'].map((item, i) => (
-                  <motion.li variants={listItemVariants} key={i} className="flex items-center text-gray-700 font-medium">
-                    <CheckCircle2 size={20} className="text-brand-blue mr-3 shrink-0 drop-shadow-sm" strokeWidth={2} />
-                    {item}
-                  </motion.li>
-                ))}
-              </motion.ul>
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
+                <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Travel Visa</h4>
+                <p className="text-gray-500 mb-8 leading-relaxed text-base">
+                  Expert assistance for securing tourist and short-stay visas. We handle the complexities of documentation and appointments so you can focus on your itinerary.
+                </p>
+                
+                <motion.ul 
+                  variants={listContainerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="space-y-4 mb-10 flex-grow"
+                >
+                  {['Document Verification', 'Application Processing', 'Interview Preparation'].map((item, i) => (
+                    <motion.li variants={listItemVariants} key={i} className="flex items-center text-gray-600 font-medium text-sm">
+                      <FaCircleCheck size={18} className="text-brand-blue mr-3 shrink-0" />
+                      {item}
+                    </motion.li>
+                  ))}
+                </motion.ul>
 
-              <a href="#contact" className="inline-flex items-center text-brand-blue font-bold text-sm uppercase tracking-wider group/link mt-auto w-fit">
-                Get Started
-                <ArrowRight size={18} className="ml-2 group-hover/link:translate-x-1.5 transition-transform" />
-              </a>
+                <a href="#contact" className="relative inline-flex items-center justify-center px-6 py-3 text-brand-blue font-bold text-sm uppercase tracking-wider rounded-full border-2 border-brand-blue/20 overflow-hidden group/link mt-auto w-fit transition-all duration-300 hover:border-transparent hover:shadow-[0_6px_20px_rgba(6,97,221,0.4)] hover:-translate-y-0.5">
+                  <span className="absolute inset-0 bg-gradient-to-r from-brand-blue to-brand-sky opacity-0 group-hover/link:opacity-100 transition-opacity duration-300"></span>
+                  <span className="relative z-10 flex items-center group-hover/link:text-white transition-colors duration-300">
+                    Get Started
+                    <FaArrowRight size={16} className="ml-2 group-hover/link:translate-x-1 transition-transform" />
+                  </span>
+                </a>
+              </div>
             </div>
           </motion.div>
 
           {/* Work Visa */}
-          <motion.div variants={itemVariants} className="group h-full">
-            <div className="bg-[#F7F9FC]/80 backdrop-blur-sm border border-white p-8 md:p-10 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:border-brand-navy hover:shadow-[0_20px_60px_-15px_rgba(2,25,91,0.2)] h-full shadow-[0_10px_40px_-15px_rgba(2,25,91,0.08)] flex flex-col relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-navy/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-brand-navy/10 transition-colors"></div>
-              
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-navy to-brand-blue rounded-2xl flex items-center justify-center mb-8 shadow-[0_8px_16px_rgba(2,25,91,0.3)]">
-                <Briefcase className="text-white" size={32} strokeWidth={1.75} />
+          <motion.div variants={itemVariants} className="h-full">
+            <div className="bg-white rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-premium h-full flex flex-col overflow-hidden group/card relative z-10">
+              <div className="w-full h-56 overflow-hidden bg-gray-100">
+                <img 
+                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Work Visa" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" 
+                />
               </div>
               
-              <h4 className="text-2xl font-bold text-brand-navy mb-4">Work Visa</h4>
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Comprehensive support for employment and long-stay visas. Navigate European labor regulations and consulate requirements with our specialized guidance.
-              </p>
-              
-              <motion.ul 
-                variants={listContainerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="space-y-4 mb-10 flex-grow"
-              >
-                {['Contract Review Assistance', 'Legalization & Translation', 'Permit Navigation'].map((item, i) => (
-                  <motion.li variants={listItemVariants} key={i} className="flex items-center text-gray-700 font-medium">
-                    <CheckCircle2 size={20} className="text-brand-navy mr-3 shrink-0 drop-shadow-sm" strokeWidth={2} />
-                    {item}
-                  </motion.li>
-                ))}
-              </motion.ul>
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
+                <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Work Visa</h4>
+                <p className="text-gray-500 mb-8 leading-relaxed text-base">
+                  Comprehensive support for employment and long-stay visas. Navigate European labor regulations and consulate requirements with our specialized guidance.
+                </p>
+                
+                <motion.ul 
+                  variants={listContainerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="space-y-4 mb-10 flex-grow"
+                >
+                  {['Contract Review Assistance', 'Legalization & Translation', 'Permit Navigation'].map((item, i) => (
+                    <motion.li variants={listItemVariants} key={i} className="flex items-center text-gray-600 font-medium text-sm">
+                      <FaCircleCheck size={18} className="text-brand-blue mr-3 shrink-0" />
+                      {item}
+                    </motion.li>
+                  ))}
+                </motion.ul>
 
-              <a href="#contact" className="inline-flex items-center text-brand-navy font-bold text-sm uppercase tracking-wider group/link mt-auto w-fit">
-                Learn More
-                <ArrowRight size={18} className="ml-2 group-hover/link:translate-x-1.5 transition-transform" />
-              </a>
+                <a href="#contact" className="relative inline-flex items-center justify-center px-6 py-3 text-brand-blue font-bold text-sm uppercase tracking-wider rounded-full border-2 border-brand-blue/20 overflow-hidden group/link mt-auto w-fit transition-all duration-300 hover:border-transparent hover:shadow-[0_6px_20px_rgba(6,97,221,0.4)] hover:-translate-y-0.5">
+                  <span className="absolute inset-0 bg-gradient-to-r from-brand-blue to-brand-sky opacity-0 group-hover/link:opacity-100 transition-opacity duration-300"></span>
+                  <span className="relative z-10 flex items-center group-hover/link:text-white transition-colors duration-300">
+                    Learn More
+                    <FaArrowRight size={16} className="ml-2 group-hover/link:translate-x-1 transition-transform" />
+                  </span>
+                </a>
+              </div>
             </div>
           </motion.div>
         </motion.div>
@@ -142,14 +155,14 @@ const Services = () => {
         >
           <div className="flex flex-wrap justify-center sm:justify-between items-center gap-6">
             {[
-              { icon: Shield, label: 'Trusted Process' },
-              { icon: Clock, label: 'Fast Turnaround' },
-              { icon: Users, label: 'Personalized Support' },
-              { icon: Globe, label: '5 Countries Covered' }
+              { icon: FaShieldHalved, label: 'Trusted Process' },
+              { icon: FaClock, label: 'Fast Turnaround' },
+              { icon: FaUsers, label: 'Personalized Support' },
+              { icon: FaEarthEurope, label: '5 Countries Covered' }
             ].map((item, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#F7F9FC] to-gray-100 flex items-center justify-center border border-gray-200/60 shadow-inner">
-                  <item.icon size={18} className="text-brand-blue" strokeWidth={2} />
+                  <item.icon size={18} className="text-brand-blue" />
                 </div>
                 <span className="text-sm font-bold text-brand-navy tracking-wide">{item.label}</span>
               </div>

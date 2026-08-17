@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { FaBars, FaXmark, FaArrowRight } from 'react-icons/fa6';
 
 import logoImg from '../assets/logo.png';
 
@@ -15,6 +15,24 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    
+    // Slight delay to allow the mobile menu to visually close before scrolling
+    setTimeout(() => {
+      const element = document.getElementById(targetId);
+      if (element) {
+        // Calculate position relative to document, minus sticky header offset
+        const offsetTop = element.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({
+          top: offsetTop,
+          behavior: 'smooth'
+        });
+      }
+    }, 50);
+  };
 
   const navLinks = [
     { name: 'Home', href: '#home' },
@@ -43,9 +61,12 @@ const Navbar = () => {
             />
             <span className="hidden text-white font-bold text-xs text-center leading-tight">TEHR</span>
           </div>
-          <span className="text-xl font-black tracking-tight text-brand-navy">
-            TRUSTEURO<span className="text-brand-blue">HR</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="text-xl font-black tracking-tight text-brand-navy leading-none">
+              TRUSTEURO<span className="text-brand-blue">HR</span>
+            </span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Your Gateway to Europe</span>
+          </div>
         </a>
 
         {/* Desktop Nav */}
@@ -54,26 +75,28 @@ const Navbar = () => {
             <a
               key={link.name}
               href={link.href}
-              className="text-brand-navy/80 hover:text-brand-blue text-sm font-semibold tracking-wide uppercase transition-colors relative group"
+              onClick={(e) => handleNavClick(e, link.href.substring(1))}
+              className="text-brand-navy font-bold text-[13px] tracking-wide uppercase transition-colors hover:text-brand-blue"
             >
               {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-blue transition-all duration-300 group-hover:w-full"></span>
             </a>
           ))}
           <a
             href="#contact"
-            className="ml-4 px-6 py-2.5 bg-gradient-to-r from-brand-blue to-brand-sky text-white text-sm font-bold tracking-wider rounded-full shadow-[0_4px_14px_0_rgba(6,97,221,0.39)] hover:shadow-[0_6px_20px_rgba(6,97,221,0.6)] hover:scale-[1.03] transition-all duration-300"
+            onClick={(e) => handleNavClick(e, 'contact')}
+            className="ml-4 px-6 py-2.5 bg-brand-blue text-white text-sm font-bold tracking-wider rounded-full shadow-md hover:shadow-lg hover:bg-brand-navy hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
           >
             Get Started
+            <FaArrowRight size={14} />
           </a>
         </nav>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-brand-navy p-2 focus:outline-none"
+          className="md:hidden text-brand-navy hover:text-brand-sky p-2 focus:outline-none transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          {mobileMenuOpen ? <FaXmark size={28} /> : <FaBars size={28} />}
         </button>
       </div>
 
@@ -84,23 +107,23 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-gray-100 overflow-hidden shadow-lg"
+            className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 overflow-hidden shadow-xl z-50 origin-top"
           >
             <div className="flex flex-col py-4 px-6 gap-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-gray-800 font-semibold text-lg py-2 border-b border-gray-50 hover:text-brand-primary"
+                  onClick={(e) => handleNavClick(e, link.href.substring(1))}
+                  className="text-gray-800 font-semibold text-lg py-2 border-b border-gray-50 hover:text-brand-blue"
                 >
                   {link.name}
                 </a>
               ))}
               <a
                 href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="mt-4 px-6 py-3 bg-gradient-to-r from-brand-blue to-brand-sky text-white text-center font-bold rounded-full shadow-[0_4px_14px_0_rgba(6,97,221,0.39)]"
+                onClick={(e) => handleNavClick(e, 'contact')}
+                className="mt-4 px-6 py-3 bg-brand-navy text-white text-center font-bold rounded-full shadow-md hover:bg-brand-blue transition-colors"
               >
                 Get Started
               </a>

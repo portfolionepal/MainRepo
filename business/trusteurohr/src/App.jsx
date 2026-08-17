@@ -9,16 +9,10 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="font-sans text-brand-navy min-h-screen selection:bg-brand-blue/20 selection:text-brand-navy relative">
-      {/* Background Texture & Noise */}
-      <div className="fixed inset-0 pointer-events-none bg-noise opacity-[0.03] z-[-1]"></div>
+    <div className="font-sans text-brand-navy min-h-screen bg-brand-white selection:bg-brand-sky/30 selection:text-brand-navy relative">
       
-      {/* Animated Background Blobs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-2]">
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-blue/15 blur-3xl animate-blob"></div>
-        <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-brand-sky/15 blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-[-20%] left-[20%] w-[700px] h-[700px] rounded-full bg-brand-blue/10 blur-3xl animate-blob animation-delay-4000"></div>
-      </div>
+      {/* Subtle modern background gradient (optional, keeps it clean) */}
+      <div className="fixed inset-0 pointer-events-none bg-gradient-to-br from-white via-white to-brand-sky/5 z-[-1]"></div>
 
       <Navbar />
       <main>

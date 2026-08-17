@@ -18,33 +18,51 @@ const flags = [
 const AnimatedFlags = () => {
   return (
     <motion.div 
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.8, delay: 0.2, type: 'spring', stiffness: 80 }}
-      className="absolute top-24 right-4 md:right-8 xl:right-16 z-20 hidden md:flex flex-col items-center bg-white/40 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/50"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0, x: 50 },
+        visible: { 
+          opacity: 1, x: 0,
+          transition: { type: 'spring', stiffness: 80, delayChildren: 0.5, staggerChildren: 0.15 }
+        }
+      }}
+      className="absolute top-1/2 -translate-y-1/2 left-0 z-20 hidden lg:flex flex-col items-center bg-white rounded-r-[1.5rem] p-4 py-6 shadow-[10px_0_30px_rgba(0,0,0,0.03)] border border-gray-100 border-l-0"
     >
-      <span className="text-[11px] font-bold uppercase tracking-widest text-brand-navy mb-4 opacity-80 text-center leading-tight">
-        Now accepting<br/>applications for
-      </span>
-      <div className="flex flex-col gap-4">
+      <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 0.8 } }} className="text-[9px] font-black uppercase tracking-widest text-brand-navy mb-5 text-left leading-tight w-full max-w-[80px]">
+        Accepting<br/>applications<br/>for
+      </motion.div>
+      <div className="flex flex-col gap-5 mb-5">
         {flags.map((flag, index) => (
-          <div
+          <motion.div
             key={flag.name}
+            variants={{
+              hidden: { opacity: 0, scale: 0.5, y: 10 },
+              visible: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 10 } }
+            }}
             className="relative group cursor-pointer"
           >
-            <div className="w-16 h-12 md:w-20 md:h-14 rounded-lg shadow-md overflow-hidden border-2 border-white bg-gray-100 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(6,97,221,0.4)] group-hover:border-brand-blue">
-              <img src={flag.img} alt={`${flag.name} flag`} className="w-full h-full object-cover" />
+            <div className="w-14 h-10 md:w-16 md:h-12 flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-110">
+              <img 
+                src={flag.img} 
+                alt={`${flag.name} flag`} 
+                className="w-full h-full object-contain drop-shadow-md animate-flag-swing" 
+                style={{ animationDelay: `${index * 0.3}s` }}
+              />
             </div>
             
-            <div className="absolute right-full top-1/2 -translate-y-1/2 mr-4 px-3 py-1.5 bg-white text-brand-navy text-sm font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap shadow-xl border border-gray-100 translate-x-2 group-hover:translate-x-0">
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-white text-brand-navy text-sm font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap shadow-xl border border-gray-100 -translate-x-2 group-hover:translate-x-0">
               {flag.name}
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand-blue to-brand-sky rounded-b-lg"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-navy rounded-b-lg"></div>
               {/* Tooltip triangle tail */}
-              <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-l-4 border-l-brand-blue border-r-4 border-r-transparent"></div>
+              <div className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-4 border-r-white border-l-4 border-l-transparent"></div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
+      <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 0.5 } }} className="text-[10px] font-bold text-brand-navy">
+        and more...
+      </motion.div>
     </motion.div>
   );
 };

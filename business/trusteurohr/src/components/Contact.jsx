@@ -1,39 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
-import { MapPin, Phone, Mail, Send, Loader2, User, Tag, MessageCircle, CheckCircle2 } from 'lucide-react';
-import { FaInstagram, FaTiktok, FaWhatsapp, FaPhone, FaEnvelope } from 'react-icons/fa6';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%'
-};
-
-const center = {
-  lat: 27.695222,
-  lng: 85.3310635
-};
-
-const snazzyMapStyle = [
-  { "featureType": "all", "elementType": "labels.text.fill", "stylers": [{"color": "#7c93a3"},{"lightness": "-10"}] },
-  { "featureType": "administrative.country", "elementType": "geometry.stroke", "stylers": [{"color": "#a0a4a5"}] },
-  { "featureType": "landscape", "elementType": "geometry.fill", "stylers": [{"color": "#f4f8fb"}] },
-  { "featureType": "poi", "elementType": "geometry.fill", "stylers": [{"color": "#e3edf4"}] },
-  { "featureType": "road", "elementType": "geometry.fill", "stylers": [{"color": "#ffffff"}] },
-  { "featureType": "road", "elementType": "geometry.stroke", "stylers": [{"color": "#dbe9f3"}] },
-  { "featureType": "water", "elementType": "geometry.fill", "stylers": [{"color": "#a7cce6"}] }
-];
-
+import { FaMapLocationDot, FaPhoneVolume, FaEnvelope, FaPaperPlane, FaSpinner, FaUser, FaTag, FaCommentDots, FaCircleCheck, FaInstagram, FaTiktok, FaWhatsapp, FaPhone, FaLocationDot } from 'react-icons/fa6';
 const Contact = () => {
   const form = useRef();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY" // Replace with real key
-  });
 
   const sendEmail = (e) => {
     e.preventDefault();
@@ -54,12 +26,13 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 bg-transparent relative z-10">
-      <div className="container mx-auto px-6 md:px-12">
+    <section id="contact" className="py-24 bg-[#FAFBFC] relative overflow-hidden">
+      <div className="absolute inset-0 bg-pattern-grid pointer-events-none opacity-[0.3]"></div>
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-brand-blue font-bold tracking-widest uppercase text-sm mb-4">Get In Touch</h2>
-          <h3 className="text-4xl md:text-5xl font-extrabold text-brand-navy mb-6">Let's Plan Your Future</h3>
-          <p className="text-gray-600 text-lg">
+          <h2 className="text-brand-accent font-bold tracking-widest uppercase text-sm mb-4 font-sans">Get In Touch</h2>
+          <h3 className="text-3xl md:text-4xl font-extrabold text-brand-navy mb-6">Let's Plan Your Future</h3>
+          <p className="text-gray-600 text-base md:text-lg">
             Ready to start your journey? Contact our experts today for a consultation.
           </p>
         </div>
@@ -73,14 +46,14 @@ const Contact = () => {
             viewport={{ once: true }}
             className="lg:col-span-2 space-y-8"
           >
-            <div className="bg-white/80 backdrop-blur-sm border border-white/50 p-8 rounded-[2rem] h-full flex flex-col justify-between shadow-[0_10px_40px_-15px_rgba(6,97,221,0.1)]">
+            <div className="bg-white border border-gray-200 p-8 rounded-2xl h-full flex flex-col justify-between shadow-sm">
               <div>
-                <h4 className="text-2xl font-extrabold text-brand-navy mb-8">Contact Information</h4>
+                <h4 className="text-xl md:text-2xl font-extrabold text-brand-navy mb-8">Contact Information</h4>
                 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4 group">
                     <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-brand-sky rounded-xl flex items-center justify-center shrink-0 shadow-[0_4px_10px_rgba(6,97,221,0.2)] group-hover:scale-105 transition-transform">
-                      <MapPin className="text-white" size={22} strokeWidth={2} />
+                      <FaLocationDot className="text-white" size={22} />
                     </div>
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Our Location</h5>
@@ -93,7 +66,7 @@ const Contact = () => {
 
                   <div className="flex items-start gap-4 group">
                     <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-brand-sky rounded-xl flex items-center justify-center shrink-0 shadow-[0_4px_10px_rgba(6,97,221,0.2)] group-hover:scale-105 transition-transform">
-                      <Phone className="text-white" size={22} strokeWidth={2} />
+                      <FaPhone className="text-white" size={22} />
                     </div>
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Phone Number</h5>
@@ -103,7 +76,7 @@ const Contact = () => {
 
                   <div className="flex items-start gap-4 group">
                     <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-brand-sky rounded-xl flex items-center justify-center shrink-0 shadow-[0_4px_10px_rgba(6,97,221,0.2)] group-hover:scale-105 transition-transform">
-                      <Mail className="text-white" size={22} strokeWidth={2} />
+                      <FaEnvelope className="text-white" size={22} />
                     </div>
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Email Address</h5>
@@ -144,32 +117,32 @@ const Contact = () => {
             viewport={{ once: true }}
             className="lg:col-span-3"
           >
-            <div className="bg-white/80 backdrop-blur-sm border border-white/50 p-8 md:p-10 rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(6,97,221,0.25)] relative overflow-hidden">
+            <div className="bg-white border border-gray-200 p-8 md:p-10 rounded-2xl shadow-sm relative overflow-hidden">
               <form ref={form} onSubmit={sendEmail} className="space-y-6 relative z-10">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-bold tracking-widest uppercase text-brand-navy mb-2">Your Name</label>
                     <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input 
                         type="text" 
                         name="user_name" 
                         required 
                         className="w-full bg-[#F7F9FC]/80 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-brand-navy focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/40 transition-all font-medium"
-                        placeholder="John Doe"
+                        placeholder="Enter your name"
                       />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold tracking-widest uppercase text-brand-navy mb-2">Email Address</label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input 
                         type="email" 
                         name="user_email" 
                         required 
                         className="w-full bg-[#F7F9FC]/80 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-brand-navy focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/40 transition-all font-medium"
-                        placeholder="john@example.com"
+                        placeholder="Enter your email address"
                       />
                     </div>
                   </div>
@@ -178,7 +151,7 @@ const Contact = () => {
                 <div>
                   <label className="block text-xs font-bold tracking-widest uppercase text-brand-navy mb-2">Subject</label>
                   <div className="relative">
-                    <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <FaTag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input 
                       type="text" 
                       name="subject" 
@@ -192,7 +165,7 @@ const Contact = () => {
                 <div>
                   <label className="block text-xs font-bold tracking-widest uppercase text-brand-navy mb-2">Message</label>
                   <div className="relative">
-                    <MessageCircle className="absolute left-4 top-4 text-gray-400" size={18} />
+                    <FaCommentDots className="absolute left-4 top-4 text-gray-400" size={18} />
                     <textarea 
                       name="message" 
                       required 
@@ -207,21 +180,21 @@ const Contact = () => {
                   <button 
                     type="submit" 
                     disabled={isSubmitting || submitStatus === 'success'}
-                    className="w-full bg-gradient-to-r from-brand-blue to-brand-sky text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_4px_14px_0_rgba(6,97,221,0.39)] hover:shadow-[0_6px_20px_rgba(6,97,221,0.6)] hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed group disabled:hover:translate-y-0"
+                    className="w-full bg-brand-blue text-white font-bold py-3.5 rounded-lg flex items-center justify-center gap-2 transition-colors duration-300 hover:bg-brand-navy disabled:opacity-70 disabled:cursor-not-allowed group shadow-sm"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
-                        <Loader2 className="animate-spin" size={20} />
+                        <FaSpinner className="animate-spin" size={20} />
                         Sending...
                       </span>
                     ) : submitStatus === 'success' ? (
                       <span className="flex items-center gap-2">
-                        <CheckCircle2 size={20} />
+                        <FaCircleCheck size={20} />
                         Message Sent!
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
-                        Send Message <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        Send Message <FaPaperPlane size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                       </span>
                     )}
                   </button>
@@ -240,39 +213,24 @@ const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mt-16 rounded-[2rem] overflow-hidden border border-white/50 h-[450px] shadow-[0_20px_60px_-15px_rgba(6,97,221,0.25)] relative"
+          className="mt-16 rounded-2xl overflow-hidden border border-gray-200 h-[450px] shadow-sm relative"
         >
-          {isLoaded ? (
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              center={center}
-              zoom={14}
-              options={{ styles: snazzyMapStyle, disableDefaultUI: true, gestureHandling: "cooperative" }}
-            >
-              <Marker 
-                position={center} 
-                icon={{
-                  path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
-                  fillColor: '#0661DD',
-                  fillOpacity: 1,
-                  strokeWeight: 1.5,
-                  strokeColor: '#FFFFFF',
-                  scale: 1.8,
-                  anchor: { x: 12, y: 24 }
-                }} 
-              />
-            </GoogleMap>
-          ) : (
-            <div className="w-full h-full bg-[#f4f8fb] flex items-center justify-center text-brand-blue flex-col gap-3">
-              <Loader2 className="animate-spin" size={32} />
-              <span className="font-medium text-sm">Loading map...</span>
-            </div>
-          )}
+          <iframe 
+            src="https://maps.google.com/maps?q=New%20Baneshwor,%20Kathmandu,%20Nepal&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+            width="100%" 
+            height="100%" 
+            style={{ border: 0 }} 
+            allowFullScreen="" 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+            className="absolute inset-0"
+            title="Office Location Map"
+          ></iframe>
 
           {/* Location Info Card Popup */}
           <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-[0_10px_30px_rgba(2,25,91,0.15)] border border-white z-10 flex items-center gap-4 max-w-[280px]">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-blue to-brand-sky flex items-center justify-center shrink-0 shadow-inner text-white">
-              <MapPin size={22} strokeWidth={2} />
+              <FaLocationDot size={22} />
             </div>
             <div>
               <h5 className="text-brand-navy font-extrabold text-sm mb-0.5">TrustEuroHR Office</h5>

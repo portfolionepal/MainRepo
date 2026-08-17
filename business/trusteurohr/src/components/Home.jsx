@@ -1,49 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Globe, TrendingUp, Clock, Users } from 'lucide-react';
+import { FaArrowRight, FaGlobe, FaCircleCheck, FaUserGroup, FaShieldHalved, FaEarthEurope, FaHeadset, FaWhatsapp, FaPlane } from 'react-icons/fa6';
 import AnimatedFlags from './AnimatedFlags';
+import AnimatedCounter from './AnimatedCounter';
+import MagneticButton from './MagneticButton';
 
 const Home = () => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const handleMouseMove = (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    setMousePos({ x, y });
+  };
+
   return (
     <>
-      <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-transparent">
-        {/* Background with overlay */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/hero_bg.png" 
-            alt="European City background" 
-            className="w-full h-full object-cover opacity-5"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#F7F9FC]/80 to-[#F7F9FC]"></div>
-          
-          {/* Subtle hero-specific blob behind headline */}
-          <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-brand-sky/10 rounded-full mix-blend-multiply blur-3xl opacity-50 animate-blob pointer-events-none"></div>
+      <section id="home" className="relative w-full pt-32 lg:pt-40 pb-16 lg:pb-40 bg-gradient-to-br from-[#EAF4FC] to-[#D9EAF7]" onMouseMove={handleMouseMove}>
+        {/* Background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <motion.div 
+            className="absolute inset-[-10%] z-0"
+            animate={{ x: mousePos.x * -0.5, y: mousePos.y * -0.5 }}
+            transition={{ type: "spring", stiffness: 50, damping: 20 }}
+          >
+            {/* Faint map pattern placeholder */}
+            <div className="absolute inset-0 bg-pattern-dots opacity-5"></div>
+            {/* Airplanes */}
+            <FaPlane className="absolute top-1/4 left-1/4 text-brand-blue opacity-10 rotate-45" size={32} />
+            <FaPlane className="absolute bottom-1/4 right-1/4 text-brand-blue opacity-10 -rotate-45" size={32} />
+          </motion.div>
         </div>
 
         <AnimatedFlags />
 
-        <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+        <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col xl:flex-row items-center gap-12 xl:gap-8">
           
           {/* Left Column: Text & CTA */}
-          <div className="w-full lg:w-1/2 max-w-2xl mt-8 lg:mt-0">
+          <div className="w-full xl:w-5/12 max-w-2xl mt-8 xl:mt-0 lg:pl-28 xl:pl-32 z-20">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/10 border border-brand-blue/30 mb-6 shadow-sm">
-                <span className="w-2.5 h-2.5 rounded-full bg-brand-red animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_8px_rgba(211,26,28,0.6)]"></span>
-                <span className="text-brand-blue font-bold tracking-widest uppercase text-xs">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-10 h-[1px] bg-brand-accent"></div>
+                <span className="text-brand-accent font-bold tracking-[0.2em] uppercase text-[11px] font-sans">
                   Premium Foreign Consultancy
                 </span>
               </div>
               
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-brand-navy leading-[1.1] mb-6 tracking-tight drop-shadow-sm">
+              <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold text-brand-blue leading-[1.1] mb-6 tracking-tight font-serif drop-shadow-sm">
                 Your Gateway to <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue via-brand-sky to-brand-navy">
-                  European Opportunities
-                </span>
+                European Opportunities
               </h1>
             </motion.div>
 
@@ -52,9 +61,9 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
-              className="text-lg md:text-xl text-gray-600 mb-10 max-w-lg leading-relaxed"
+              className="text-base md:text-lg text-brand-navy/70 mb-10 max-w-lg leading-relaxed font-medium"
             >
-              TrustEuroHR provides expert, end-to-end guidance for securing travel and work visas in top European destinations. We turn your global ambitions into reality with trust, transparency, and unparalleled service.
+              Expert guidance for securing work and travel visas across Europe. We turn your global ambitions into reality with trust, transparency, and unparalleled service.
             </motion.p>
 
             <motion.div
@@ -64,89 +73,136 @@ const Home = () => {
               viewport={{ once: true }}
               className="flex flex-wrap gap-4"
             >
-              <a
+              <MagneticButton
                 href="#services"
-                className="px-8 py-4 bg-gradient-to-r from-brand-blue to-brand-sky text-white font-bold rounded-full shadow-[0_4px_14px_0_rgba(6,97,221,0.39)] hover:shadow-[0_6px_20px_rgba(6,97,221,0.6)] hover:scale-[1.03] transition-all duration-300 flex items-center gap-2 group"
+                className="px-8 py-3.5 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 group"
               >
                 Explore Services
-                <ArrowRight size={20} className="group-hover:translate-x-1.5 transition-transform" />
-              </a>
+                <FaArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+              </MagneticButton>
               <a
                 href="#contact"
-                className="px-8 py-4 bg-transparent border-[1.5px] border-brand-navy text-brand-navy hover:bg-brand-navy/5 font-bold rounded-full transition-all duration-300 flex items-center gap-2"
+                className="px-8 py-3.5 bg-white text-brand-navy hover:bg-gray-50 font-bold rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 border border-gray-100"
               >
                 Contact Us
               </a>
             </motion.div>
           </div>
 
-          {/* Right Column: Hero Image & Stat Card */}
-          <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-end mt-12 lg:mt-0">
+          {/* Right Column: Skewed Image Composition */}
+          <div className="w-full xl:w-7/12 relative h-[500px] md:h-[650px] z-10 flex justify-center xl:justify-end mt-12 xl:mt-0">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-              whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              transition={{ duration: 1, delay: 0.3 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 1 }}
               viewport={{ once: true }}
-              className="relative max-w-[500px] w-full"
+              className="relative w-full max-w-[800px] h-full"
+              animate={{ x: mousePos.x * 1, y: mousePos.y * 1 }}
+              transition={{ type: "spring", stiffness: 75, damping: 20 }}
             >
-              {/* Image Frame */}
-              <div className="relative rounded-[2rem] md:rounded-[3rem] overflow-hidden p-2 bg-gradient-to-br from-brand-sky/40 via-brand-blue/20 to-transparent shadow-[0_20px_60px_-15px_rgba(6,97,221,0.3)]">
-                <img 
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1400&auto=format&fit=crop" 
-                  alt="Professional Team handshake" 
-                  className="rounded-[1.5rem] md:rounded-[2.5rem] w-full h-[450px] md:h-[600px] object-cover"
-                />
-              </div>
-
-              {/* Floating Stat Card */}
+              
+              {/* Main Right Image */}
               <motion.div 
-                initial={{ opacity: 0, y: 40, x: -20 }}
-                whileInView={{ opacity: 1, y: 0, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.8, type: 'spring' }}
-                viewport={{ once: true }}
-                className="absolute -bottom-6 -left-6 md:-left-12 bg-white/70 backdrop-blur-xl border border-white/60 p-5 rounded-2xl shadow-[0_10px_40px_-15px_rgba(6,97,221,0.25)] flex items-center gap-4"
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="absolute right-0 top-0 w-[55%] h-full z-10 -skew-x-[10deg] rounded-[2rem] overflow-hidden shadow-2xl border-[8px] border-white/40"
               >
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-blue to-brand-sky flex items-center justify-center shadow-inner">
-                  <CheckCircle2 className="text-white" size={24} strokeWidth={2} />
+                <div className="absolute top-0 -left-[30%] w-[160%] h-full skew-x-[10deg]">
+                  <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=1200&auto=format&fit=crop" alt="Eiffel Tower" className="w-full h-full object-cover" />
                 </div>
-                <div>
-                  <div className="text-2xl font-black text-brand-navy leading-none">500+</div>
-                  <div className="text-sm font-bold text-gray-500 uppercase tracking-wider mt-1">Visas Approved</div>
+              </motion.div>
+
+              {/* Top Left Image */}
+              <motion.div 
+                initial={{ opacity: 0, y: -30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="absolute left-[12%] top-[5%] w-[35%] h-[35%] z-20 -skew-x-[10deg] rounded-3xl overflow-hidden shadow-xl border-[6px] border-white/60 bg-white"
+              >
+                <div className="absolute top-0 -left-[30%] w-[160%] h-full skew-x-[10deg]">
+                  <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80" alt="Paris" className="w-full h-full object-cover" />
                 </div>
+              </motion.div>
+
+              {/* Bottom Left Image */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+                className="absolute left-[5%] bottom-[5%] w-[40%] h-[40%] z-20 -skew-x-[10deg] rounded-3xl overflow-hidden shadow-xl border-[6px] border-white/60 bg-white"
+              >
+                <div className="absolute top-0 -left-[30%] w-[160%] h-full skew-x-[10deg]">
+                  <img src="https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=800&q=80" alt="Amsterdam Canal" className="w-full h-full object-cover" />
+                </div>
+              </motion.div>
+
+              {/* Floating Glass Widget */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.9, type: 'spring' }}
+                viewport={{ once: true }}
+                className="absolute top-[40%] left-[25%] z-30 bg-white/95 backdrop-blur-md rounded-[1.5rem] p-5 shadow-2xl border border-white"
+              >
+                <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+                  <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue">
+                    <FaGlobe size={20} />
+                  </div>
+                  <div className="font-bold text-brand-navy leading-tight">
+                    European<br/>Visa Experts
+                  </div>
+                </div>
+                <ul className="space-y-3">
+                  {['Work Visa', 'Travel Visa', 'Business Visa', 'Study Visa'].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm font-semibold text-brand-navy/80">
+                      <FaCircleCheck className="text-brand-blue" size={16} /> {item}
+                    </li>
+                  ))}
+                </ul>
               </motion.div>
             </motion.div>
           </div>
-
         </div>
-      </section>
 
-      {/* Trust Strip */}
-      <section className="py-12 bg-white border-y border-gray-100 relative z-10">
-        <div className="container mx-auto px-6 md:px-12">
-          <div className="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-            {[
-              { icon: Globe, value: '5+', label: 'European Countries' },
-              { icon: TrendingUp, value: '98%', label: 'Success Rate' },
-              { icon: Users, value: '1000+', label: 'Happy Clients' },
-              { icon: Clock, value: '24/7', label: 'Dedicated Support' }
-            ].map((stat, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="flex items-center gap-4 px-4 md:px-8 w-full md:w-auto pt-6 md:pt-0 first:pt-0"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-blue/10 to-brand-sky/20 flex items-center justify-center shrink-0 border border-brand-blue/10">
-                  <stat.icon className="text-brand-blue" size={20} strokeWidth={2} />
+        {/* Bottom Stats Bar */}
+        <div className="relative lg:absolute lg:bottom-0 left-0 right-0 px-6 md:px-12 z-40 lg:transform lg:translate-y-1/2 mt-16 lg:mt-0">
+          <div className="container mx-auto">
+            <div className="flex flex-col lg:flex-row shadow-2xl rounded-3xl overflow-visible relative">
+              {/* Left Stats Section */}
+              <div className="flex-1 bg-white rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none flex flex-wrap lg:flex-nowrap items-center py-6 px-8 gap-8 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
+                {[
+                  { icon: FaUserGroup, num: '500', title: 'Visas Approved' },
+                  { icon: FaShieldHalved, num: '98', title: 'Success Rate', suffix: '%' },
+                  { icon: FaEarthEurope, num: '25', title: 'European Countries' },
+                  { icon: FaHeadset, num: '24/7', title: 'Support Assistance', prefix: '' }
+                ].map((stat, i) => (
+                  <div key={i} className="flex items-center gap-4 w-full lg:w-1/4 px-4 pt-4 lg:pt-0 first:pt-0">
+                    <div className="w-12 h-12 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
+                      <stat.icon className="text-brand-blue" size={20} />
+                    </div>
+                    <div>
+                      <div className="text-xl font-black text-brand-navy flex items-baseline">
+                        {stat.num !== '24/7' ? <><AnimatedCounter to={parseInt(stat.num)} />+</> : stat.num}
+                        {stat.suffix && stat.suffix}
+                      </div>
+                      <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{stat.title}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Right Trust Section */}
+              <div className="bg-brand-blue rounded-b-3xl lg:rounded-r-3xl lg:rounded-bl-none text-white py-6 px-8 flex items-center justify-center gap-4 min-w-[300px]">
+                <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center">
+                  <FaCircleCheck size={20} />
                 </div>
                 <div>
-                  <div className="text-xl font-bold text-brand-navy leading-none">{stat.value}</div>
-                  <div className="text-sm text-gray-500 font-medium mt-1">{stat.label}</div>
+                  <div className="font-bold text-lg">Trusted by Thousands</div>
+                  <div className="text-xs text-white/70">Your journey, our commitment.</div>
                 </div>
-              </motion.div>
-            ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
