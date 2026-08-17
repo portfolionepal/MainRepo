@@ -79,12 +79,12 @@ export const uploadMedia = async (file, descriptivePrefix = null) => {
 export const getImageUrl = (field, defaultFallback = '') => {
   if (!field) return defaultFallback;
 
-  if (typeof field === 'string') {
-    return field;
-  }
+  let finalUrl = defaultFallback;
 
-  if (typeof field === 'object' && field !== null) {
-    return (
+  if (typeof field === 'string') {
+    finalUrl = field;
+  } else if (typeof field === 'object' && field !== null) {
+    finalUrl = (
       field.imageUrl ||
       field.url ||
       field.secure_url ||
@@ -95,7 +95,12 @@ export const getImageUrl = (field, defaultFallback = '') => {
     );
   }
 
-  return defaultFallback;
+  if (typeof finalUrl === 'string') {
+    finalUrl = finalUrl.replace('https://www.sudeepbasnet.com/media/', 'https://media.sudeepbasnet.com/media/');
+    finalUrl = finalUrl.replace('https://sudeepbasnet.com/media/', 'https://media.sudeepbasnet.com/media/');
+  }
+
+  return finalUrl;
 };
 
 /**
