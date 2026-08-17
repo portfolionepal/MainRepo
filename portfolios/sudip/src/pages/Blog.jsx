@@ -42,13 +42,15 @@ export default function Blog() {
   };
 
   const renderBlogCard = (blog) => {
-    const isExternal = !!blog.url;
+    const isImageUrl = (url) => url && (url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || url.includes('media.sudeepbasnet.com'));
+    const actualImageUrl = blog.image || blog.imageUrl || (isImageUrl(blog.url) ? blog.url : null);
+    const isExternal = !!blog.url && !isImageUrl(blog.url);
     
     const CardContent = (
       <>
         {/* Image Section */}
         <div className="h-44 w-full overflow-hidden relative">
-          <img src={getImageUrl(blog.image || blog.imageUrl)} alt={blog.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
+          <img src={getImageUrl(actualImageUrl)} alt={blog.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
         
@@ -128,7 +130,15 @@ export default function Blog() {
             >
               {/* Modal Header Image */}
               <div className="relative h-64 w-full shrink-0">
-                <img src={getImageUrl(selectedBlog.image || selectedBlog.imageUrl)} alt={selectedBlog.title} className="w-full h-full object-cover" />
+                <img 
+                  src={getImageUrl(
+                    selectedBlog.image || 
+                    selectedBlog.imageUrl || 
+                    (selectedBlog.url && (selectedBlog.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || selectedBlog.url.includes('media.sudeepbasnet.com')) ? selectedBlog.url : null)
+                  )} 
+                  alt={selectedBlog.title} 
+                  className="w-full h-full object-cover" 
+                />
                 <button 
                   onClick={() => setSelectedBlog(null)}
                   className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white p-2 rounded-full transition-colors"
