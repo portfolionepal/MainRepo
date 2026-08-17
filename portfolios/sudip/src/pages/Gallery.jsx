@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 const GalleryCard = ({ item }) => {
   const scrollRef = useRef(null);

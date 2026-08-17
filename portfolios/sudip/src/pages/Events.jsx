@@ -3,7 +3,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { Calendar, X, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 export default function Events() {
   const { siteContent } = useAdminContext();

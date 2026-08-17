@@ -1,7 +1,7 @@
 import { Quote } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 export default function Testimonials() {
   const { siteContent } = useAdminContext();

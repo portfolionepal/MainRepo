@@ -1,7 +1,7 @@
 import AnimatedSection from '../components/AnimatedSection';
 import { Target, Users, Check } from 'lucide-react';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 export default function Wellbeing() {
   const { siteContent } = useAdminContext();

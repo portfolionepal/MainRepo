@@ -2,7 +2,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { Briefcase, TrendingUp, Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 export default function LeadershipCoaching() {
   const { siteContent } = useAdminContext();

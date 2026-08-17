@@ -8,7 +8,7 @@
  * @param {string|null} descriptivePrefix - Optional descriptive prefix
  * @returns {Promise<{url: string, imageUrl: string, publicId: string}>}
  */
-export const uploadToCloudinary = async (file, descriptivePrefix = null) => {
+export const uploadMedia = async (file, descriptivePrefix = null) => {
   if (!file) {
     throw new Error("No file provided for upload.");
   }

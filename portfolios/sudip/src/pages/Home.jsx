@@ -3,7 +3,7 @@ import { ArrowRight, CheckCircle2, TrendingUp, Users, Target, Award, Play, Chevr
 import AnimatedSection from '../components/AnimatedSection';
 import Counter from '../components/Counter';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 export default function Home() {
   const { siteContent } = useAdminContext();

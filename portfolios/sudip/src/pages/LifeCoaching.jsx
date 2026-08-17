@@ -2,7 +2,7 @@ import AnimatedSection from '../components/AnimatedSection';
 import { Heart, Activity, Sun, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 export default function LifeCoaching() {
   const { siteContent } = useAdminContext();

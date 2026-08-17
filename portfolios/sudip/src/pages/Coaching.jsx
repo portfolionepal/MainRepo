@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import AnimatedSection from '../components/AnimatedSection';
 import { ArrowRight } from 'lucide-react';
 import { useAdminContext } from '../context/AdminContext';
-import { getImageUrl } from '../utils/cloudinary';
+import { getImageUrl } from '../utils/upload';
 
 export default function Coaching() {
   const { siteContent } = useAdminContext();

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
 import { Plus, Trash2, Save, Check, AlertCircle } from 'lucide-react';
-import { uploadToCloudinary, getImageUrl, generateStablePublicId } from '../utils/cloudinary';
+import { uploadMedia, getImageUrl, generateStablePublicId } from '../utils/upload';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function GenericEditor() {
@@ -40,7 +40,7 @@ export default function GenericEditor() {
     const targetInput = e.target; // Save reference before async work
     
     try {
-      // Generate a descriptive prefix for the Cloudinary public_id
+      // Generate a descriptive prefix for the Hostinger upload
       let existingItem = null;
       if (isArray) {
         existingItem = formData[arrayKey] ? formData[arrayKey][index] : null;
@@ -50,8 +50,8 @@ export default function GenericEditor() {
       
       console.log(`[Upload] Starting upload for field: ${fieldId}, prefix: ${prefix}`);
 
-      // Upload to Cloudinary (always creates a NEW unique asset)
-      const uploadResult = await uploadToCloudinary(file, prefix);
+      // Upload to Hostinger
+      const uploadResult = await uploadMedia(file, prefix);
 
       console.log(`[Upload] Success! URL: ${uploadResult.imageUrl}`);
 
@@ -94,7 +94,7 @@ export default function GenericEditor() {
     try {
       const uploadPromises = files.map((file, i) => {
         const prefix = `multi_${Date.now()}_${i}`;
-        return uploadToCloudinary(file, prefix);
+        return uploadMedia(file, prefix);
       });
       
       const results = await Promise.all(uploadPromises);
