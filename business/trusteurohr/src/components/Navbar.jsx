@@ -62,8 +62,8 @@ const Navbar = () => {
             <span className="hidden text-white font-bold text-xs text-center leading-tight">TEHR</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-extrabold tracking-tight text-brand-navy leading-none">
-              TRUSTEURO<span className="text-brand-blue">HR</span>
+            <span className="text-2xl font-extrabold tracking-tight text-brand-navy leading-none">
+              TrustEuroHR<span className="text-brand-blue"></span>
             </span>
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Your Gateway to Europe</span>
           </div>
