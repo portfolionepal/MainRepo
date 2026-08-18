@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaCircleCheck, FaArrowRight, FaArrowLeft, FaComments, FaFileSignature, FaPassport, FaPlaneDeparture } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
+import workingVisaImg from '../assets/working visa.png';
 
 const WorkVisa = () => {
   useEffect(() => {
@@ -49,7 +50,7 @@ const WorkVisa = () => {
             
             <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] md:h-auto">
               <img 
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop" 
+                src={workingVisaImg}
                 alt="Working in Europe" 
                 className="w-full h-full object-cover"
               />

@@ -1,9 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
-import { FaMapLocationDot, FaPhoneVolume, FaEnvelope, FaPaperPlane, FaSpinner, FaUser, FaTag, FaCommentDots, FaCircleCheck, FaInstagram, FaTiktok, FaWhatsapp, FaPhone, FaLocationDot } from 'react-icons/fa6';
+import { FaMapLocationDot, FaPhoneVolume, FaEnvelope, FaPaperPlane, FaSpinner, FaUser, FaTag, FaCommentDots, FaCircleCheck, FaInstagram, FaFacebook, FaWhatsapp, FaPhone, FaLocationDot } from 'react-icons/fa6';
 const instagramIcon = "https://img.icons8.com/color/96/instagram-new--v1.png";
-const tiktokIcon = "https://img.icons8.com/color/96/tiktok--v1.png";
 const whatsappIcon = "https://img.icons8.com/color/96/whatsapp--v1.png";
 const mobileIcon = "https://img.icons8.com/color/96/phone.png";
 const gmailIcon = "https://img.icons8.com/color/96/gmail-new.png";
@@ -64,7 +63,7 @@ const Contact = () => {
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Our Location</h5>
                       <p className="text-gray-600 leading-relaxed font-medium">
-                        New Baneshwor<br />
+                        Basundhara (Opp. Chirayu Hospital)<br />
                         Kathmandu, Nepal
                       </p>
                     </div>
@@ -76,7 +75,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Phone Number</h5>
-                      <p className="text-gray-600 font-medium">+977 (Phone Number Here)</p>
+                      <a href="tel:+9779744978667" className="text-gray-600 font-medium hover:text-brand-blue transition-colors">+977 9744978667</a>
                     </div>
                   </div>
 
@@ -86,7 +85,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Email Address</h5>
-                      <p className="text-gray-600 font-medium">info@trusteurohr.com</p>
+                      <a href="mailto:trusteurohrconsultancy2026@gmail.com" className="text-gray-600 font-medium hover:text-brand-blue transition-colors">trusteurohrconsultancy2026@gmail.com</a>
                     </div>
                   </div>
                 </div>
@@ -95,19 +94,19 @@ const Contact = () => {
               <div className="mt-12">
                 <h5 className="text-brand-navy font-bold mb-4">Follow Us</h5>
                 <div className="flex flex-wrap gap-5">
+                  <a href="https://www.facebook.com/profile.php?id=61593522176279" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#1877F2] hover:-translate-y-1 group">
+                    <FaFacebook className="text-2xl text-[#1877F2] group-hover:text-white transition-colors duration-300" />
+                  </a>
                   <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
                     <FaInstagram className="text-2xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-black hover:-translate-y-1 group">
-                    <FaTiktok className="text-2xl text-black group-hover:text-white transition-colors duration-300" />
-                  </a>
-                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
+                  <a href="https://wa.me/message/QOSVCIZQZEMJC1" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
                     <FaWhatsapp className="text-2xl text-[#25D366] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#0661DD] hover:-translate-y-1 group">
+                  <a href="tel:+9779744978667" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#0661DD] hover:-translate-y-1 group">
                     <FaPhone className="text-xl text-[#0661DD] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#EA4335] hover:-translate-y-1 group">
+                  <a href="mailto:trusteurohrconsultancy2026@gmail.com" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#EA4335] hover:-translate-y-1 group">
                     <FaEnvelope className="text-xl text-[#EA4335] group-hover:text-white transition-colors duration-300" />
                   </a>
                 </div>
@@ -222,7 +221,7 @@ const Contact = () => {
           className="mt-16 rounded-2xl overflow-hidden border border-gray-200 h-[450px] shadow-sm relative"
         >
           <iframe 
-            src="https://maps.google.com/maps?q=New%20Baneshwor,%20Kathmandu,%20Nepal&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+            src="https://maps.google.com/maps?q=Chirayu%20National%20Hospital,%20Basundhara,%20Kathmandu,%20Nepal&t=&z=15&ie=UTF8&iwloc=&output=embed" 
             width="100%" 
             height="100%" 
             style={{ border: 0 }} 
@@ -240,7 +239,7 @@ const Contact = () => {
             </div>
             <div>
               <h5 className="text-brand-navy font-extrabold text-sm mb-0.5">TrustEuroHR Office</h5>
-              <p className="text-xs text-gray-500 font-medium leading-relaxed">New Baneshwor, Kathmandu 44600, Nepal</p>
+              <p className="text-xs text-gray-500 font-medium leading-relaxed">Basundhara (Opp. Chirayu Hospital), Kathmandu, Nepal</p>
             </div>
           </div>
         </motion.div>

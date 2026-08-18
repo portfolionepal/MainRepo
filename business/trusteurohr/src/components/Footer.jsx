@@ -1,8 +1,7 @@
 import React from 'react';
 import logoImg from '../assets/logo.png';
-import { FaPhone, FaEnvelope, FaLocationDot, FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa6';
+import { FaPhone, FaEnvelope, FaLocationDot, FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa6';
 const instagramIcon = "https://img.icons8.com/color/96/instagram-new--v1.png";
-const tiktokIcon = "https://img.icons8.com/color/96/tiktok--v1.png";
 const whatsappIcon = "https://img.icons8.com/color/96/whatsapp--v1.png";
 const mobileIcon = "https://img.icons8.com/color/96/phone.png";
 const gmailIcon = "https://img.icons8.com/color/96/gmail-new.png";
@@ -54,15 +53,15 @@ const Footer = () => {
             <ul className="space-y-4 text-brand-white/70 text-sm font-medium">
               <li className="flex items-start gap-3">
                 <FaLocationDot size={18} className="text-brand-blue shrink-0 mt-0.5" />
-                <span>New Baneshwor<br />Kathmandu, Nepal</span>
+                <span>Basundhara (Opp. Chirayu Hospital)<br />Kathmandu, Nepal</span>
               </li>
               <li className="flex items-center gap-3">
                 <FaPhone size={16} className="text-brand-blue shrink-0" />
-                <span>+977 (Phone Number)</span>
+                <a href="tel:+9779744978667" className="hover:text-brand-white transition-colors">+977 9744978667</a>
               </li>
               <li className="flex items-center gap-3">
                 <FaEnvelope size={16} className="text-brand-blue shrink-0" />
-                <span>info@trusteurohr.com</span>
+                <a href="mailto:trusteurohrconsultancy2026@gmail.com" className="hover:text-brand-white transition-colors">trusteurohrconsultancy2026@gmail.com</a>
               </li>
             </ul>
           </div>
@@ -71,13 +70,13 @@ const Footer = () => {
           <div>
             <h5 className="text-white font-bold tracking-widest uppercase text-xs mb-6">Connect With Us</h5>
             <div className="flex flex-wrap gap-5">
+              <a href="https://www.facebook.com/profile.php?id=61593522176279" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#1877F2] hover:-translate-y-1 group">
+                <FaFacebook className="text-xl text-[#1877F2] group-hover:text-white transition-colors duration-300" />
+              </a>
               <a href="#" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
                 <FaInstagram className="text-xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
               </a>
-              <a href="#" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-black hover:-translate-y-1 group">
-                <FaTiktok className="text-xl text-black group-hover:text-white transition-colors duration-300" />
-              </a>
-              <a href="#" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
+              <a href="https://wa.me/message/QOSVCIZQZEMJC1" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
                 <FaWhatsapp className="text-xl text-[#25D366] group-hover:text-white transition-colors duration-300" />
               </a>
             </div>

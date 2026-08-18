@@ -60,7 +60,7 @@ const FloatingWhatsApp = () => {
       </AnimatePresence>
 
       <a
-        href="https://wa.me/9779800000000" // Placeholder phone number
+        href="https://wa.me/message/QOSVCIZQZEMJC1"
         target="_blank"
         rel="noopener noreferrer"
         className="pointer-events-auto relative group flex items-center justify-center w-[60px] h-[60px]"

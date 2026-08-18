@@ -184,9 +184,9 @@ const Home = () => {
               {/* Left Stats Section */}
               <div className="flex-1 bg-white rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none flex flex-wrap lg:flex-nowrap items-center py-6 px-8 gap-8 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
                 {[
-                  { icon: FaUserGroup, num: '500', title: 'Visas Approved' },
-                  { icon: FaShieldHalved, num: '98', title: 'Success Rate', suffix: '%' },
-                  { icon: FaEarthEurope, num: '25', title: 'European Countries' },
+                  { icon: FaUserGroup, num: '150', title: 'Visas Approved' },
+                  { icon: FaShieldHalved, num: '98', title: 'Success Rate', suffix: '%', hidePlus: true },
+                  { icon: FaEarthEurope, num: '5', title: 'European Countries' },
                   { icon: FaHeadset, num: '24/7', title: 'Support Assistance', prefix: '' }
                 ].map((stat, i) => (
                   <div key={i} className="flex items-center gap-4 w-full lg:w-1/4 px-4 pt-4 lg:pt-0 first:pt-0">
@@ -195,7 +195,7 @@ const Home = () => {
                     </div>
                     <div>
                       <div className="text-xl font-black text-brand-navy flex items-baseline">
-                        {stat.num !== '24/7' ? <><AnimatedCounter to={parseInt(stat.num)} />+</> : stat.num}
+                        {stat.num !== '24/7' ? <><AnimatedCounter to={parseInt(stat.num)} />{!stat.hidePlus && '+'}</> : stat.num}
                         {stat.suffix && <span>{stat.suffix}</span>}
                       </div>
                       <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{stat.title}</div>

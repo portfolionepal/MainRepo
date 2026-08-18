@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FaPlane, FaBriefcase, FaCircleCheck, FaArrowRight, FaShieldHalved, FaClock, FaUsers, FaEarthEurope } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
+import workingVisaImg from '../assets/working visa.png';
 
 const Services = () => {
   const containerVariants = {
@@ -64,7 +65,7 @@ const Services = () => {
             <div className="bg-white rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-premium h-full flex flex-col overflow-hidden group/card relative z-10">
               <div className="w-full h-56 overflow-hidden bg-gray-100">
                 <img 
-                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop" 
+                  src={workingVisaImg}
                   alt="Work Visa" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" 
                 />
