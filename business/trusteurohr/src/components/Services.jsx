@@ -154,7 +154,7 @@ const Services = () => {
               { icon: FaShieldHalved, label: 'Trusted Process' },
               { icon: FaClock, label: 'Fast Turnaround' },
               { icon: FaUsers, label: 'Personalized Support' },
-              { icon: FaEarthEurope, label: '5 Countries Covered' }
+              { icon: FaEarthEurope, label: '5+ Countries Covered' }
             ].map((item, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#F7F9FC] to-gray-100 flex items-center justify-center border border-gray-200/60 shadow-inner">

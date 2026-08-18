@@ -17,13 +17,19 @@ const Contact = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', form.current, 'YOUR_PUBLIC_KEY')
+    emailjs.sendForm(
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+      form.current,
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    )
       .then((result) => {
           setIsSubmitting(false);
           setSubmitStatus('success');
           form.current.reset();
           setTimeout(() => setSubmitStatus(null), 5000);
       }, (error) => {
+          console.error('EmailJS error:', error);
           setIsSubmitting(false);
           setSubmitStatus('error');
           setTimeout(() => setSubmitStatus(null), 5000);
@@ -63,7 +69,7 @@ const Contact = () => {
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Our Location</h5>
                       <p className="text-gray-600 leading-relaxed font-medium">
-                        Basundhara (Opp. Chirayu Hospital)<br />
+                        Basundhara (Opposite of Chirayu Hospital)<br />
                         Kathmandu, Nepal
                       </p>
                     </div>
@@ -97,7 +103,7 @@ const Contact = () => {
                   <a href="https://www.facebook.com/profile.php?id=61593522176279" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#1877F2] hover:-translate-y-1 group">
                     <FaFacebook className="text-2xl text-[#1877F2] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="#" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
+                  <a href="https://instagram.com" target="_blank" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
                     <FaInstagram className="text-2xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
                   </a>
                   <a href="https://wa.me/message/QOSVCIZQZEMJC1" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
@@ -106,7 +112,12 @@ const Contact = () => {
                   <a href="tel:+9779744978667" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#0661DD] hover:-translate-y-1 group">
                     <FaPhone className="text-xl text-[#0661DD] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="mailto:trusteurohrconsultancy2026@gmail.com" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#EA4335] hover:-translate-y-1 group">
+                  <a
+                    href="https://gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#EA4335] hover:-translate-y-1 group"
+                  >
                     <FaEnvelope className="text-xl text-[#EA4335] group-hover:text-white transition-colors duration-300" />
                   </a>
                 </div>
