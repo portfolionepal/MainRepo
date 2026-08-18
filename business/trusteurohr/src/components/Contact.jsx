@@ -37,18 +37,18 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 bg-[#FAFBFC] relative overflow-hidden">
+    <section id="contact" className="py-12 sm:py-16 md:py-24 bg-[#FAFBFC] relative overflow-hidden">
       <div className="absolute inset-0 bg-pattern-grid pointer-events-none opacity-[0.3]"></div>
-      <div className="container mx-auto px-6 md:px-12 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
           <h2 className="text-brand-accent font-bold tracking-widest uppercase text-sm mb-4 font-sans">Get In Touch</h2>
-          <h3 className="text-3xl md:text-4xl font-extrabold text-brand-navy mb-6">Let's Plan Your Future</h3>
+          <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-navy mb-4 sm:mb-6">Let's Plan Your Future</h3>
           <p className="text-gray-600 text-base md:text-lg">
             Ready to start your journey? Contact our experts today for a consultation.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-12 lg:gap-8">
+        <div className="grid lg:grid-cols-5 gap-8 lg:gap-8">
           {/* Contact Info */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -57,9 +57,9 @@ const Contact = () => {
             viewport={{ once: true }}
             className="lg:col-span-2 space-y-8"
           >
-            <div className="bg-white border border-gray-200 p-8 rounded-2xl h-full flex flex-col justify-between shadow-sm">
+            <div className="bg-white border border-gray-200 p-5 sm:p-8 rounded-2xl h-full flex flex-col justify-between shadow-sm">
               <div>
-                <h4 className="text-xl md:text-2xl font-extrabold text-brand-navy mb-8">Contact Information</h4>
+                <h4 className="text-lg sm:text-xl md:text-2xl font-extrabold text-brand-navy mb-6 sm:mb-8">Contact Information</h4>
                 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4 group">
@@ -91,7 +91,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h5 className="text-brand-navy font-bold mb-1">Email Address</h5>
-                      <a href="mailto:trusteurohrconsultancy2026@gmail.com" className="text-gray-600 font-medium hover:text-brand-blue transition-colors">trusteurohrconsultancy2026@gmail.com</a>
+                      <a href="mailto:trusteurohrconsultancy2026@gmail.com" className="text-gray-600 font-medium hover:text-brand-blue transition-colors text-sm sm:text-base break-all">trusteurohrconsultancy2026@gmail.com</a>
                     </div>
                   </div>
                 </div>
@@ -99,23 +99,29 @@ const Contact = () => {
 
               <div className="mt-12">
                 <h5 className="text-brand-navy font-bold mb-4">Follow Us</h5>
-                <div className="flex flex-wrap gap-5">
-                  <a href="https://www.facebook.com/profile.php?id=61593522176279" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#1877F2] hover:-translate-y-1 group">
+                <div className="flex flex-wrap gap-3 sm:gap-5">
+                  <a href="https://www.facebook.com/profile.php?id=61593522176279" target="_blank" rel="noopener noreferrer" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#1877F2] hover:-translate-y-1 group">
                     <FaFacebook className="text-2xl text-[#1877F2] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="https://instagram.com" target="_blank" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
+                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group"
+                    onClick={(e) => {
+                      if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        e.preventDefault();
+                        window.location.href = 'instagram://app';
+                        setTimeout(() => { window.open('https://www.instagram.com', '_blank'); }, 500);
+                      }
+                    }}
+                  >
                     <FaInstagram className="text-2xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="https://wa.me/message/QOSVCIZQZEMJC1" target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
+                  <a href="https://wa.me/message/QOSVCIZQZEMJC1" target="_blank" rel="noopener noreferrer" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
                     <FaWhatsapp className="text-2xl text-[#25D366] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="tel:+9779744978667" className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#0661DD] hover:-translate-y-1 group">
+                  <a href="tel:+9779744978667" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#0661DD] hover:-translate-y-1 group">
                     <FaPhone className="text-xl text-[#0661DD] group-hover:text-white transition-colors duration-300" />
                   </a>
                   <a
-                    href="https://gmail.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="mailto:trusteurohrconsultancy2026@gmail.com"
                     className="w-14 h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#EA4335] hover:-translate-y-1 group"
                   >
                     <FaEnvelope className="text-xl text-[#EA4335] group-hover:text-white transition-colors duration-300" />
@@ -133,7 +139,7 @@ const Contact = () => {
             viewport={{ once: true }}
             className="lg:col-span-3"
           >
-            <div className="bg-white border border-gray-200 p-8 md:p-10 rounded-2xl shadow-sm relative overflow-hidden">
+            <div className="bg-white border border-gray-200 p-5 sm:p-8 md:p-10 rounded-2xl shadow-sm relative overflow-hidden">
               <form ref={form} onSubmit={sendEmail} className="space-y-6 relative z-10">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
@@ -229,7 +235,7 @@ const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mt-16 rounded-2xl overflow-hidden border border-gray-200 h-[450px] shadow-sm relative"
+          className="mt-10 sm:mt-16 rounded-2xl overflow-hidden border border-gray-200 h-[280px] sm:h-[350px] md:h-[450px] shadow-sm relative"
         >
           <iframe 
             src="https://maps.google.com/maps?q=Chirayu%20National%20Hospital,%20Basundhara,%20Kathmandu,%20Nepal&t=&z=15&ie=UTF8&iwloc=&output=embed" 
@@ -244,12 +250,12 @@ const Contact = () => {
           ></iframe>
 
           {/* Location Info Card Popup */}
-          <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-[0_10px_30px_rgba(2,25,91,0.15)] border border-white z-10 flex items-center gap-4 max-w-[280px]">
-            <div className="w-12 h-12 flex items-center justify-center shrink-0">
+          <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 md:bottom-8 md:left-8 bg-white/95 backdrop-blur-md p-3 sm:p-5 rounded-xl sm:rounded-2xl shadow-[0_10px_30px_rgba(2,25,91,0.15)] border border-white z-10 flex items-center gap-3 sm:gap-4 max-w-[240px] sm:max-w-[280px]">
+            <div className="w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
               <img src={googleMapsIcon} alt="Location" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h5 className="text-brand-navy font-extrabold text-sm mb-0.5">TrustEuroHR Office</h5>
+              <h5 className="text-brand-navy font-extrabold text-xs sm:text-sm mb-0.5">TrustEuroHR Office</h5>
               <p className="text-xs text-gray-500 font-medium leading-relaxed">Basundhara (Opp. Chirayu Hospital), Kathmandu, Nepal</p>
             </div>
           </div>

@@ -29,7 +29,7 @@ const Home = () => {
 
   return (
     <>
-      <section id="home" className="relative w-full pt-32 lg:pt-40 pb-16 lg:pb-40 bg-gradient-to-br from-[#EAF4FC] to-[#D9EAF7]" onMouseMove={handleMouseMove}>
+      <section id="home" className="relative w-full pt-24 sm:pt-32 lg:pt-40 pb-10 sm:pb-16 lg:pb-40 bg-gradient-to-br from-[#EAF4FC] to-[#D9EAF7]" onMouseMove={handleMouseMove}>
         {/* Background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <motion.div
@@ -44,24 +44,24 @@ const Home = () => {
           <FlyingAirplane />
         </div>
 
-        <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col xl:flex-row items-center gap-12 xl:gap-8">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 relative z-10 flex flex-col xl:flex-row items-center gap-8 sm:gap-12 xl:gap-8">
 
           {/* Left Column: Text & CTA */}
-          <div className="w-full xl:w-5/12 max-w-2xl mt-8 xl:mt-0 lg:pl-28 xl:pl-32 z-20">
+          <div className="w-full xl:w-5/12 max-w-2xl mt-4 sm:mt-8 xl:mt-0 lg:pl-28 xl:pl-32 z-20">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div className="w-10 h-[1px] bg-brand-accent"></div>
-                <span className="text-brand-accent font-bold tracking-[0.2em] uppercase text-[11px] font-sans">
+                <span className="text-brand-accent font-bold tracking-[0.15em] sm:tracking-[0.2em] uppercase text-[10px] sm:text-[11px] font-sans">
                   Premium Foreign Consultancy
                 </span>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold text-brand-blue leading-[1.1] mb-6 tracking-tight font-serif drop-shadow-sm">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold text-brand-blue leading-[1.1] mb-4 sm:mb-6 tracking-tight font-serif drop-shadow-sm">
                 Your Gateway to <br />
                 European Opportunities
               </h1>
@@ -72,7 +72,7 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
-              className="text-base md:text-lg text-brand-navy/70 mb-10 max-w-lg leading-relaxed font-medium"
+              className="text-sm sm:text-base md:text-lg text-brand-navy/70 mb-6 sm:mb-10 max-w-lg leading-relaxed font-medium"
             >
               Expert guidance for securing work and travel visas across Europe. We turn your global ambitions into reality with trust, transparency, and unparalleled service.
             </motion.p>
@@ -82,18 +82,18 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4"
             >
               <MagneticButton
                 href="#services"
-                className="px-8 py-3.5 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 group"
+                className="px-6 sm:px-8 py-3 sm:py-3.5 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3 group text-sm sm:text-base"
               >
                 Explore Services
                 <FaArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
               </MagneticButton>
               <a
                 href="#contact"
-                className="px-8 py-3.5 bg-white text-brand-navy hover:bg-gray-50 font-bold rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 border border-gray-100"
+                className="px-6 sm:px-8 py-3 sm:py-3.5 bg-white text-brand-navy hover:bg-gray-50 font-bold rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 border border-gray-100 text-sm sm:text-base"
               >
                 Contact Us
               </a>
@@ -101,7 +101,7 @@ const Home = () => {
           </div>
 
           {/* Right Column: Skewed Image Composition */}
-          <div className="w-full xl:w-7/12 relative h-[500px] md:h-[650px] z-10 flex justify-center xl:justify-end mt-12 xl:mt-0">
+          <div className="w-full xl:w-7/12 relative h-[320px] sm:h-[400px] md:h-[650px] z-10 flex justify-center xl:justify-end mt-6 sm:mt-12 xl:mt-0">
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -153,7 +153,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.9, type: 'spring' }}
                 viewport={{ once: true }}
-                className="absolute top-[40%] left-[25%] z-30 bg-white/95 backdrop-blur-md rounded-[1.5rem] p-5 shadow-2xl border border-white"
+                className="absolute top-[40%] left-[25%] z-30 bg-white/95 backdrop-blur-md rounded-[1rem] sm:rounded-[1.5rem] p-3 sm:p-5 shadow-2xl border border-white hidden sm:block"
               >
                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
                   <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue">
@@ -178,39 +178,39 @@ const Home = () => {
         <AnimatedFlags />
 
         {/* Bottom Stats Bar */}
-        <div className="relative lg:absolute lg:bottom-0 left-0 right-0 px-6 md:px-12 z-40 lg:transform lg:translate-y-1/2 mt-16 lg:mt-0">
+        <div className="relative lg:absolute lg:bottom-0 left-0 right-0 px-4 sm:px-6 md:px-12 z-40 lg:transform lg:translate-y-1/2 mt-10 sm:mt-16 lg:mt-0">
           <div className="container mx-auto">
-            <div className="flex flex-col lg:flex-row shadow-2xl rounded-3xl overflow-visible relative">
+            <div className="flex flex-col lg:flex-row shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl overflow-visible relative">
               {/* Left Stats Section */}
-              <div className="flex-1 bg-white rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none flex flex-wrap lg:flex-nowrap items-center py-6 px-8 gap-8 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
+              <div className="flex-1 bg-white rounded-t-2xl sm:rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none flex flex-wrap lg:flex-nowrap items-center py-4 sm:py-6 px-4 sm:px-8 gap-4 sm:gap-8 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
                 {[
                   { icon: FaUserGroup, num: '150', title: 'Visas Approved' },
                   { icon: FaShieldHalved, num: '98', title: 'Success Rate', suffix: '%', hidePlus: true },
                   { icon: FaEarthEurope, num: '5', title: 'European Countries' },
                   { icon: FaHeadset, num: '24/7', title: 'Support Assistance', prefix: '' }
                 ].map((stat, i) => (
-                  <div key={i} className="flex items-center gap-4 w-full lg:w-1/4 px-4 pt-4 lg:pt-0 first:pt-0">
-                    <div className="w-12 h-12 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
+                  <div key={i} className="flex items-center gap-3 sm:gap-4 w-full sm:w-[calc(50%-0.5rem)] lg:w-1/4 px-2 sm:px-4 pt-3 sm:pt-4 lg:pt-0 first:pt-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
                       <stat.icon className="text-brand-blue" size={20} />
                     </div>
                     <div>
-                      <div className="text-xl font-black text-brand-navy flex items-baseline">
+                      <div className="text-lg sm:text-xl font-black text-brand-navy flex items-baseline">
                         {stat.num !== '24/7' ? <><AnimatedCounter to={parseInt(stat.num)} />{!stat.hidePlus && '+'}</> : stat.num}
                         {stat.suffix && <span>{stat.suffix}</span>}
                       </div>
-                      <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{stat.title}</div>
+                      <div className="text-[10px] sm:text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{stat.title}</div>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Right Trust Section */}
-              <div className="bg-brand-blue rounded-b-3xl lg:rounded-r-3xl lg:rounded-bl-none text-white py-6 px-8 flex items-center justify-center gap-4 min-w-[300px]">
+              <div className="bg-brand-blue rounded-b-2xl sm:rounded-b-3xl lg:rounded-r-3xl lg:rounded-bl-none text-white py-4 sm:py-6 px-6 sm:px-8 flex items-center justify-center gap-3 sm:gap-4 min-w-0 lg:min-w-[300px]">
                 <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center">
                   <FaCircleCheck size={20} />
                 </div>
                 <div>
-                  <div className="font-bold text-lg">Trusted by Thousands</div>
+                  <div className="font-bold text-base sm:text-lg">Trusted by Thousands</div>
                   <div className="text-xs text-white/70">Your journey, our commitment.</div>
                 </div>
               </div>

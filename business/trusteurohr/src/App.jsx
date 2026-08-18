@@ -10,7 +10,7 @@ import TravelVisa from './pages/TravelVisa';
 function App() {
   return (
     <BrowserRouter>
-      <div className="font-sans text-brand-navy min-h-screen bg-brand-white selection:bg-brand-sky/30 selection:text-brand-navy relative">
+      <div className="font-sans text-brand-navy min-h-screen bg-brand-white selection:bg-brand-sky/30 selection:text-brand-navy relative overflow-x-hidden w-full">
         {/* Subtle modern background gradient (optional, keeps it clean) */}
         <div className="fixed inset-0 pointer-events-none bg-gradient-to-br from-white via-white to-brand-sky/5 z-[-1]"></div>
 

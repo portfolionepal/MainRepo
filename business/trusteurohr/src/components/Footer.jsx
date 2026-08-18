@@ -9,12 +9,12 @@ const googleMapsIcon = "https://img.icons8.com/color/96/google-maps-new.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-brand-dark relative z-10 pt-16 pb-8">
+    <footer className="bg-brand-dark relative z-10 pt-10 sm:pt-16 pb-6 sm:pb-8">
       {/* Thin gradient top border */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-blue via-brand-sky to-brand-navy"></div>
 
-      <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-10 sm:mb-16">
           
           {/* Logo & Tagline */}
           <div className="flex flex-col gap-6">
@@ -73,9 +73,19 @@ const Footer = () => {
               <a href="https://www.facebook.com/profile.php?id=61593522176279" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#1877F2] hover:-translate-y-1 group">
                 <FaFacebook className="text-xl text-[#1877F2] group-hover:text-white transition-colors duration-300" />
               </a>
-              <a href="#" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group">
+              
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#E1306C] hover:-translate-y-1 group"
+                onClick={(e) => {
+                  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    e.preventDefault();
+                    window.location.href = 'instagram://app';
+                    setTimeout(() => { window.open('https://www.instagram.com', '_blank'); }, 500);
+                  }
+                }}
+              >
                 <FaInstagram className="text-xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
               </a>
+
               <a href="https://wa.me/message/QOSVCIZQZEMJC1" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white shadow-[0_4px_15px_rgb(0,0,0,0.2)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
                 <FaWhatsapp className="text-xl text-[#25D366] group-hover:text-white transition-colors duration-300" />
               </a>
@@ -84,14 +94,11 @@ const Footer = () => {
 
         </div>
 
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-white/10 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-brand-white/50 font-medium text-xs">
             &copy; {new Date().getFullYear()} TrustEuroHR Consultancy. All rights reserved.
           </p>
-          <div className="flex gap-6 text-xs font-semibold text-brand-white/50">
-            <a href="#" className="hover:text-brand-sky transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-brand-sky transition-colors">Terms of Service</a>
-          </div>
+
         </div>
       </div>
     </footer>

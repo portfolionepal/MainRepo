@@ -10,29 +10,29 @@ const TravelVisa = () => {
 
   return (
     <main className="pt-24 lg:pt-32 pb-16 min-h-screen bg-gray-50">
-      <div className="container mx-auto px-6 md:px-12">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 md:p-12 lg:p-16 shadow-lg border border-gray-100 relative"
+          className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12 lg:p-16 shadow-lg border border-gray-100 relative"
         >
-          <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-blue font-semibold mb-8 transition-all duration-300 w-fit group border border-gray-200 rounded-full px-5 py-2 hover:border-brand-blue/30 hover:bg-brand-blue/5">
+          <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-blue font-semibold mb-6 sm:mb-8 transition-all duration-300 w-fit group border border-gray-200 rounded-full px-4 sm:px-5 py-2 hover:border-brand-blue/30 hover:bg-brand-blue/5 text-sm sm:text-base">
             <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> Back to Home
           </Link>
 
           <div className="mb-6">
-            <h1 className="text-3xl md:text-5xl font-bold text-brand-navy font-serif">Travel Visa</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-brand-navy font-serif">Travel Visa</h1>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-12 mt-12">
+          <div className="grid md:grid-cols-2 gap-8 sm:gap-12 mt-8 sm:mt-12">
             <div>
-              <h2 className="text-2xl font-bold text-brand-navy mb-4">Explore Europe Seamlessly</h2>
-              <p className="text-gray-600 mb-6 leading-relaxed">
+              <h2 className="text-xl sm:text-2xl font-bold text-brand-navy mb-3 sm:mb-4">Explore Europe Seamlessly</h2>
+              <p className="text-gray-600 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                 Expert assistance for securing tourist and short-stay visas. We handle the complexities of documentation, flight itineraries, and embassy appointments so you can focus entirely on your travel itinerary.
               </p>
               
-              <h3 className="text-xl font-bold text-brand-navy mb-4">Our Services Include:</h3>
-              <ul className="space-y-4 mb-10">
+              <h3 className="text-lg sm:text-xl font-bold text-brand-navy mb-3 sm:mb-4">Our Services Include:</h3>
+              <ul className="space-y-3 sm:space-y-4 mb-8 sm:mb-10">
                 {['Comprehensive Document Verification', 'Fast-Track Application Processing', 'Mock Interview Preparation', 'Travel Insurance & Flight Booking Guidance'].map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-gray-700 font-medium">
                     <FaCircleCheck className="text-brand-blue mt-1 shrink-0" size={18} />
@@ -41,13 +41,13 @@ const TravelVisa = () => {
                 ))}
               </ul>
               
-              <Link to="/#contact" className="inline-flex items-center gap-3 px-8 py-4 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+              <Link to="/#contact" className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-brand-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-sm sm:text-base">
                 Start Your Application
                 <FaArrowRight />
               </Link>
             </div>
             
-            <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] md:h-auto">
+            <div className="rounded-2xl overflow-hidden shadow-lg h-[250px] sm:h-[400px] md:h-auto">
               <img 
                 src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1000&auto=format&fit=crop" 
                 alt="Traveling in Europe" 
@@ -57,17 +57,17 @@ const TravelVisa = () => {
           </div>
 
           {/* Our Streamlined Process Section */}
-          <div className="mt-24 pt-16 border-t border-gray-100 pb-12">
-            <div className="text-center mb-20">
-              <h2 className="text-3xl font-bold text-brand-navy mb-4 font-serif">Our Streamlined Process</h2>
+          <div className="mt-16 sm:mt-24 pt-10 sm:pt-16 border-t border-gray-100 pb-8 sm:pb-12">
+            <div className="text-center mb-12 sm:mb-20">
+              <h2 className="text-2xl sm:text-3xl font-bold text-brand-navy mb-3 sm:mb-4 font-serif">Our Streamlined Process</h2>
               <p className="text-gray-500 max-w-2xl mx-auto">We've simplified the journey to traveling in Europe into clear, manageable steps to ensure your peace of mind.</p>
             </div>
             
-            <div className="relative max-w-5xl mx-auto px-4 md:px-0">
+            <div className="relative max-w-5xl mx-auto px-2 sm:px-4 md:px-0">
               {/* Horizontal Dashed Line Background */}
               <div className="hidden md:block absolute top-[32px] left-[10%] w-[80%] h-0 border-t-[3px] border-dotted border-gray-300 z-0"></div>
 
-              <div className="flex flex-col md:flex-row justify-between gap-10 md:gap-4 relative z-10">
+              <div className="flex flex-col md:flex-row justify-between gap-8 sm:gap-10 md:gap-4 relative z-10">
                 {[
                   { step: '01', title: 'Consultation', desc: 'Initial assessment of your profile and eligibility.', icon: FaComments },
                   { step: '02', title: 'Documentation', desc: 'Gathering, translating, and legalizing all paperwork.', icon: FaFileSignature },

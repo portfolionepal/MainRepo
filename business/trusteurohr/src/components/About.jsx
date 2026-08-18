@@ -31,11 +31,11 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-24 relative overflow-hidden bg-[#FAFAFA]">
+    <section id="about" className="py-12 sm:py-16 md:py-24 relative overflow-hidden bg-[#FAFAFA]">
       <div className="absolute inset-0 bg-pattern-grid pointer-events-none opacity-[0.4]"></div>
       
-      <div className="container mx-auto px-6 md:px-12 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 mb-20">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 relative z-10">
+        <div className="flex flex-col lg:flex-row gap-8 sm:gap-12 lg:gap-16 mb-12 sm:mb-20">
           
           {/* Left Column: Who We Are Card */}
           <motion.div 
@@ -45,10 +45,10 @@ const About = () => {
             viewport={{ once: true, margin: "-100px" }}
             className="w-full lg:w-7/12"
           >
-            <div className="relative bg-white border border-gray-100 p-8 md:p-12 rounded-[1.5rem] shadow-premium h-full flex flex-col">
+            <div className="relative bg-white border border-gray-100 p-5 sm:p-8 md:p-12 rounded-[1.5rem] shadow-premium h-full flex flex-col">
                 
                 {/* Supporting Visual inside the card */}
-                <div className="w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 -mt-12 md:-mt-20 h-56 md:h-64 mb-8 rounded-2xl overflow-hidden relative shadow-2xl z-20">
+                <div className="w-[calc(100%+1.5rem)] sm:w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-3 sm:-ml-4 md:-ml-8 -mt-8 sm:-mt-12 md:-mt-20 h-40 sm:h-56 md:h-64 mb-6 sm:mb-8 rounded-xl sm:rounded-2xl overflow-hidden relative shadow-xl sm:shadow-2xl z-20">
                   <img 
                     src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1000&auto=format&fit=crop" 
                     alt="European Travel Passport" 
@@ -57,8 +57,8 @@ const About = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/40 to-transparent pointer-events-none"></div>
                   
                   {/* Floating Badge */}
-                  <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-3 border border-white/40">
-                    <span className="text-brand-accent font-black text-2xl font-sans leading-none">6+</span>
+                  <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-white/95 backdrop-blur-md px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl shadow-lg flex items-center gap-2 sm:gap-3 border border-white/40">
+                    <span className="text-brand-accent font-black text-xl sm:text-2xl font-sans leading-none">6+</span>
                     <span className="text-[10px] font-bold text-brand-navy uppercase leading-tight tracking-wider font-sans">Years<br/>Experience</span>
                   </div>
                 </div>
@@ -68,7 +68,7 @@ const About = () => {
                   <h2 className="text-brand-accent font-bold tracking-[0.2em] uppercase text-xs font-sans">Who We Are</h2>
                 </div>
                 
-                <h3 className="text-3xl md:text-4xl font-extrabold text-[#1c2b36] mb-6 leading-[1.1] tracking-tight">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1c2b36] mb-4 sm:mb-6 leading-[1.1] tracking-tight">
                   Your Reliable Partner for European Visas
                 </h3>
                 
@@ -133,18 +133,18 @@ const About = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-8"
+          className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8"
         >
           {values.map((val, i) => (
             <motion.div 
               variants={itemVariants}
               key={i} 
-              className="bg-white p-6 md:p-8 rounded-[1rem] shadow-sm hover:shadow-premium hover:-translate-y-1 transition-all duration-300"
+              className="bg-white p-5 sm:p-6 md:p-8 rounded-[1rem] shadow-sm hover:shadow-premium hover:-translate-y-1 transition-all duration-300"
             >
               <div className="w-10 h-10 rounded-[0.8rem] border border-gray-100 flex items-center justify-center mb-5 group-hover:bg-[#f4f7fb] transition-colors">
                 <val.icon size={18} className="text-[#0070ba]" />
               </div>
-              <h5 className="text-lg md:text-xl font-bold text-[#1c2b36] mb-2">{val.title}</h5>
+              <h5 className="text-base sm:text-lg md:text-xl font-bold text-[#1c2b36] mb-2">{val.title}</h5>
               <p className="text-gray-500 leading-relaxed text-base">
                 {val.desc}
               </p>
