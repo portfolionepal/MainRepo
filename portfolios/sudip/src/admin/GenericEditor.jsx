@@ -238,13 +238,33 @@ export default function GenericEditor() {
     }
   };
 
+  /**
+   * Fallback templates for when the array is completely empty and there's no
+   * existing item to derive the field structure from. Keyed by "pageId:arrayKey".
+   * This ensures the Add Item form always renders proper input fields.
+   */
+  const emptyItemTemplates = {
+    'clients:items': { id: 0, name: '', url: '' },
+    'testimonials:items': { id: 0, name: '', role: '', image: '', text: '' },
+    'gallery:items': { id: 0, category: '', title: '', images: [] },
+    'events:items': { id: 0, title: '', date: '', location: '', type: '', image: '', description: '' },
+    'events:pastItems': { id: 0, title: '', date: '', location: '', type: '', image: '', description: '' },
+    'blog:items': { id: 0, title: '', date: '', category: '', description: '', image: '', url: '', content: '' },
+    'trainingProcess:steps': { id: 0, title: '', desc: '' },
+    'missionVision:values': { id: 0, title: '', desc: '' },
+  };
+
   const handleAddItem = (arrayKey) => {
     setFormData(prev => {
       const currentArray = prev[arrayKey] || [];
-      const templateItem = currentArray.length > 0 ? currentArray[0] : {};
+      // Use an existing item as a template, or fall back to the known schema
+      const templateItem = currentArray.length > 0
+        ? currentArray[0]
+        : (emptyItemTemplates[`${pageId}:${arrayKey}`] || null);
       
       let newItem;
-      if (typeof templateItem === 'string') {
+      // If we still have no template (e.g. unknown page/array), or it's a string array
+      if (templateItem === null || typeof templateItem === 'string') {
         newItem = '';
       } else {
         // Create a blank copy of the template's shape
@@ -252,6 +272,8 @@ export default function GenericEditor() {
           const templateVal = templateItem[k];
           if (k === 'id') {
             acc[k] = Date.now();
+          } else if (Array.isArray(templateVal)) {
+            acc[k] = [];
           } else if (typeof templateVal === 'number') {
             acc[k] = 0;
           } else if (typeof templateVal === 'object' && templateVal !== null) {
