@@ -143,7 +143,7 @@ const Home = () => {
                 className="absolute left-[5%] bottom-[5%] w-[40%] h-[40%] z-20 -skew-x-[10deg] rounded-3xl overflow-hidden shadow-xl border-[6px] border-white/60 bg-white"
               >
                 <div className="absolute top-0 -left-[30%] w-[160%] h-full skew-x-[10deg]">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Russian_church_%2837591925970%29.jpg/1280px-Russian_church_%2837591925970%29.jpg" alt="Sofia, Bulgaria" className="w-full h-full object-cover" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Panoramic_view_over_central_Sofia_and_the_Vitosha_Mountain_2017-10-08.jpg/1280px-Panoramic_view_over_central_Sofia_and_the_Vitosha_Mountain_2017-10-08.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnailg" alt="Sofia, Bulgaria" className="w-full h-full object-cover" />
                 </div>
               </motion.div>
 
