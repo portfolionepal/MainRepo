@@ -114,7 +114,7 @@ const Contact = () => {
                   >
                     <FaInstagram className="text-2xl text-[#E1306C] group-hover:text-white transition-colors duration-300" />
                   </a>
-                  <a href="https://wa.me/message/QOSVCIZQZEMJC1" target="_blank" rel="noopener noreferrer" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
+                  <a href="https://wa.me/9779747889066?text=Hi%20TrustEuroHR" target="_blank" rel="noopener noreferrer" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#25D366] hover:-translate-y-1 group">
                     <FaWhatsapp className="text-2xl text-[#25D366] group-hover:text-white transition-colors duration-300" />
                   </a>
                   <a href="tel:+9779744978667" className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-all duration-300 hover:bg-[#0661DD] hover:-translate-y-1 group">
