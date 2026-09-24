@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAdminContext } from '../context/AdminContext';
 import { Plus, Trash2, Save, Check, AlertCircle } from 'lucide-react';
-import { uploadMedia, getImageUrl, generateStablePublicId } from '../utils/upload';
+import { uploadMedia, uploadImageFromUrl, getImageUrl, generateStablePublicId } from '../utils/upload';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function GenericEditor() {
@@ -212,6 +212,22 @@ export default function GenericEditor() {
       
       if (data.status === 'success' && data.data) {
         const metadata = data.data;
+        let finalImageUrl = '';
+
+        const rawImageUrl = metadata.image?.url || metadata.logo?.url;
+
+        if (rawImageUrl) {
+          try {
+            console.log('[FetchMetadata] Downloading & uploading fetched image to media.sudeepbasnet.com...');
+            const prefix = generateStablePublicId(pageId, arrayKey, index, null, 'fetched');
+            finalImageUrl = await uploadImageFromUrl(rawImageUrl, prefix, url);
+            console.log('[FetchMetadata] Image uploaded successfully to media storage:', finalImageUrl);
+          } catch (imgErr) {
+            console.error('[FetchMetadata] Image upload to media.sudeepbasnet.com failed:', imgErr);
+            showToast('Metadata fetched, but external image could not be stored to media server.', 'error');
+          }
+        }
+
         setFormData(prev => {
           const newArray = [...(prev[arrayKey] || [])];
           const item = { ...newArray[index] };
@@ -220,13 +236,20 @@ export default function GenericEditor() {
           if (metadata.description) {
             item.description = metadata.description;
           }
-          if (metadata.image?.url) {
-            item.image = metadata.image.url;
+          // IMPORTANT: Only save the image URL if it was successfully stored on media.sudeepbasnet.com
+          // Never store raw external URLs (e.g. nepalnews.com, etc.) directly in the blog post
+          if (finalImageUrl && finalImageUrl.includes('sudeepbasnet.com')) {
+            item.image = finalImageUrl;
           }
           newArray[index] = item;
           return { ...prev, [arrayKey]: newArray };
         });
-        showToast('Metadata fetched successfully!', 'success');
+
+        if (finalImageUrl) {
+          showToast('Metadata and image successfully saved to media server!', 'success');
+        } else if (!rawImageUrl) {
+          showToast('Metadata fetched (no preview image found on target site).', 'success');
+        }
       } else {
         showToast('Could not fetch metadata for this URL.', 'error');
       }
