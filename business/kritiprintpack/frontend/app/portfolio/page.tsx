@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { portfolioItems, PORTFOLIO_CATEGORIES, type PortfolioCategory } from "@/data/portfolio";
+import { useState, useEffect } from "react";
+import { PORTFOLIO_CATEGORIES, type PortfolioCategory, PortfolioItem } from "@/data/portfolio";
+import { fetchAPI } from "@/lib/api";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 
 export default function PortfolioPage() {
   const [activeCategory, setActiveCategory] = useState<PortfolioCategory | "all">("all");
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchAPI('/portfolio');
+      if (data) setPortfolioItems(data);
+      setLoading(false);
+    };
+    loadItems();
+  }, []);
 
   const filtered =
     activeCategory === "all"
@@ -71,11 +83,21 @@ export default function PortfolioPage() {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {filtered.map((item) => (
-              <PortfolioCard key={item.id} item={item} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-20 text-brand-gray">Loading projects...</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {filtered.map((item) => (
+                <PortfolioCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+
+          {!loading && filtered.length === 0 && (
+            <div className="text-center py-20 text-brand-gray">
+              No projects found in this category.
+            </div>
+          )}
         </Container>
       </section>
     </>

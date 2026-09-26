@@ -10,7 +10,8 @@ import {
   Truck,
   LucideIcon,
 } from "lucide-react";
-import { industries } from "@/data/industries";
+import { Industry } from "@/data/industries";
+import { fetchAPI } from "@/lib/api";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { CTA } from "@/components/home/CTA";
@@ -25,7 +26,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   ShoppingCart, UtensilsCrossed, Package, Factory, Pill, Store, Sprout, Truck,
 };
 
-export default function IndustriesPage() {
+export default async function IndustriesPage() {
+  const industries: Industry[] = (await fetchAPI('/industries')) || [];
   return (
     <>
       {/* Page Hero */}

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { CheckCircle, Send } from "lucide-react";
-import { products } from "@/data/products";
-import { services } from "@/data/services";
+import { useEffect } from "react";
+import { fetchAPI } from "@/lib/api";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 
@@ -42,8 +42,18 @@ export default function RequestQuotePage() {
   const [errors, setErrors] = useState<Partial<QuoteFormState>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  const productOptions = products.map((p) => p.name);
-  const serviceOptions = services.map((s) => s.name);
+  const [productOptions, setProductOptions] = useState<string[]>([]);
+  const [serviceOptions, setServiceOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function loadOptions() {
+      const p = await fetchAPI('/products');
+      if (p) setProductOptions(p.map((x: any) => x.name));
+      const s = await fetchAPI('/services');
+      if (s) setServiceOptions(s.map((x: any) => x.name));
+    }
+    loadOptions();
+  }, []);
 
   function validate(): boolean {
     const newErrors: Partial<QuoteFormState> = {};

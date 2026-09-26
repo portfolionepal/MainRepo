@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { services } from "@/data/services";
+import { Service } from "@/data/services";
+import { fetchAPI } from "@/lib/api";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
     "Explore Kriti Print & Pack's packaging services — custom design, sustainable packaging, rapid prototyping, FMCG food-grade production, and large-volume manufacturing.",
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services: Service[] = (await fetchAPI('/services')) || [];
   return (
     <>
       {/* Page Hero */}

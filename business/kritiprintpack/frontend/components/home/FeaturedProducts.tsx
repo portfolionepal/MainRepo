@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getFeaturedProducts } from "@/data/products";
+import { Product } from "@/data/products";
 import { ProductCard } from "@/components/products/ProductCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { fetchAPI } from "@/lib/api";
 
-export function FeaturedProducts() {
-  const featured = getFeaturedProducts().slice(0, 6);
+export async function FeaturedProducts() {
+  const products: Product[] = (await fetchAPI('/products')) || [];
+  const featured = products.filter((p) => p.isFeatured).slice(0, 6);
 
   return (
     <section className="py-20 lg:py-28 bg-white">

@@ -10,9 +10,10 @@ import {
   Truck,
   LucideIcon,
 } from "lucide-react";
-import { industries } from "@/data/industries";
+import { Industry } from "@/data/industries";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
+import { fetchAPI } from "@/lib/api";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   ShoppingCart,
@@ -25,7 +26,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Truck,
 };
 
-export function Industries() {
+export async function Industries() {
+  const industries: Industry[] = (await fetchAPI('/industries')) || [];
   return (
     <section className="py-20 lg:py-28 bg-white">
       <Container>

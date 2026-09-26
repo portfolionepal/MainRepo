@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getPortfolioItemBySlug, portfolioItems, PORTFOLIO_CATEGORIES } from "@/data/portfolio";
+import { PortfolioItem, PORTFOLIO_CATEGORIES } from "@/data/portfolio";
+import { fetchAPI } from "@/lib/api";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -12,12 +13,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
+  const portfolioItems: PortfolioItem[] = (await fetchAPI('/portfolio')) || [];
   return portfolioItems.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const item = getPortfolioItemBySlug(slug);
+  const item: PortfolioItem = await fetchAPI(`/portfolio/${slug}`);
   if (!item) return { title: "Project Not Found" };
   return {
     title: item.title,
@@ -27,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PortfolioDetailPage({ params }: Props) {
   const { slug } = await params;
-  const item = getPortfolioItemBySlug(slug);
+  const item: PortfolioItem = await fetchAPI(`/portfolio/${slug}`);
   if (!item) notFound();
 
   const categoryLabel = PORTFOLIO_CATEGORIES.find((c) => c.value === item.category)?.label;

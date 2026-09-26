@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, LucideIcon, PenTool, Leaf, Zap, ShieldCheck, Factory, Lightbulb } from "lucide-react";
-import { getServiceBySlug, services } from "@/data/services";
+import { Service } from "@/data/services";
+import { fetchAPI } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 
@@ -15,12 +16,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
 };
 
 export async function generateStaticParams() {
+  const services: Service[] = (await fetchAPI('/services')) || [];
   return services.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service: Service = await fetchAPI(`/services/${slug}`);
   if (!service) return { title: "Service Not Found" };
   return {
     title: service.name,
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service: Service = await fetchAPI(`/services/${slug}`);
   if (!service) notFound();
 
   const Icon = ICON_MAP[service.icon] || PenTool;

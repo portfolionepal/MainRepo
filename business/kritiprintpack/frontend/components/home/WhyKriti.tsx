@@ -1,47 +1,15 @@
-import { Award, Clock, Cog, Users, CheckCircle, TrendingUp } from "lucide-react";
+import { Award, Clock, Cog, Users, CheckCircle, TrendingUp, LucideIcon } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
+import { fetchAPI } from "@/lib/api";
 
-const REASONS = [
-  {
-    icon: Award,
-    title: "Uncompromising Quality",
-    description:
-      "Every carton leaves our facility after rigorous quality inspection. We maintain consistent burst strength, dimensional accuracy, and print fidelity across every production run.",
-  },
-  {
-    icon: Clock,
-    title: "Reliable Lead Times",
-    description:
-      "We understand that your production schedule depends on your packaging supply. Our production planning ensures on-time delivery, even for large-volume orders.",
-  },
-  {
-    icon: Cog,
-    title: "Custom-Made Solutions",
-    description:
-      "No two businesses are identical. We work with you to engineer packaging that fits your product, brand, and supply chain — not just a catalog item.",
-  },
-  {
-    icon: Users,
-    title: "Dedicated Account Support",
-    description:
-      "A dedicated account manager works with you from initial brief through production and delivery, ensuring smooth communication throughout your project.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Scalable Capacity",
-    description:
-      "From prototype runs to millions of units, our facility scales with your business. Start small and grow your packaging program without changing suppliers.",
-  },
-  {
-    icon: CheckCircle,
-    title: "15+ Years of Experience",
-    description:
-      "Since our founding, we've delivered packaging for hundreds of FMCG, food, and industrial clients across Nepal. Our experience protects your investment.",
-  },
-];
+const ICON_MAP: Record<string, LucideIcon> = {
+  Award, Clock, Cog, Users, CheckCircle, TrendingUp
+};
 
-export function WhyKriti() {
+export async function WhyKriti() {
+  const reasons = (await fetchAPI('/why-choose-us')) || [];
+
   return (
     <section className="py-20 lg:py-28 bg-brand-gray-light relative overflow-hidden">
       {/* Background texture */}
@@ -66,11 +34,11 @@ export function WhyKriti() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {REASONS.map((reason, i) => {
-            const Icon = reason.icon;
+          {reasons.map((reason: any) => {
+            const Icon = ICON_MAP[reason.icon] || CheckCircle;
             return (
               <div
-                key={i}
+                key={reason.id}
                 className="bg-white rounded-xl p-7 shadow-sm border border-brand-gray-dark/5 hover:border-brand-blue/30 hover:shadow-md transition-all duration-300"
               >
                 <div className="w-11 h-11 bg-brand-blue/10 rounded-lg flex items-center justify-center mb-5">

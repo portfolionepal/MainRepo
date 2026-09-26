@@ -7,6 +7,7 @@ import { WhyKriti } from "@/components/home/WhyKriti";
 import { Industries } from "@/components/home/Industries";
 import { CTA } from "@/components/home/CTA";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
+import { fetchAPI } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} | Professional Printing & Packaging in Nepal`,
@@ -17,10 +18,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const stats = (await fetchAPI('/stats')) || [];
   return (
     <>
-      <Hero />
+      <Hero stats={stats} />
       <FeaturedProducts />
       <Services />
       <Portfolio />

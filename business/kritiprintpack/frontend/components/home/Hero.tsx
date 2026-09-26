@@ -4,7 +4,16 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
-import { COMPANY_STATS } from "@/lib/constants";
+
+interface Stat {
+  id?: string;
+  value: string;
+  label: string;
+}
+
+interface HeroProps {
+  stats: Stat[];
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -21,7 +30,7 @@ const HIGHLIGHTS = [
   "15+ years serving Nepal's industry leaders",
 ];
 
-export function Hero() {
+export function Hero({ stats }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-brand-gray-light">
       {/* Background pattern */}
@@ -180,7 +189,7 @@ export function Hero() {
           className="mt-16 pt-10 border-t border-brand-gray-dark/10"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {COMPANY_STATS.map((stat, i) => (
+            {stats.map((stat, i) => (
               <div key={i} className="text-center">
                 <p className="text-3xl lg:text-4xl font-display font-bold text-brand-navy mb-1">
                   <AnimatedCounter value={stat.value} />

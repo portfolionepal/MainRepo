@@ -1,14 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { products, PRODUCT_CATEGORIES, type ProductCategory } from "@/data/products";
+import { useState, useEffect } from "react";
+import { PRODUCT_CATEGORIES, type ProductCategory, Product } from "@/data/products";
 import { ProductCard } from "@/components/products/ProductCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
+import { fetchAPI } from "@/lib/api";
 
 export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState<ProductCategory | "all">("all");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const data = await fetchAPI('/products');
+      if (data) setProducts(data);
+      setLoading(false);
+    };
+    loadProducts();
+  }, []);
 
   const filtered =
     activeCategory === "all"
@@ -71,13 +83,17 @@ export default function ProductsPage() {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-20 text-brand-gray">Loading products...</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {filtered.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <div className="text-center py-20 text-brand-gray">
               No products found in this category.
             </div>

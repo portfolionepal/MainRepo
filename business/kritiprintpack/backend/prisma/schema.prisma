@@ -7,11 +7,104 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CompanyStat {
+  id        Int      @id @default(autoincrement())
+  value     String
+  label     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Product {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  name             String
+  shortDescription String   @db.Text
+  description      String   @db.Text
+  image            String
+  category         String
+  isFeatured       Boolean  @default(false)
+  specifications   Json?
+  features         Json
+  applications     Json
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Service {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  name             String
+  shortDescription String   @db.Text
+  description      String   @db.Text
+  image            String
+  icon             String
+  isFeatured       Boolean  @default(false)
+  process          Json
+  benefits         Json
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Portfolio {
+  id              Int      @id @default(autoincrement())
+  slug            String   @unique
+  title           String
+  client          String
+  category        String
+  description     String   @db.Text
+  fullDescription String   @db.Text
+  image           String
+  tags            Json
+  year            String
+  isFeatured      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model WhyChooseUs {
   id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  price       Float
+  title       String
+  description String   @db.Text
+  icon        String
+  order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Industry {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String   @db.Text
+  icon        String
+  image       String?
+  products    Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactInfo {
+  id           Int      @id @default(autoincrement())
+  name         String
+  address      String
+  phone        String
+  mobile       String
+  email        String
+  mapUrl       String
+  facebookUrl  String?
+  twitterUrl   String?
+  linkedinUrl  String?
+  workingHours String
+  updatedAt    DateTime @updatedAt
 }

@@ -3,10 +3,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, CheckCircle2, ArrowRight, Layers, Printer, Weight, Package, Star, Droplet, Settings } from "lucide-react";
-import { getProductBySlug, products, PRODUCT_CATEGORIES } from "@/data/products";
+import { PRODUCT_CATEGORIES, Product } from "@/data/products";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { fetchAPI, getImageUrl } from "@/lib/api";
 
 function getSpecIcon(key: string) {
   const k = key.toLowerCase();
@@ -24,12 +25,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
+  const products: Product[] = (await fetchAPI('/products')) || [];
   return products.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product: Product = await fetchAPI(`/products/${slug}`);
   if (!product) return { title: "Product Not Found" };
 
   return {
@@ -44,14 +46,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product: Product = await fetchAPI(`/products/${slug}`);
 
   if (!product) notFound();
 
   const categoryLabel = PRODUCT_CATEGORIES.find((c) => c.value === product.category)?.label;
 
   // Related products (same category, different product)
-  const related = products
+  const allProducts: Product[] = (await fetchAPI('/products')) || [];
+  const related = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 3);
 
@@ -77,7 +80,7 @@ export default async function ProductDetailPage({ params }: Props) {
             {/* Product image */}
             <div className="relative rounded-2xl overflow-hidden bg-white border border-white/10 aspect-[4/3] shadow-xl">
               <Image
-                src={product.image}
+                src={getImageUrl(product.image)}
                 alt={product.name}
                 fill
                 priority

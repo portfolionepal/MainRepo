@@ -9,10 +9,11 @@ import {
   ArrowRight,
   LucideIcon,
 } from "lucide-react";
-import { getFeaturedServices } from "@/data/services";
+import { Service } from "@/data/services";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { fetchAPI } from "@/lib/api";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   PenTool,
@@ -23,8 +24,9 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Lightbulb,
 };
 
-export function Services() {
-  const featured = getFeaturedServices();
+export async function Services() {
+  const services: Service[] = (await fetchAPI('/services')) || [];
+  const featured = services.filter((s) => s.isFeatured);
 
   return (
     <section className="py-20 lg:py-28 bg-brand-gray-light">

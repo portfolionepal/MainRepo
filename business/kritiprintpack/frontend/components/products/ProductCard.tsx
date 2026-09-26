@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Product, PRODUCT_CATEGORIES } from "@/data/products";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";
+import { getImageUrl } from "@/lib/api";
 
 interface ProductCardProps {
   product: Product;
@@ -20,7 +21,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
       {/* Image area */}
       <div className="relative h-48 bg-gradient-to-br from-brand-gray-light to-gray-200 overflow-hidden">
         <Image
-          src={product.image}
+          src={getImageUrl(product.image)}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"

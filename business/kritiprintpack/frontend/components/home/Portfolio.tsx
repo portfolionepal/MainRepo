@@ -1,19 +1,20 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ExternalLink } from "lucide-react";
-import { getFeaturedPortfolioItems } from "@/data/portfolio";
+import { PortfolioItem, PORTFOLIO_CATEGORIES } from "@/data/portfolio";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { PORTFOLIO_CATEGORIES } from "@/data/portfolio";
+import { fetchAPI, getImageUrl } from "@/lib/api";
 
 function getCategoryLabel(category: string): string {
   return PORTFOLIO_CATEGORIES.find((c) => c.value === category)?.label ?? category;
 }
 
-export function Portfolio() {
-  const featured = getFeaturedPortfolioItems().slice(0, 4);
+export async function Portfolio() {
+  const portfolioItems: PortfolioItem[] = (await fetchAPI('/portfolio')) || [];
+  const featured = portfolioItems.filter((p) => p.isFeatured).slice(0, 4);
 
   return (
     <section className="py-20 lg:py-28 bg-white">
@@ -42,7 +43,7 @@ export function Portfolio() {
               {/* Actual Image */}
               <div className="relative h-52 bg-gradient-to-br from-brand-gray-light to-gray-200 overflow-hidden">
                 <Image
-                  src={item.image}
+                  src={getImageUrl(item.image)}
                   alt={item.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
