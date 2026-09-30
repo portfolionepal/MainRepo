@@ -7,6 +7,141 @@ const bcrypt = require('bcryptjs');
 const seedData = async () => {
   const pool = getPool();
   try {
+    // ── Create tables if they don't exist ──
+    console.log('Creating tables if not exist...');
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS AdminUser (
+        id INT NOT NULL AUTO_INCREMENT,
+        email VARCHAR(191) NOT NULL,
+        password VARCHAR(191) NOT NULL,
+        name VARCHAR(191) NOT NULL,
+        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY AdminUser_email_key (email)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS CompanyStat (
+        id INT NOT NULL AUTO_INCREMENT,
+        value VARCHAR(191) NOT NULL,
+        label VARCHAR(191) NOT NULL,
+        \`order\` INT NOT NULL DEFAULT 0,
+        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS Product (
+        id INT NOT NULL AUTO_INCREMENT,
+        slug VARCHAR(191) NOT NULL,
+        name VARCHAR(191) NOT NULL,
+        shortDescription TEXT NOT NULL,
+        description TEXT NOT NULL,
+        image VARCHAR(191) NOT NULL,
+        category VARCHAR(191) NOT NULL,
+        isFeatured TINYINT(1) NOT NULL DEFAULT 0,
+        specifications JSON,
+        features JSON NOT NULL,
+        applications JSON NOT NULL,
+        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY Product_slug_key (slug)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS Service (
+        id INT NOT NULL AUTO_INCREMENT,
+        slug VARCHAR(191) NOT NULL,
+        name VARCHAR(191) NOT NULL,
+        shortDescription TEXT NOT NULL,
+        description TEXT NOT NULL,
+        image VARCHAR(191) NOT NULL,
+        icon VARCHAR(191) NOT NULL,
+        isFeatured TINYINT(1) NOT NULL DEFAULT 0,
+        process JSON NOT NULL,
+        benefits JSON NOT NULL,
+        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY Service_slug_key (slug)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS Portfolio (
+        id INT NOT NULL AUTO_INCREMENT,
+        slug VARCHAR(191) NOT NULL,
+        title VARCHAR(191) NOT NULL,
+        client VARCHAR(191) NOT NULL,
+        category VARCHAR(191) NOT NULL,
+        description TEXT NOT NULL,
+        fullDescription TEXT NOT NULL,
+        image VARCHAR(191) NOT NULL,
+        tags JSON NOT NULL,
+        year VARCHAR(191) NOT NULL,
+        isFeatured TINYINT(1) NOT NULL DEFAULT 0,
+        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY Portfolio_slug_key (slug)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS WhyChooseUs (
+        id INT NOT NULL AUTO_INCREMENT,
+        title VARCHAR(191) NOT NULL,
+        description TEXT NOT NULL,
+        icon VARCHAR(191) NOT NULL,
+        \`order\` INT NOT NULL DEFAULT 0,
+        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS Industry (
+        id INT NOT NULL AUTO_INCREMENT,
+        slug VARCHAR(191) NOT NULL,
+        name VARCHAR(191) NOT NULL,
+        description TEXT NOT NULL,
+        icon VARCHAR(191) NOT NULL,
+        image VARCHAR(191),
+        products JSON NOT NULL,
+        createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY Industry_slug_key (slug)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS ContactInfo (
+        id INT NOT NULL AUTO_INCREMENT,
+        name VARCHAR(191) NOT NULL,
+        address VARCHAR(191) NOT NULL,
+        phone VARCHAR(191) NOT NULL,
+        mobile VARCHAR(191) NOT NULL,
+        email VARCHAR(191) NOT NULL,
+        mapUrl VARCHAR(191) NOT NULL,
+        facebookUrl VARCHAR(191),
+        twitterUrl VARCHAR(191),
+        linkedinUrl VARCHAR(191),
+        workingHours VARCHAR(191) NOT NULL,
+        updatedAt DATETIME(3) NOT NULL,
+        PRIMARY KEY (id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // ── Clean existing data ──
     console.log('Cleaning up existing data...');
     await pool.execute('DELETE FROM CompanyStat');
     await pool.execute('DELETE FROM WhyChooseUs');
