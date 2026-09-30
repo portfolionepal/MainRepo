@@ -17,7 +17,7 @@ const getContactInfo = asyncHandler(async (req, res) => {
 const updateContactInfo = asyncHandler(async (req, res) => {
   const {
     name, address, phone, mobile, email, mapUrl,
-    facebookUrl, twitterUrl, linkedinUrl, workingHours
+    facebookUrl, whatsappUrl, instagramUrl, workingHours
   } = req.body;
 
   if (!name || !address || !phone || !email) {
@@ -36,12 +36,12 @@ const updateContactInfo = asyncHandler(async (req, res) => {
     await pool.execute(
       `UPDATE ContactInfo SET
         name = ?, address = ?, phone = ?, mobile = ?, email = ?, mapUrl = ?,
-        facebookUrl = ?, twitterUrl = ?, linkedinUrl = ?, workingHours = ?,
+        facebookUrl = ?, whatsappUrl = ?, instagramUrl = ?, workingHours = ?,
         updatedAt = NOW()
       WHERE id = ?`,
       [name, address, phone, mobile, email, mapUrl,
-       facebookUrl || null, twitterUrl || null, linkedinUrl || null, workingHours,
-       existing[0].id]
+        facebookUrl || null, whatsappUrl || null, instagramUrl || null, workingHours,
+        existing[0].id]
     );
     const [updated] = await pool.execute('SELECT * FROM ContactInfo WHERE id = ?', [existing[0].id]);
     contact = updated[0];
@@ -49,10 +49,10 @@ const updateContactInfo = asyncHandler(async (req, res) => {
     // Create new record
     const [result] = await pool.execute(
       `INSERT INTO ContactInfo
-        (name, address, phone, mobile, email, mapUrl, facebookUrl, twitterUrl, linkedinUrl, workingHours, updatedAt)
+        (name, address, phone, mobile, email, mapUrl, facebookUrl, whatsappUrl, instagramUrl, workingHours, updatedAt)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
       [name, address, phone, mobile, email, mapUrl,
-       facebookUrl || null, twitterUrl || null, linkedinUrl || null, workingHours]
+        facebookUrl || null, whatsappUrl || null, instagramUrl || null, workingHours]
     );
     const [inserted] = await pool.execute('SELECT * FROM ContactInfo WHERE id = ?', [result.insertId]);
     contact = inserted[0];

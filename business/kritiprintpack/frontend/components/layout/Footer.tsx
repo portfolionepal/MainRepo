@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -7,7 +9,9 @@ import {
   Mail,
   Clock,
 } from "lucide-react";
-import { COMPANY_INFO, NAV_LINKS, SITE_NAME } from "@/lib/constants";
+import { COMPANY_INFO as DEFAULT_COMPANY_INFO, NAV_LINKS, SITE_NAME } from "@/lib/constants";
+import { fetchAPI } from "@/lib/api";
+import { useEffect, useState } from "react";
 import { Container } from "@/components/ui/Container";
 
 const PRODUCT_LINKS = [
@@ -29,6 +33,24 @@ const SERVICE_LINKS = [
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const [COMPANY_INFO, setCompanyInfo] = useState(DEFAULT_COMPANY_INFO);
+
+  useEffect(() => {
+    fetchAPI('/contact').then(data => {
+      if (data) {
+        setCompanyInfo({
+          ...DEFAULT_COMPANY_INFO,
+          ...data,
+          social: {
+            ...DEFAULT_COMPANY_INFO.social,
+            facebook: data.facebookUrl || DEFAULT_COMPANY_INFO.social.facebook,
+            whatsapp: data.whatsappUrl || DEFAULT_COMPANY_INFO.social.whatsapp,
+            instagram: data.instagramUrl || DEFAULT_COMPANY_INFO.social.instagram,
+          }
+        });
+      }
+    });
+  }, []);
 
   return (
     <footer className="bg-brand-navy-dark text-brand-gray">
@@ -38,11 +60,11 @@ export function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center mb-5">
-              <Image 
-                src="/logo.png" 
-                alt="Kriti Print & Pack Logo" 
-                width={240} 
-                height={64} 
+              <Image
+                src="/logo.png"
+                alt="Kriti Print & Pack Logo"
+                width={240}
+                height={64}
                 className="h-16 w-auto object-contain"
               />
             </Link>
@@ -73,42 +95,7 @@ export function Footer() {
                 <span className="text-sm text-brand-gray">{COMPANY_INFO.workingHours}</span>
               </div>
             </div>
-            {/* Social Links */}
-            <div className="flex gap-3 mt-6">
-              <a
-                href={COMPANY_INFO.social.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group w-9 h-9 bg-brand-gray-dark/5 rounded-md flex items-center justify-center hover:bg-brand-blue transition-colors"
-                aria-label="Facebook"
-              >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-brand-gray-dark group-hover:fill-white" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-              </a>
-              <a
-                href={COMPANY_INFO.social.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group w-9 h-9 bg-brand-gray-dark/5 rounded-md flex items-center justify-center hover:bg-brand-blue transition-colors"
-                aria-label="X (Twitter)"
-              >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-brand-gray-dark group-hover:fill-white" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-              <a
-                href={COMPANY_INFO.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group w-9 h-9 bg-brand-gray-dark/5 rounded-md flex items-center justify-center hover:bg-brand-blue transition-colors"
-                aria-label="LinkedIn"
-              >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-brand-gray-dark group-hover:fill-white" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
-              </a>
-            </div>
+
           </div>
 
           {/* Products */}

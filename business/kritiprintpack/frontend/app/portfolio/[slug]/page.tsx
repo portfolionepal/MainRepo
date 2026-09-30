@@ -54,17 +54,25 @@ export default async function PortfolioDetailPage({ params }: Props) {
         <Container>
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Image */}
-            <div className="rounded-2xl overflow-hidden bg-brand-navy-light border border-white/10 aspect-[4/3] flex items-center justify-center">
-              <div className="text-center p-8">
-                <div className="w-20 h-20 bg-brand-orange/20 rounded-2xl border border-brand-orange/30 flex items-center justify-center mx-auto mb-4">
-                  <svg viewBox="0 0 48 48" className="w-10 h-10 text-brand-orange" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <rect x="4" y="20" width="40" height="24" rx="2" />
-                    <path d="M4 28h40M16 20V12a8 8 0 0116 0v8" />
-                  </svg>
+            <div className="rounded-2xl overflow-hidden bg-brand-navy-light border border-white/10 aspect-[4/3] flex items-center justify-center relative group">
+              {item.image ? (
+                <img
+                  src={item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}/uploads/${item.image.replace(/^uploads\//, '')}`}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-center p-8">
+                  <div className="w-20 h-20 bg-brand-orange/20 rounded-2xl border border-brand-orange/30 flex items-center justify-center mx-auto mb-4">
+                    <svg viewBox="0 0 48 48" className="w-10 h-10 text-brand-orange" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <rect x="4" y="20" width="40" height="24" rx="2" />
+                      <path d="M4 28h40M16 20V12a8 8 0 0116 0v8" />
+                    </svg>
+                  </div>
+                  <p className="text-white font-medium">{item.title}</p>
+                  <p className="text-gray-400 text-sm mt-1">{item.client}</p>
                 </div>
-                <p className="text-white font-medium">{item.title}</p>
-                <p className="text-gray-400 text-sm mt-1">{item.client}</p>
-              </div>
+              )}
             </div>
 
             {/* Info */}
@@ -95,17 +103,6 @@ export default async function PortfolioDetailPage({ params }: Props) {
         </Container>
       </section>
 
-      {/* Back to Portfolio */}
-      <section className="py-10 bg-white border-t border-gray-100">
-        <Container>
-          <Link
-            href="/portfolio"
-            className="inline-flex items-center gap-2 text-brand-orange font-semibold hover:text-brand-orange-dark transition-colors"
-          >
-            ← Back to Portfolio
-          </Link>
-        </Container>
-      </section>
     </>
   );
 }

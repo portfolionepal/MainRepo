@@ -1,11 +1,8 @@
-import { Award, Clock, Cog, Users, CheckCircle, TrendingUp, LucideIcon } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { fetchAPI } from "@/lib/api";
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  Award, Clock, Cog, Users, CheckCircle, TrendingUp
-};
+import { getIconComponent } from "@/lib/icons";
 
 export async function WhyKriti() {
   const reasons = (await fetchAPI('/why-choose-us')) || [];
@@ -35,7 +32,7 @@ export async function WhyKriti() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {reasons.map((reason: any) => {
-            const Icon = ICON_MAP[reason.icon] || CheckCircle;
+            const Icon = getIconComponent(reason.icon);
             return (
               <div
                 key={reason.id}

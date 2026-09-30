@@ -176,7 +176,7 @@ export function AdminForm({ title, apiEndpoint, redirectPath, fields, initialDat
         const raw = initialData?.[f.name];
         state[f.name] = Array.isArray(raw) ? raw : [];
       } else if (f.type === 'checkbox') {
-        state[f.name] = initialData?.[f.name] || false;
+        state[f.name] = Boolean(initialData?.[f.name]);
       } else {
         state[f.name] = initialData?.[f.name] ?? '';
       }

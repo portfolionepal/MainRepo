@@ -1,28 +1,12 @@
 import Link from "next/link";
-import {
-  PenTool,
-  Leaf,
-  Zap,
-  ShieldCheck,
-  Factory,
-  Lightbulb,
-  ArrowRight,
-  LucideIcon,
-} from "lucide-react";
+import * as LucideIcons from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Service } from "@/data/services";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { fetchAPI } from "@/lib/api";
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  PenTool,
-  Leaf,
-  Zap,
-  ShieldCheck,
-  Factory,
-  Lightbulb,
-};
+import { getIconComponent } from "@/lib/icons";
 
 export async function Services() {
   const services: Service[] = (await fetchAPI('/services')) || [];
@@ -41,7 +25,7 @@ export async function Services() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {featured.map((service) => {
-            const Icon = ICON_MAP[service.icon] || PenTool;
+            const Icon = getIconComponent(service.icon);
             return (
               <Link
                 key={service.id}

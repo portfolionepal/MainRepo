@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, LucideIcon, PenTool, Leaf, Zap, ShieldCheck, Factory, Lightbulb } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Service } from "@/data/services";
 import { fetchAPI } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
@@ -11,9 +11,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-const ICON_MAP: Record<string, LucideIcon> = {
-  PenTool, Leaf, Zap, ShieldCheck, Factory, Lightbulb,
-};
+import { getIconComponent } from "@/lib/icons";
 
 export async function generateStaticParams() {
   const services: Service[] = (await fetchAPI('/services')) || [];
@@ -35,7 +33,7 @@ export default async function ServiceDetailPage({ params }: Props) {
   const service: Service = await fetchAPI(`/services/${slug}`);
   if (!service) notFound();
 
-  const Icon = ICON_MAP[service.icon] || PenTool;
+  const Icon = getIconComponent(service.icon);
 
   return (
     <>

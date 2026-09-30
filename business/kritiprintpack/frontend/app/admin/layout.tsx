@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LogOut, Package, Image, PenTool, LayoutDashboard, Briefcase, BarChart, Settings, Phone } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -58,7 +59,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 px-4 space-y-1 mt-6">
           {NAV_LINKS.map((link) => {
             const Icon = link.icon;
-            const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
+            const isActive = link.href === "/admin" 
+              ? pathname === "/admin" 
+              : pathname === link.href || pathname.startsWith(`${link.href}/`);
             return (
               <Link
                 key={link.href}
@@ -86,6 +89,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
+        <Toaster position="top-right" />
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm">
           <h2 className="font-semibold text-brand-gray-dark">Admin Panel</h2>
           <Link href="/" target="_blank" className="text-sm text-brand-blue font-medium hover:underline flex items-center gap-1">

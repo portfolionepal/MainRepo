@@ -52,11 +52,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
   const categoryLabel = PRODUCT_CATEGORIES.find((c) => c.value === product.category)?.label;
 
-  // Related products (same category, different product)
-  const allProducts: Product[] = (await fetchAPI('/products')) || [];
-  const related = allProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 3);
+
 
   return (
     <>
@@ -171,30 +167,6 @@ export default async function ProductDetailPage({ params }: Props) {
         </Container>
       </section>
 
-      {/* Related products */}
-      {related.length > 0 && (
-        <section className="py-16 bg-brand-gray-light">
-          <Container>
-            <h2 className="font-display font-bold text-brand-gray-dark text-2xl mb-8">
-              Related Products
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {related.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/products/${p.slug}`}
-                  className="bg-white rounded-xl p-5 border border-gray-100 hover:border-brand-orange/30 hover:shadow-md transition-all group"
-                >
-                  <h3 className="font-semibold text-brand-gray-dark mb-1 group-hover:text-brand-orange transition-colors">
-                    {p.name}
-                  </h3>
-                  <p className="text-brand-gray text-sm line-clamp-2">{p.shortDescription}</p>
-                </Link>
-              ))}
-            </div>
-          </Container>
-        </section>
-      )}
 
       {/* CTA */}
       <section className="py-14 bg-brand-navy">

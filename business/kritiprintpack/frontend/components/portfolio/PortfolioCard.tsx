@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PortfolioItem, PORTFOLIO_CATEGORIES } from "@/data/portfolio";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";
@@ -23,27 +23,31 @@ export function PortfolioCard({ item, className }: PortfolioCardProps) {
     >
       {/* Image */}
       <div className="relative h-52 bg-gradient-to-br from-brand-navy-light to-brand-navy overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center p-6">
-            <div className="w-14 h-14 bg-brand-blue/20 rounded-xl border border-brand-blue/30 flex items-center justify-center mx-auto mb-2">
-              <svg
-                viewBox="0 0 32 32"
-                className="w-8 h-8 text-brand-blue"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <rect x="2" y="12" width="28" height="18" rx="2" />
-                <path d="M2 18h28M10 12V8a6 6 0 0112 0v4" />
-              </svg>
+        {item.image ? (
+          <img
+            src={item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}/uploads/${item.image.replace(/^uploads\//, '')}`}
+            alt={item.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center p-6">
+              <div className="w-14 h-14 bg-brand-blue/20 rounded-xl border border-brand-blue/30 flex items-center justify-center mx-auto mb-2">
+                <svg
+                  viewBox="0 0 32 32"
+                  className="w-8 h-8 text-brand-blue"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <rect x="2" y="12" width="28" height="18" rx="2" />
+                  <path d="M2 18h28M10 12V8a6 6 0 0112 0v4" />
+                </svg>
+              </div>
+              <p className="text-white/70 text-xs">{item.client}</p>
             </div>
-            <p className="text-white/70 text-xs">{item.client}</p>
           </div>
-        </div>
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-brand-blue/0 group-hover:bg-brand-blue/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <ExternalLink className="w-8 h-8 text-white" />
-        </div>
+        )}
       </div>
 
       {/* Content */}
@@ -61,9 +65,9 @@ export function PortfolioCard({ item, className }: PortfolioCardProps) {
         </p>
         <Link
           href={`/portfolio/${item.slug}`}
-          className="inline-flex items-center gap-1.5 text-brand-blue text-sm font-semibold hover:gap-3 transition-all"
+          className="inline-flex items-center gap-1.5 text-brand-blue text-sm font-semibold hover:gap-3 transition-all mt-auto"
         >
-          View Project <ArrowRight className="w-4 h-4" />
+          Learn more <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </article>

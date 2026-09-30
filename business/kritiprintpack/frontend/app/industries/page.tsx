@@ -1,15 +1,5 @@
 import type { Metadata } from "next";
-import {
-  ShoppingCart,
-  UtensilsCrossed,
-  Package,
-  Factory,
-  Pill,
-  Store,
-  Sprout,
-  Truck,
-  LucideIcon,
-} from "lucide-react";
+
 import { Industry } from "@/data/industries";
 import { fetchAPI } from "@/lib/api";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -22,9 +12,7 @@ export const metadata: Metadata = {
     "Kriti Print & Pack serves FMCG, food & beverage, e-commerce, industrial, pharmaceutical, retail, agriculture, and logistics sectors with custom corrugated packaging solutions.",
 };
 
-const ICON_MAP: Record<string, LucideIcon> = {
-  ShoppingCart, UtensilsCrossed, Package, Factory, Pill, Store, Sprout, Truck,
-};
+import { getIconComponent } from "@/lib/icons";
 
 export default async function IndustriesPage() {
   const industries: Industry[] = (await fetchAPI('/industries')) || [];
@@ -54,7 +42,7 @@ export default async function IndustriesPage() {
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
             {industries.map((industry) => {
-              const Icon = ICON_MAP[industry.icon] || Package;
+              const Icon = getIconComponent(industry.icon);
               return (
                 <div
                   key={industry.id}

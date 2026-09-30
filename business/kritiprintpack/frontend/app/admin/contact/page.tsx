@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -14,8 +15,8 @@ const CONTACT_FIELDS = [
   { name: 'mapUrl', label: 'Google Map Embed URL' },
   { name: 'workingHours', label: 'Working Hours' },
   { name: 'facebookUrl', label: 'Facebook URL' },
-  { name: 'twitterUrl', label: 'Twitter URL' },
-  { name: 'linkedinUrl', label: 'LinkedIn URL' },
+  { name: 'whatsappUrl', label: 'WhatsApp URL' },
+  { name: 'instagramUrl', label: 'Instagram URL' },
 ];
 
 export default function AdminContactPage() {
@@ -23,8 +24,6 @@ export default function AdminContactPage() {
   const [formState, setFormState] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -47,8 +46,6 @@ export default function AdminContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
     setSaving(true);
 
     try {
@@ -63,10 +60,9 @@ export default function AdminContactPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to update");
-      setSuccess("Contact info updated successfully!");
-      setTimeout(() => setSuccess(""), 3000);
+      toast.success("Contact info updated successfully!");
     } catch (err: any) {
-      setError(err.message);
+      toast.error(err.message || "Failed to update contact info");
     } finally {
       setSaving(false);
     }
@@ -78,8 +74,6 @@ export default function AdminContactPage() {
     <div>
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Contact Information</h1>
       <form onSubmit={handleSubmit} className="space-y-5 bg-white p-8 rounded-xl shadow-sm border border-gray-100 max-w-3xl">
-        {error && <div className="bg-red-50 text-red-600 p-4 rounded-lg text-sm">{error}</div>}
-        {success && <div className="bg-green-50 text-green-600 p-4 rounded-lg text-sm">{success}</div>}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {CONTACT_FIELDS.map(f => (

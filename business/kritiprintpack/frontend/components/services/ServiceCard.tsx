@@ -1,24 +1,17 @@
 import Link from "next/link";
-import { ArrowRight, LucideIcon, PenTool, Leaf, Zap, ShieldCheck, Factory, Lightbulb } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Service } from "@/data/services";
 import { cn } from "@/lib/utils";
+
+import { getIconComponent } from "@/lib/icons";
 
 interface ServiceCardProps {
   service: Service;
   className?: string;
 }
 
-const ICON_MAP: Record<string, LucideIcon> = {
-  PenTool,
-  Leaf,
-  Zap,
-  ShieldCheck,
-  Factory,
-  Lightbulb,
-};
-
 export function ServiceCard({ service, className }: ServiceCardProps) {
-  const Icon = ICON_MAP[service.icon] || PenTool;
+  const Icon = getIconComponent(service.icon);
 
   return (
     <article className={cn("group flex flex-col bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-brand-blue/30 hover:shadow-lg transition-all duration-300", className)}>

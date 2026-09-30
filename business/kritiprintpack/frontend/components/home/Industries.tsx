@@ -1,30 +1,10 @@
 import Link from "next/link";
-import {
-  ShoppingCart,
-  UtensilsCrossed,
-  Package,
-  Factory,
-  Pill,
-  Store,
-  Sprout,
-  Truck,
-  LucideIcon,
-} from "lucide-react";
+
 import { Industry } from "@/data/industries";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { fetchAPI } from "@/lib/api";
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  ShoppingCart,
-  UtensilsCrossed,
-  Package,
-  Factory,
-  Pill,
-  Store,
-  Sprout,
-  Truck,
-};
+import { getIconComponent } from "@/lib/icons";
 
 export async function Industries() {
   const industries: Industry[] = (await fetchAPI('/industries')) || [];
@@ -41,7 +21,7 @@ export async function Industries() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 lg:gap-6">
           {industries.map((industry) => {
-            const Icon = ICON_MAP[industry.icon] || Package;
+            const Icon = getIconComponent(industry.icon);
             return (
               <div
                 key={industry.id}

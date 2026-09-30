@@ -30,6 +30,14 @@ export function Navbar() {
 
   const isHomePage = pathname === "/";
 
+  const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isHomePage) {
+      e.preventDefault();
+      window.scrollTo(0, 0);
+      window.location.reload();
+    }
+  };
+
   return (
     <header
       className={cn(
@@ -44,6 +52,7 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
+            onClick={handleHomeClick}
             className="flex items-center flex-shrink-0"
             aria-label="Kriti Print & Pack Industries"
           >
@@ -63,6 +72,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={link.href === "/" ? handleHomeClick : undefined}
                 className={cn(
                   "px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200",
                   pathname === link.href
@@ -109,6 +119,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={link.href === "/" ? handleHomeClick : undefined}
                   className={cn(
                     "block px-4 py-3 rounded-md text-sm font-medium transition-colors",
                     pathname === link.href

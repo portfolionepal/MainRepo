@@ -15,6 +15,8 @@ export const COMPANY_INFO = {
     facebook: "https://www.facebook.com/kritiprintpack",
     twitter: "https://twitter.com/kritiprintpack",
     linkedin: "https://www.linkedin.com/company/kritiprintpack",
+    whatsapp: "https://wa.me/9779800000000",
+    instagram: "https://www.instagram.com/kritiprintpack",
   },
   workingHours: "Sun – Fri: 9:00 AM – 6:00 PM",
 };

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
-import { COMPANY_INFO } from "@/lib/constants";
+import { COMPANY_INFO as DEFAULT_COMPANY_INFO } from "@/lib/constants";
+import { fetchAPI } from "@/lib/api";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 
@@ -27,10 +29,30 @@ export default function ContactPage() {
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
   const [errors, setErrors] = useState<Partial<FormState>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [COMPANY_INFO, setCompanyInfo] = useState(DEFAULT_COMPANY_INFO);
+
+  useEffect(() => {
+    fetchAPI('/contact').then(data => {
+      if (data) {
+        setCompanyInfo({
+          ...DEFAULT_COMPANY_INFO,
+          ...data,
+          social: {
+            ...DEFAULT_COMPANY_INFO.social,
+            facebook: data.facebookUrl || DEFAULT_COMPANY_INFO.social.facebook,
+            whatsapp: data.whatsappUrl || DEFAULT_COMPANY_INFO.social.whatsapp,
+            instagram: data.instagramUrl || DEFAULT_COMPANY_INFO.social.instagram,
+          },
+        });
+      }
+    });
+  }, []);
 
   function validate(): boolean {
     const newErrors: Partial<FormState> = {};
     if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.company.trim()) newErrors.company = "Company Name is required";
+    if (!form.phone.trim()) newErrors.phone = "Phone Number is required";
     if (!form.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -127,13 +149,36 @@ export default function ContactPage() {
               </div>
 
               <div className="mt-8 p-5 bg-white rounded-xl border border-gray-100">
-                <p className="text-sm font-semibold text-brand-gray-dark mb-2">Looking for a quote?</p>
-                <p className="text-xs text-brand-gray mb-4">
-                  Use our quote form for detailed packaging requirements — we&apos;ll respond within 24 hours.
-                </p>
-                <Link href="/request-quote" className="text-brand-orange text-sm font-semibold hover:text-brand-orange-dark transition-colors">
-                  Request a Quote →
-                </Link>
+                <p className="text-sm font-semibold text-brand-gray-dark mb-4">Connect with us</p>
+                <div className="flex gap-4">
+                  <a
+                    href={COMPANY_INFO.social.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center hover:scale-110 hover:shadow-md transition-all p-2"
+                    aria-label="Facebook"
+                  >
+                    <Image src="/images/products/facebook.png" alt="Facebook" width={40} height={40} className="w-full h-full object-contain" />
+                  </a>
+                  <a
+                    href={COMPANY_INFO.social.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center hover:scale-110 hover:shadow-md transition-all p-2"
+                    aria-label="WhatsApp"
+                  >
+                    <Image src="/images/products/whatsapp.png" alt="WhatsApp" width={40} height={40} className="w-full h-full object-contain" />
+                  </a>
+                  <a
+                    href={COMPANY_INFO.social.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center hover:scale-110 hover:shadow-md transition-all p-2"
+                    aria-label="Instagram"
+                  >
+                    <Image src="/images/products/instagram.png" alt="Instagram" width={40} height={40} className="w-full h-full object-contain" />
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -176,7 +221,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <label htmlFor="company" className="block text-sm font-medium text-brand-gray-dark mb-1.5">
-                          Company Name
+                          Company Name <span className="text-brand-orange">*</span>
                         </label>
                         <input
                           id="company"
@@ -185,8 +230,9 @@ export default function ContactPage() {
                           value={form.company}
                           onChange={handleChange}
                           placeholder="Your company"
-                          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm transition-colors hover:border-gray-300 focus:border-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange/30"
+                          className={`w-full px-4 py-3 rounded-lg border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-brand-orange/30 ${errors.company ? "border-red-400 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300 focus:border-brand-orange"}`}
                         />
+                        {errors.company && <p className="text-red-500 text-xs mt-1">{errors.company}</p>}
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -207,7 +253,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-brand-gray-dark mb-1.5">
-                          Phone Number
+                          Phone Number <span className="text-brand-orange">*</span>
                         </label>
                         <input
                           id="phone"
@@ -216,8 +262,9 @@ export default function ContactPage() {
                           value={form.phone}
                           onChange={handleChange}
                           placeholder="+977-XXXXXXXXXX"
-                          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm transition-colors hover:border-gray-300 focus:border-brand-orange focus:outline-none focus:ring-2 focus:ring-brand-orange/30"
+                          className={`w-full px-4 py-3 rounded-lg border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-brand-orange/30 ${errors.phone ? "border-red-400 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300 focus:border-brand-orange"}`}
                         />
+                        {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                       </div>
                     </div>
                     <div>

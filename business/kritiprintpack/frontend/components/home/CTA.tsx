@@ -1,8 +1,22 @@
+"use client";
+
 import { ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { COMPANY_INFO } from "@/lib/constants";
+import { COMPANY_INFO as DEFAULT_COMPANY_INFO } from "@/lib/constants";
+import { fetchAPI } from "@/lib/api";
+import { useEffect, useState } from "react";
 
 export function CTA() {
+  const [COMPANY_INFO, setCompanyInfo] = useState(DEFAULT_COMPANY_INFO);
+
+  useEffect(() => {
+    fetchAPI('/contact').then(data => {
+      if (data) {
+        setCompanyInfo({ ...DEFAULT_COMPANY_INFO, ...data });
+      }
+    });
+  }, []);
+
   return (
     <section className="py-20 lg:py-28 bg-brand-blue relative overflow-hidden">
       {/* Background decoration */}

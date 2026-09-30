@@ -50,9 +50,7 @@ export async function Portfolio() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-brand-navy/0 group-hover:bg-brand-navy/30 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <ExternalLink className="w-8 h-8 text-white drop-shadow-md" />
-                </div>
+                <div className="absolute inset-0 bg-brand-navy/0 group-hover:bg-brand-navy/30 transition-colors duration-300" />
               </div>
 
               {/* Content */}
@@ -65,9 +63,12 @@ export async function Portfolio() {
                   {item.title}
                 </h3>
                 <p className="text-gray-500 text-sm mb-3">{item.client}</p>
-                <p className="text-brand-gray text-sm leading-relaxed line-clamp-2">
+                <p className="text-brand-gray text-sm leading-relaxed line-clamp-2 mb-4">
                   {item.description}
                 </p>
+                <div className="inline-flex items-center text-sm font-semibold text-brand-blue group-hover:gap-2 transition-all mt-auto">
+                  Learn more <ArrowRight className="ml-1 w-4 h-4" />
+                </div>
               </div>
             </Link>
           ))}
