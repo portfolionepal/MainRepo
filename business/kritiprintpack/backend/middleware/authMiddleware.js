@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
-
-const prisma = new PrismaClient();
+const { getPool } = require('../config/db');
 
 const protect = asyncHandler(async (req, res, next) => {
   let token;
@@ -28,10 +26,13 @@ const protect = asyncHandler(async (req, res, next) => {
       console.log('[Auth] Token verified, admin id:', decoded.id);
 
       // Get user from the token
-      req.admin = await prisma.adminUser.findUnique({
-        where: { id: decoded.id },
-        select: { id: true, email: true, name: true, createdAt: true, updatedAt: true }
-      });
+      const pool = getPool();
+      const [rows] = await pool.execute(
+        'SELECT id, email, name, createdAt, updatedAt FROM AdminUser WHERE id = ? LIMIT 1',
+        [decoded.id]
+      );
+
+      req.admin = rows[0] || null;
 
       if (!req.admin) {
         res.status(401);
@@ -54,4 +55,3 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = { protect };
-

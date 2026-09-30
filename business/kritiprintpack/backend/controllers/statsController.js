@@ -1,15 +1,12 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
-
-const prisma = new PrismaClient();
+const { getPool } = require('../config/db');
 
 // @desc    Get all stats
 // @route   GET /api/stats
 // @access  Public
 const getStats = asyncHandler(async (req, res) => {
-  const stats = await prisma.companyStat.findMany({
-    orderBy: { order: 'asc' },
-  });
+  const pool = getPool();
+  const [stats] = await pool.execute('SELECT * FROM CompanyStat ORDER BY `order` ASC');
   res.json({ success: true, data: stats });
 });
 
@@ -24,15 +21,14 @@ const createStat = asyncHandler(async (req, res) => {
     throw new Error('Value and label are required');
   }
 
-  const stat = await prisma.companyStat.create({
-    data: {
-      value,
-      label,
-      order: order ? parseInt(order) : 0,
-    },
-  });
+  const pool = getPool();
+  const [result] = await pool.execute(
+    'INSERT INTO CompanyStat (value, label, `order`, createdAt, updatedAt) VALUES (?, ?, ?, NOW(), NOW())',
+    [value, label, order ? parseInt(order) : 0]
+  );
 
-  res.status(201).json({ success: true, data: stat });
+  const [rows] = await pool.execute('SELECT * FROM CompanyStat WHERE id = ?', [result.insertId]);
+  res.status(201).json({ success: true, data: rows[0] });
 });
 
 // @desc    Update a stat
@@ -42,22 +38,26 @@ const updateStat = asyncHandler(async (req, res) => {
   const { value, label, order } = req.body;
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.companyStat.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM CompanyStat WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Stat not found');
   }
+  const existing = existingRows[0];
 
-  const stat = await prisma.companyStat.update({
-    where: { id },
-    data: {
-      value: value || existing.value,
-      label: label || existing.label,
-      order: order !== undefined ? parseInt(order) : existing.order,
-    },
-  });
+  await pool.execute(
+    'UPDATE CompanyStat SET value = ?, label = ?, `order` = ?, updatedAt = NOW() WHERE id = ?',
+    [
+      value || existing.value,
+      label || existing.label,
+      order !== undefined ? parseInt(order) : existing.order,
+      id
+    ]
+  );
 
-  res.json({ success: true, data: stat });
+  const [rows] = await pool.execute('SELECT * FROM CompanyStat WHERE id = ?', [id]);
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Delete a stat
@@ -66,13 +66,14 @@ const updateStat = asyncHandler(async (req, res) => {
 const deleteStat = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.companyStat.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM CompanyStat WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Stat not found');
   }
 
-  await prisma.companyStat.delete({ where: { id } });
+  await pool.execute('DELETE FROM CompanyStat WHERE id = ?', [id]);
 
   res.json({ success: true, message: 'Stat deleted successfully' });
 });

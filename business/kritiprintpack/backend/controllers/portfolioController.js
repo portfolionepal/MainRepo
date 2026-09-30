@@ -1,9 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
+const { getPool } = require('../config/db');
 const path = require('path');
 const fs = require('fs');
-
-const prisma = new PrismaClient();
 
 const safeParse = (data) => {
   if (!data) return null;
@@ -21,7 +19,8 @@ const safeParse = (data) => {
 // @route   GET /api/portfolio
 // @access  Public
 const getPortfolio = asyncHandler(async (req, res) => {
-  const items = await prisma.portfolio.findMany();
+  const pool = getPool();
+  const [items] = await pool.execute('SELECT * FROM Portfolio');
   res.json({ success: true, data: items });
 });
 
@@ -29,16 +28,15 @@ const getPortfolio = asyncHandler(async (req, res) => {
 // @route   GET /api/portfolio/:slug
 // @access  Public
 const getPortfolioBySlug = asyncHandler(async (req, res) => {
-  const item = await prisma.portfolio.findUnique({
-    where: { slug: req.params.slug },
-  });
+  const pool = getPool();
+  const [rows] = await pool.execute('SELECT * FROM Portfolio WHERE slug = ? LIMIT 1', [req.params.slug]);
 
-  if (!item) {
+  if (rows.length === 0) {
     res.status(404);
     throw new Error('Portfolio item not found');
   }
 
-  res.json({ success: true, data: item });
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Create a portfolio item
@@ -59,22 +57,27 @@ const createPortfolio = asyncHandler(async (req, res) => {
 
   const imagePath = `/uploads/portfolio/${req.file.filename}`;
 
-  const item = await prisma.portfolio.create({
-    data: {
+  const pool = getPool();
+  const [result] = await pool.execute(
+    `INSERT INTO Portfolio
+      (slug, title, client, category, description, fullDescription, image, tags, year, isFeatured, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+    [
       slug,
       title,
       client,
       category,
       description,
       fullDescription,
+      imagePath,
+      JSON.stringify(safeParse(tags) || []),
       year,
-      image: imagePath,
-      isFeatured: isFeatured === 'true' || isFeatured === true,
-      tags: safeParse(tags) || [],
-    },
-  });
+      isFeatured === 'true' || isFeatured === true ? 1 : 0,
+    ]
+  );
 
-  res.status(201).json({ success: true, data: item });
+  const [rows] = await pool.execute('SELECT * FROM Portfolio WHERE id = ?', [result.insertId]);
+  res.status(201).json({ success: true, data: rows[0] });
 });
 
 // @desc    Update a portfolio item
@@ -84,37 +87,48 @@ const updatePortfolio = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
   const { slug, title, client, category, description, fullDescription, year, isFeatured, tags } = req.body;
 
-  const existing = await prisma.portfolio.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Portfolio WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Portfolio item not found');
   }
+  const existing = existingRows[0];
 
-  const dataToUpdate = {
-    slug: slug || existing.slug,
-    title: title || existing.title,
-    client: client || existing.client,
-    category: category || existing.category,
-    description: description || existing.description,
-    fullDescription: fullDescription || existing.fullDescription,
-    year: year || existing.year,
-    isFeatured: isFeatured !== undefined ? (isFeatured === 'true' || isFeatured === true) : existing.isFeatured,
-  };
+  const updatedSlug = slug || existing.slug;
+  const updatedTitle = title || existing.title;
+  const updatedClient = client || existing.client;
+  const updatedCategory = category || existing.category;
+  const updatedDesc = description || existing.description;
+  const updatedFullDesc = fullDescription || existing.fullDescription;
+  const updatedYear = year || existing.year;
+  const updatedFeatured = isFeatured !== undefined
+    ? (isFeatured === 'true' || isFeatured === true ? 1 : 0)
+    : existing.isFeatured;
+  const updatedTags = tags ? JSON.stringify(safeParse(tags)) : (typeof existing.tags === 'string' ? existing.tags : JSON.stringify(existing.tags));
 
-  if (tags) dataToUpdate.tags = safeParse(tags);
-
+  let updatedImage = existing.image;
   if (req.file) {
-    dataToUpdate.image = `/uploads/portfolio/${req.file.filename}`;
+    updatedImage = `/uploads/portfolio/${req.file.filename}`;
     const oldImagePath = path.join(__dirname, '..', existing.image);
     if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
   }
 
-  const item = await prisma.portfolio.update({
-    where: { id },
-    data: dataToUpdate,
-  });
+  await pool.execute(
+    `UPDATE Portfolio SET
+      slug = ?, title = ?, client = ?, category = ?, description = ?,
+      fullDescription = ?, image = ?, tags = ?, year = ?, isFeatured = ?,
+      updatedAt = NOW()
+    WHERE id = ?`,
+    [
+      updatedSlug, updatedTitle, updatedClient, updatedCategory, updatedDesc,
+      updatedFullDesc, updatedImage, updatedTags, updatedYear, updatedFeatured,
+      id
+    ]
+  );
 
-  res.json({ success: true, data: item });
+  const [rows] = await pool.execute('SELECT * FROM Portfolio WHERE id = ?', [id]);
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Delete a portfolio item
@@ -123,18 +137,20 @@ const updatePortfolio = asyncHandler(async (req, res) => {
 const deletePortfolio = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.portfolio.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Portfolio WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Portfolio item not found');
   }
+  const existing = existingRows[0];
 
   if (existing.image) {
     const imagePath = path.join(__dirname, '..', existing.image);
     if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
   }
 
-  await prisma.portfolio.delete({ where: { id } });
+  await pool.execute('DELETE FROM Portfolio WHERE id = ?', [id]);
 
   res.json({ success: true, message: 'Portfolio item deleted successfully' });
 });

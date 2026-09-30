@@ -1,12 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcryptjs'); // we installed bcrypt, but typically require bcryptjs if it's there. User asked for bcrypt. Let's try require('bcrypt') since we installed bcrypt.
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler');
-
-const prisma = new PrismaClient();
-
-// Use bcrypt instead of bcryptjs as installed
-const bcryptLib = require('bcrypt');
+const { getPool } = require('../config/db');
 
 // Generate JWT
 const generateToken = (id) => {
@@ -24,11 +19,14 @@ const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   // Check for admin email
-  const admin = await prisma.adminUser.findUnique({
-    where: { email },
-  });
+  const pool = getPool();
+  const [rows] = await pool.execute(
+    'SELECT * FROM AdminUser WHERE email = ? LIMIT 1',
+    [email]
+  );
+  const admin = rows[0] || null;
 
-  if (admin && (await bcryptLib.compare(password, admin.password))) {
+  if (admin && (await bcrypt.compare(password, admin.password))) {
     res.json({
       success: true,
       data: {

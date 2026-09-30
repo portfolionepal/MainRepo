@@ -1,13 +1,13 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
-
-const prisma = new PrismaClient();
+const { getPool } = require('../config/db');
 
 // @desc    Get contact info (single record)
 // @route   GET /api/contact
 // @access  Public
 const getContactInfo = asyncHandler(async (req, res) => {
-  const contact = await prisma.contactInfo.findFirst();
+  const pool = getPool();
+  const [rows] = await pool.execute('SELECT * FROM ContactInfo LIMIT 1');
+  const contact = rows[0] || null;
   res.json({ success: true, data: contact });
 });
 
@@ -25,24 +25,37 @@ const updateContactInfo = asyncHandler(async (req, res) => {
     throw new Error('Name, address, phone and email are required');
   }
 
-  // Find existing record
-  let contact = await prisma.contactInfo.findFirst();
+  const pool = getPool();
 
-  if (contact) {
-    contact = await prisma.contactInfo.update({
-      where: { id: contact.id },
-      data: {
-        name, address, phone, mobile, email, mapUrl,
-        facebookUrl, twitterUrl, linkedinUrl, workingHours
-      },
-    });
+  // Find existing record
+  const [existing] = await pool.execute('SELECT * FROM ContactInfo LIMIT 1');
+  let contact;
+
+  if (existing.length > 0) {
+    // Update existing record
+    await pool.execute(
+      `UPDATE ContactInfo SET
+        name = ?, address = ?, phone = ?, mobile = ?, email = ?, mapUrl = ?,
+        facebookUrl = ?, twitterUrl = ?, linkedinUrl = ?, workingHours = ?,
+        updatedAt = NOW()
+      WHERE id = ?`,
+      [name, address, phone, mobile, email, mapUrl,
+       facebookUrl || null, twitterUrl || null, linkedinUrl || null, workingHours,
+       existing[0].id]
+    );
+    const [updated] = await pool.execute('SELECT * FROM ContactInfo WHERE id = ?', [existing[0].id]);
+    contact = updated[0];
   } else {
-    contact = await prisma.contactInfo.create({
-      data: {
-        name, address, phone, mobile, email, mapUrl,
-        facebookUrl, twitterUrl, linkedinUrl, workingHours
-      },
-    });
+    // Create new record
+    const [result] = await pool.execute(
+      `INSERT INTO ContactInfo
+        (name, address, phone, mobile, email, mapUrl, facebookUrl, twitterUrl, linkedinUrl, workingHours, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+      [name, address, phone, mobile, email, mapUrl,
+       facebookUrl || null, twitterUrl || null, linkedinUrl || null, workingHours]
+    );
+    const [inserted] = await pool.execute('SELECT * FROM ContactInfo WHERE id = ?', [result.insertId]);
+    contact = inserted[0];
   }
 
   res.json({ success: true, data: contact });

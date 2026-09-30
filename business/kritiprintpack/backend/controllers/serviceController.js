@@ -1,9 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
+const { getPool } = require('../config/db');
 const path = require('path');
 const fs = require('fs');
-
-const prisma = new PrismaClient();
 
 const safeParse = (data) => {
   if (!data) return null;
@@ -21,7 +19,8 @@ const safeParse = (data) => {
 // @route   GET /api/services
 // @access  Public
 const getServices = asyncHandler(async (req, res) => {
-  const services = await prisma.service.findMany();
+  const pool = getPool();
+  const [services] = await pool.execute('SELECT * FROM Service');
   res.json({ success: true, data: services });
 });
 
@@ -29,23 +28,22 @@ const getServices = asyncHandler(async (req, res) => {
 // @route   GET /api/services/:slug
 // @access  Public
 const getServiceBySlug = asyncHandler(async (req, res) => {
-  const service = await prisma.service.findUnique({
-    where: { slug: req.params.slug },
-  });
+  const pool = getPool();
+  const [rows] = await pool.execute('SELECT * FROM Service WHERE slug = ? LIMIT 1', [req.params.slug]);
 
-  if (!service) {
+  if (rows.length === 0) {
     res.status(404);
     throw new Error('Service not found');
   }
 
-  res.json({ success: true, data: service });
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Create a service
 // @route   POST /api/services
 // @access  Private/Admin
 const createService = asyncHandler(async (req, res) => {
-  const { slug, name, shortDescription, description, icon, isFeatured, process, benefits } = req.body;
+  const { slug, name, shortDescription, description, icon, isFeatured, process: processData, benefits } = req.body;
 
   if (!slug || !name || !shortDescription || !description || !icon) {
     res.status(400);
@@ -59,21 +57,26 @@ const createService = asyncHandler(async (req, res) => {
 
   const imagePath = `/uploads/services/${req.file.filename}`;
 
-  const service = await prisma.service.create({
-    data: {
+  const pool = getPool();
+  const [result] = await pool.execute(
+    `INSERT INTO Service
+      (slug, name, shortDescription, description, image, icon, isFeatured, process, benefits, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+    [
       slug,
       name,
       shortDescription,
       description,
+      imagePath,
       icon,
-      image: imagePath,
-      isFeatured: isFeatured === 'true' || isFeatured === true,
-      process: safeParse(process) || [],
-      benefits: safeParse(benefits) || [],
-    },
-  });
+      isFeatured === 'true' || isFeatured === true ? 1 : 0,
+      JSON.stringify(safeParse(processData) || []),
+      JSON.stringify(safeParse(benefits) || []),
+    ]
+  );
 
-  res.status(201).json({ success: true, data: service });
+  const [rows] = await pool.execute('SELECT * FROM Service WHERE id = ?', [result.insertId]);
+  res.status(201).json({ success: true, data: rows[0] });
 });
 
 // @desc    Update a service
@@ -81,38 +84,49 @@ const createService = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateService = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
-  const { slug, name, shortDescription, description, icon, isFeatured, process, benefits } = req.body;
+  const { slug, name, shortDescription, description, icon, isFeatured, process: processData, benefits } = req.body;
 
-  const existing = await prisma.service.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Service WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Service not found');
   }
+  const existing = existingRows[0];
 
-  const dataToUpdate = {
-    slug: slug || existing.slug,
-    name: name || existing.name,
-    shortDescription: shortDescription || existing.shortDescription,
-    description: description || existing.description,
-    icon: icon || existing.icon,
-    isFeatured: isFeatured !== undefined ? (isFeatured === 'true' || isFeatured === true) : existing.isFeatured,
-  };
+  const updatedSlug = slug || existing.slug;
+  const updatedName = name || existing.name;
+  const updatedShortDesc = shortDescription || existing.shortDescription;
+  const updatedDesc = description || existing.description;
+  const updatedIcon = icon || existing.icon;
+  const updatedFeatured = isFeatured !== undefined
+    ? (isFeatured === 'true' || isFeatured === true ? 1 : 0)
+    : existing.isFeatured;
+  const updatedProcess = processData ? JSON.stringify(safeParse(processData)) : (typeof existing.process === 'string' ? existing.process : JSON.stringify(existing.process));
+  const updatedBenefits = benefits ? JSON.stringify(safeParse(benefits)) : (typeof existing.benefits === 'string' ? existing.benefits : JSON.stringify(existing.benefits));
 
-  if (process) dataToUpdate.process = safeParse(process);
-  if (benefits) dataToUpdate.benefits = safeParse(benefits);
-
+  let updatedImage = existing.image;
   if (req.file) {
-    dataToUpdate.image = `/uploads/services/${req.file.filename}`;
+    updatedImage = `/uploads/services/${req.file.filename}`;
     const oldImagePath = path.join(__dirname, '..', existing.image);
     if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
   }
 
-  const service = await prisma.service.update({
-    where: { id },
-    data: dataToUpdate,
-  });
+  await pool.execute(
+    `UPDATE Service SET
+      slug = ?, name = ?, shortDescription = ?, description = ?, image = ?,
+      icon = ?, isFeatured = ?, process = ?, benefits = ?,
+      updatedAt = NOW()
+    WHERE id = ?`,
+    [
+      updatedSlug, updatedName, updatedShortDesc, updatedDesc, updatedImage,
+      updatedIcon, updatedFeatured, updatedProcess, updatedBenefits,
+      id
+    ]
+  );
 
-  res.json({ success: true, data: service });
+  const [rows] = await pool.execute('SELECT * FROM Service WHERE id = ?', [id]);
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Delete a service
@@ -121,18 +135,20 @@ const updateService = asyncHandler(async (req, res) => {
 const deleteService = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.service.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Service WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Service not found');
   }
+  const existing = existingRows[0];
 
   if (existing.image) {
     const imagePath = path.join(__dirname, '..', existing.image);
     if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
   }
 
-  await prisma.service.delete({ where: { id } });
+  await pool.execute('DELETE FROM Service WHERE id = ?', [id]);
 
   res.json({ success: true, message: 'Service deleted successfully' });
 });

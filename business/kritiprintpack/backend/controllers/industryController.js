@@ -1,9 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
+const { getPool } = require('../config/db');
 const path = require('path');
 const fs = require('fs');
-
-const prisma = new PrismaClient();
 
 const safeParse = (data) => {
   if (!data) return null;
@@ -21,7 +19,8 @@ const safeParse = (data) => {
 // @route   GET /api/industries
 // @access  Public
 const getIndustries = asyncHandler(async (req, res) => {
-  const items = await prisma.industry.findMany();
+  const pool = getPool();
+  const [items] = await pool.execute('SELECT * FROM Industry');
   res.json({ success: true, data: items });
 });
 
@@ -29,16 +28,15 @@ const getIndustries = asyncHandler(async (req, res) => {
 // @route   GET /api/industries/:slug
 // @access  Public
 const getIndustryBySlug = asyncHandler(async (req, res) => {
-  const item = await prisma.industry.findUnique({
-    where: { slug: req.params.slug },
-  });
+  const pool = getPool();
+  const [rows] = await pool.execute('SELECT * FROM Industry WHERE slug = ? LIMIT 1', [req.params.slug]);
 
-  if (!item) {
+  if (rows.length === 0) {
     res.status(404);
     throw new Error('Industry not found');
   }
 
-  res.json({ success: true, data: item });
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Create an industry
@@ -57,18 +55,23 @@ const createIndustry = asyncHandler(async (req, res) => {
     imagePath = `/uploads/industries/${req.file.filename}`;
   }
 
-  const item = await prisma.industry.create({
-    data: {
+  const pool = getPool();
+  const [result] = await pool.execute(
+    `INSERT INTO Industry
+      (slug, name, description, icon, image, products, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+    [
       slug,
       name,
       description,
       icon,
-      image: imagePath,
-      products: safeParse(products) || [],
-    },
-  });
+      imagePath,
+      JSON.stringify(safeParse(products) || []),
+    ]
+  );
 
-  res.status(201).json({ success: true, data: item });
+  const [rows] = await pool.execute('SELECT * FROM Industry WHERE id = ?', [result.insertId]);
+  res.status(201).json({ success: true, data: rows[0] });
 });
 
 // @desc    Update an industry
@@ -78,35 +81,39 @@ const updateIndustry = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
   const { slug, name, description, icon, products } = req.body;
 
-  const existing = await prisma.industry.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Industry WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Industry not found');
   }
+  const existing = existingRows[0];
 
-  const dataToUpdate = {
-    slug: slug || existing.slug,
-    name: name || existing.name,
-    description: description || existing.description,
-    icon: icon || existing.icon,
-  };
+  const updatedSlug = slug || existing.slug;
+  const updatedName = name || existing.name;
+  const updatedDesc = description || existing.description;
+  const updatedIcon = icon || existing.icon;
+  const updatedProducts = products ? JSON.stringify(safeParse(products)) : (typeof existing.products === 'string' ? existing.products : JSON.stringify(existing.products));
 
-  if (products) dataToUpdate.products = safeParse(products);
-
+  let updatedImage = existing.image;
   if (req.file) {
-    dataToUpdate.image = `/uploads/industries/${req.file.filename}`;
+    updatedImage = `/uploads/industries/${req.file.filename}`;
     if (existing.image) {
       const oldImagePath = path.join(__dirname, '..', existing.image);
       if (fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
     }
   }
 
-  const item = await prisma.industry.update({
-    where: { id },
-    data: dataToUpdate,
-  });
+  await pool.execute(
+    `UPDATE Industry SET
+      slug = ?, name = ?, description = ?, icon = ?, image = ?, products = ?,
+      updatedAt = NOW()
+    WHERE id = ?`,
+    [updatedSlug, updatedName, updatedDesc, updatedIcon, updatedImage, updatedProducts, id]
+  );
 
-  res.json({ success: true, data: item });
+  const [rows] = await pool.execute('SELECT * FROM Industry WHERE id = ?', [id]);
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Delete an industry
@@ -115,18 +122,20 @@ const updateIndustry = asyncHandler(async (req, res) => {
 const deleteIndustry = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.industry.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Industry WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Industry not found');
   }
+  const existing = existingRows[0];
 
   if (existing.image) {
     const imagePath = path.join(__dirname, '..', existing.image);
     if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
   }
 
-  await prisma.industry.delete({ where: { id } });
+  await pool.execute('DELETE FROM Industry WHERE id = ?', [id]);
 
   res.json({ success: true, message: 'Industry deleted successfully' });
 });

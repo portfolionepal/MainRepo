@@ -1,15 +1,12 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
-
-const prisma = new PrismaClient();
+const { getPool } = require('../config/db');
 
 // @desc    Get all reasons
 // @route   GET /api/why-choose-us
 // @access  Public
 const getReasons = asyncHandler(async (req, res) => {
-  const reasons = await prisma.whyChooseUs.findMany({
-    orderBy: { order: 'asc' },
-  });
+  const pool = getPool();
+  const [reasons] = await pool.execute('SELECT * FROM WhyChooseUs ORDER BY `order` ASC');
   res.json({ success: true, data: reasons });
 });
 
@@ -24,16 +21,14 @@ const createReason = asyncHandler(async (req, res) => {
     throw new Error('Title, description and icon are required');
   }
 
-  const reason = await prisma.whyChooseUs.create({
-    data: {
-      title,
-      description,
-      icon,
-      order: order ? parseInt(order) : 0,
-    },
-  });
+  const pool = getPool();
+  const [result] = await pool.execute(
+    'INSERT INTO WhyChooseUs (title, description, icon, `order`, createdAt, updatedAt) VALUES (?, ?, ?, ?, NOW(), NOW())',
+    [title, description, icon, order ? parseInt(order) : 0]
+  );
 
-  res.status(201).json({ success: true, data: reason });
+  const [rows] = await pool.execute('SELECT * FROM WhyChooseUs WHERE id = ?', [result.insertId]);
+  res.status(201).json({ success: true, data: rows[0] });
 });
 
 // @desc    Update a reason
@@ -43,23 +38,27 @@ const updateReason = asyncHandler(async (req, res) => {
   const { title, description, icon, order } = req.body;
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.whyChooseUs.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM WhyChooseUs WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Reason not found');
   }
+  const existing = existingRows[0];
 
-  const reason = await prisma.whyChooseUs.update({
-    where: { id },
-    data: {
-      title: title || existing.title,
-      description: description || existing.description,
-      icon: icon || existing.icon,
-      order: order !== undefined ? parseInt(order) : existing.order,
-    },
-  });
+  await pool.execute(
+    'UPDATE WhyChooseUs SET title = ?, description = ?, icon = ?, `order` = ?, updatedAt = NOW() WHERE id = ?',
+    [
+      title || existing.title,
+      description || existing.description,
+      icon || existing.icon,
+      order !== undefined ? parseInt(order) : existing.order,
+      id
+    ]
+  );
 
-  res.json({ success: true, data: reason });
+  const [rows] = await pool.execute('SELECT * FROM WhyChooseUs WHERE id = ?', [id]);
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Delete a reason
@@ -68,13 +67,14 @@ const updateReason = asyncHandler(async (req, res) => {
 const deleteReason = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.whyChooseUs.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM WhyChooseUs WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Reason not found');
   }
 
-  await prisma.whyChooseUs.delete({ where: { id } });
+  await pool.execute('DELETE FROM WhyChooseUs WHERE id = ?', [id]);
 
   res.json({ success: true, message: 'Reason deleted successfully' });
 });

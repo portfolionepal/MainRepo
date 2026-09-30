@@ -1,9 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
 const asyncHandler = require('../utils/asyncHandler');
+const { getPool } = require('../config/db');
 const path = require('path');
 const fs = require('fs');
-
-const prisma = new PrismaClient();
 
 // Helper to safely parse JSON from form-data
 const safeParse = (data) => {
@@ -23,16 +21,26 @@ const safeParse = (data) => {
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
   const { category, featured } = req.query;
-  const where = {};
-  
+
+  let sql = 'SELECT * FROM Product';
+  const conditions = [];
+  const params = [];
+
   if (category) {
-    where.category = category;
+    conditions.push('category = ?');
+    params.push(category);
   }
   if (featured === 'true') {
-    where.isFeatured = true;
+    conditions.push('isFeatured = ?');
+    params.push(true);
   }
 
-  const products = await prisma.product.findMany({ where });
+  if (conditions.length > 0) {
+    sql += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  const pool = getPool();
+  const [products] = await pool.execute(sql, params);
   res.json({ success: true, data: products });
 });
 
@@ -40,16 +48,15 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/products/:slug
 // @access  Public
 const getProductBySlug = asyncHandler(async (req, res) => {
-  const product = await prisma.product.findUnique({
-    where: { slug: req.params.slug },
-  });
+  const pool = getPool();
+  const [rows] = await pool.execute('SELECT * FROM Product WHERE slug = ? LIMIT 1', [req.params.slug]);
 
-  if (!product) {
+  if (rows.length === 0) {
     res.status(404);
     throw new Error('Product not found');
   }
 
-  res.json({ success: true, data: product });
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Create a product
@@ -70,22 +77,27 @@ const createProduct = asyncHandler(async (req, res) => {
 
   const imagePath = `/uploads/products/${req.file.filename}`;
 
-  const product = await prisma.product.create({
-    data: {
+  const pool = getPool();
+  const [result] = await pool.execute(
+    `INSERT INTO Product
+      (slug, name, shortDescription, description, image, category, isFeatured, specifications, features, applications, createdAt, updatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+    [
       slug,
       name,
       shortDescription,
       description,
+      imagePath,
       category,
-      image: imagePath,
-      isFeatured: isFeatured === 'true' || isFeatured === true,
-      specifications: safeParse(specifications) || {},
-      features: safeParse(features) || [],
-      applications: safeParse(applications) || [],
-    },
-  });
+      isFeatured === 'true' || isFeatured === true ? 1 : 0,
+      JSON.stringify(safeParse(specifications) || {}),
+      JSON.stringify(safeParse(features) || []),
+      JSON.stringify(safeParse(applications) || []),
+    ]
+  );
 
-  res.status(201).json({ success: true, data: product });
+  const [rows] = await pool.execute('SELECT * FROM Product WHERE id = ?', [result.insertId]);
+  res.status(201).json({ success: true, data: rows[0] });
 });
 
 // @desc    Update a product
@@ -95,29 +107,32 @@ const updateProduct = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
   const { slug, name, shortDescription, description, category, isFeatured, specifications, features, applications } = req.body;
 
-  const existing = await prisma.product.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Product WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Product not found');
   }
+  const existing = existingRows[0];
 
-  const dataToUpdate = {
-    slug: slug || existing.slug,
-    name: name || existing.name,
-    shortDescription: shortDescription || existing.shortDescription,
-    description: description || existing.description,
-    category: category || existing.category,
-    isFeatured: isFeatured !== undefined ? (isFeatured === 'true' || isFeatured === true) : existing.isFeatured,
-  };
+  const updatedSlug = slug || existing.slug;
+  const updatedName = name || existing.name;
+  const updatedShortDesc = shortDescription || existing.shortDescription;
+  const updatedDesc = description || existing.description;
+  const updatedCategory = category || existing.category;
+  const updatedFeatured = isFeatured !== undefined
+    ? (isFeatured === 'true' || isFeatured === true ? 1 : 0)
+    : existing.isFeatured;
+  const updatedSpecs = specifications ? JSON.stringify(safeParse(specifications)) : (typeof existing.specifications === 'string' ? existing.specifications : JSON.stringify(existing.specifications));
+  const updatedFeatures = features ? JSON.stringify(safeParse(features)) : (typeof existing.features === 'string' ? existing.features : JSON.stringify(existing.features));
+  const updatedApps = applications ? JSON.stringify(safeParse(applications)) : (typeof existing.applications === 'string' ? existing.applications : JSON.stringify(existing.applications));
 
-  if (specifications) dataToUpdate.specifications = safeParse(specifications);
-  if (features) dataToUpdate.features = safeParse(features);
-  if (applications) dataToUpdate.applications = safeParse(applications);
+  let updatedImage = existing.image;
 
   // If new image is uploaded, update path and optionally delete old image
   if (req.file) {
-    dataToUpdate.image = `/uploads/products/${req.file.filename}`;
-    
+    updatedImage = `/uploads/products/${req.file.filename}`;
+
     // Optional: Delete old image from disk
     const oldImagePath = path.join(__dirname, '..', existing.image);
     if (fs.existsSync(oldImagePath)) {
@@ -125,12 +140,21 @@ const updateProduct = asyncHandler(async (req, res) => {
     }
   }
 
-  const product = await prisma.product.update({
-    where: { id },
-    data: dataToUpdate,
-  });
+  await pool.execute(
+    `UPDATE Product SET
+      slug = ?, name = ?, shortDescription = ?, description = ?, image = ?,
+      category = ?, isFeatured = ?, specifications = ?, features = ?, applications = ?,
+      updatedAt = NOW()
+    WHERE id = ?`,
+    [
+      updatedSlug, updatedName, updatedShortDesc, updatedDesc, updatedImage,
+      updatedCategory, updatedFeatured, updatedSpecs, updatedFeatures, updatedApps,
+      id
+    ]
+  );
 
-  res.json({ success: true, data: product });
+  const [rows] = await pool.execute('SELECT * FROM Product WHERE id = ?', [id]);
+  res.json({ success: true, data: rows[0] });
 });
 
 // @desc    Delete a product
@@ -139,11 +163,13 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
-  const existing = await prisma.product.findUnique({ where: { id } });
-  if (!existing) {
+  const pool = getPool();
+  const [existingRows] = await pool.execute('SELECT * FROM Product WHERE id = ?', [id]);
+  if (existingRows.length === 0) {
     res.status(404);
     throw new Error('Product not found');
   }
+  const existing = existingRows[0];
 
   // Delete image from disk
   if (existing.image) {
@@ -153,7 +179,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
     }
   }
 
-  await prisma.product.delete({ where: { id } });
+  await pool.execute('DELETE FROM Product WHERE id = ?', [id]);
 
   res.json({ success: true, message: 'Product deleted successfully' });
 });
