@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, Loader2 } from "lucide-react";
+import emailjs from '@emailjs/browser';
 import { COMPANY_INFO as DEFAULT_COMPANY_INFO } from "@/lib/constants";
 import { fetchAPI } from "@/lib/api";
 import { Container } from "@/components/ui/Container";
@@ -29,6 +30,8 @@ export default function ContactPage() {
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
   const [errors, setErrors] = useState<Partial<FormState>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [COMPANY_INFO, setCompanyInfo] = useState(DEFAULT_COMPANY_INFO);
 
   useEffect(() => {
@@ -63,10 +66,31 @@ export default function ContactPage() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (validate()) {
-      setSubmitted(true);
+      setIsSubmitting(true);
+      setSubmitError("");
+      try {
+        await emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '',
+          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '',
+          {
+            from_name: form.name,
+            from_email: form.email,
+            company: form.company,
+            phone: form.phone,
+            message: form.message,
+          },
+          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ''
+        );
+        setSubmitted(true);
+      } catch (error) {
+        console.error('Failed to send email:', error);
+        setSubmitError('Failed to send message. Please check your connection or try again later.');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   }
 
@@ -282,9 +306,23 @@ export default function ContactPage() {
                       />
                       {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
                     </div>
-                    <Button type="submit" variant="primary" size="md">
-                      Send Message
-                      <Send className="w-4 h-4" />
+                    {submitError && (
+                      <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm mb-4">
+                        {submitError}
+                      </div>
+                    )}
+                    <Button type="submit" variant="primary" size="md" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          Sending...
+                          <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                        </>
+                      ) : (
+                        <>
+                          Send Message
+                          <Send className="w-4 h-4 ml-2" />
+                        </>
+                      )}
                     </Button>
                   </form>
                 </div>

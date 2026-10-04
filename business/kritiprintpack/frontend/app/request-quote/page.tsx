@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, Send } from "lucide-react";
+import { CheckCircle, Send, Loader2 } from "lucide-react";
 import { useEffect } from "react";
+import emailjs from '@emailjs/browser';
 import { fetchAPI } from "@/lib/api";
+import { COMPANY_INFO as DEFAULT_COMPANY_INFO } from "@/lib/constants";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 
@@ -41,9 +43,12 @@ export default function RequestQuotePage() {
   const [form, setForm] = useState<QuoteFormState>(INITIAL_STATE);
   const [errors, setErrors] = useState<Partial<QuoteFormState>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const [productOptions, setProductOptions] = useState<string[]>([]);
   const [serviceOptions, setServiceOptions] = useState<string[]>([]);
+  const [COMPANY_INFO, setCompanyInfo] = useState(DEFAULT_COMPANY_INFO);
 
   useEffect(() => {
     async function loadOptions() {
@@ -51,6 +56,10 @@ export default function RequestQuotePage() {
       if (p) setProductOptions(p.map((x: any) => x.name));
       const s = await fetchAPI('/services');
       if (s) setServiceOptions(s.map((x: any) => x.name));
+      const c = await fetchAPI('/contact');
+      if (c) {
+        setCompanyInfo((prev) => ({ ...prev, ...c }));
+      }
     }
     loadOptions();
   }, []);
@@ -70,9 +79,35 @@ export default function RequestQuotePage() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (validate()) setSubmitted(true);
+    if (validate()) {
+      setIsSubmitting(true);
+      setSubmitError("");
+      try {
+        await emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_QUOTE_SERVICE_ID || '',
+          process.env.NEXT_PUBLIC_EMAILJS_QUOTE_TEMPLATE_ID || '',
+          {
+            from_name: form.name,
+            company: form.company,
+            from_email: form.email,
+            phone: form.phone,
+            product_or_service: form.productOrService,
+            quantity: form.quantity,
+            requirements: form.requirements,
+            message: form.message,
+          },
+          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ''
+        );
+        setSubmitted(true);
+      } catch (error) {
+        console.error('Failed to send quote request:', error);
+        setSubmitError('Failed to send request. Please check your connection or try again later.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
   }
 
   function handleChange(
@@ -131,10 +166,10 @@ export default function RequestQuotePage() {
                 <div className="mt-8 pt-6 border-t border-white/10">
                   <p className="text-sm text-gray-400">Prefer to call?</p>
                   <a
-                    href={`tel:+977-98XXXXXXXX`}
+                    href={`tel:${COMPANY_INFO.mobile}`}
                     className="text-white font-semibold hover:text-brand-orange transition-colors mt-1 block"
                   >
-                    +977-98XXXXXXXX
+                    {COMPANY_INFO.mobile}
                   </a>
                 </div>
               </div>
@@ -275,9 +310,23 @@ export default function RequestQuotePage() {
                     </div>
 
                     <div className="pt-2">
-                      <Button type="submit" variant="primary" size="lg" className="w-full sm:w-auto">
-                        Submit Quote Request
-                        <Send className="w-4 h-4" />
+                      {submitError && (
+                        <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm mb-4">
+                          {submitError}
+                        </div>
+                      )}
+                      <Button type="submit" variant="primary" size="lg" className="w-full sm:w-auto" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                          <>
+                            Submitting...
+                            <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                          </>
+                        ) : (
+                          <>
+                            Submit Quote Request
+                            <Send className="w-4 h-4 ml-2" />
+                          </>
+                        )}
                       </Button>
                       <p className="text-xs text-gray-400 mt-3">
                         We&apos;ll respond within 24 hours. Your information will never be shared.
