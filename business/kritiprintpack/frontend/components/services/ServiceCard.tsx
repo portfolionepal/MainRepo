@@ -45,7 +45,7 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
         )}
 
         <Link
-          href={`/services/${service.slug}`}
+          href={`/services/detail?slug=${service.slug}`}
           className="inline-flex items-center gap-1.5 text-brand-blue text-sm font-semibold hover:gap-3 transition-all"
           aria-label={`Learn more about ${service.name}`}
         >

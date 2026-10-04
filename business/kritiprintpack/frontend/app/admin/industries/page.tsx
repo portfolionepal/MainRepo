@@ -8,7 +8,7 @@ export default function AdminIndustriesPage() {
       title="Manage Industries"
       apiEndpoint="/industries"
       createHref="/admin/industries/new"
-      editHref={(item) => `/admin/industries/${item.id}`}
+      editHref={(item) => `/admin/industries/edit?id=${item.id}`}
       columns={[
         { key: "name", label: "Name", render: (item) => (
           <div>

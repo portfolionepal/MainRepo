@@ -1,7 +1,8 @@
 "use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { AdminEditWrapper } from "@/components/admin/AdminEditWrapper";
-import { use } from "react";
 
 const SERVICE_FIELDS = [
   { name: 'name', label: 'Service Name', required: true },
@@ -22,11 +23,25 @@ const SERVICE_FIELDS = [
   { name: 'benefits', label: 'Benefits (one per line)', type: 'list' as const, placeholder: 'e.g. Cost-effective solutions' },
 ];
 
-export default function EditServicePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function EditServiceContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return <div className="text-red-500 py-10 text-center">Missing service ID.</div>;
+  }
+
   return (
     <AdminEditWrapper apiEndpoint="/services" itemId={id}>
       {(data) => <AdminForm title="Edit Service" apiEndpoint="/services" redirectPath="/admin/services" fields={SERVICE_FIELDS} initialData={data} isEdit useFormData />}
     </AdminEditWrapper>
+  );
+}
+
+export default function EditServicePage() {
+  return (
+    <Suspense fallback={<div className="text-gray-500 py-10 text-center">Loading...</div>}>
+      <EditServiceContent />
+    </Suspense>
   );
 }

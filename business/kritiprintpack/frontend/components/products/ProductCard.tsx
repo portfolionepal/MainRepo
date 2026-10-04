@@ -55,7 +55,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         )}
 
         <Link
-          href={`/products/${product.slug}`}
+          href={`/products/detail?slug=${product.slug}`}
           className="inline-flex items-center gap-1.5 text-brand-blue text-sm font-semibold hover:gap-3 transition-all"
           aria-label={`View details for ${product.name}`}
         >

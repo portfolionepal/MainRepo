@@ -8,7 +8,7 @@ export default function AdminStatsPage() {
       title="Manage Company Stats"
       apiEndpoint="/stats"
       createHref="/admin/stats/new"
-      editHref={(item) => `/admin/stats/${item.id}`}
+      editHref={(item) => `/admin/stats/edit?id=${item.id}`}
       columns={[
         { key: "value", label: "Value", render: (item) => (
           <span className="text-lg font-bold text-gray-900">{item.value}</span>

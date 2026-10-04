@@ -1,7 +1,8 @@
 "use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { AdminEditWrapper } from "@/components/admin/AdminEditWrapper";
-import { use } from "react";
 
 const WHY_FIELDS = [
   { name: 'title', label: 'Title', required: true },
@@ -10,11 +11,25 @@ const WHY_FIELDS = [
   { name: 'description', label: 'Description', type: 'textarea' as const, required: true, rows: 3 },
 ];
 
-export default function EditWhyChooseUsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function EditWhyChooseUsContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return <div className="text-red-500 py-10 text-center">Missing item ID.</div>;
+  }
+
   return (
     <AdminEditWrapper apiEndpoint="/why-choose-us" itemId={id}>
       {(data) => <AdminForm title="Edit Why Choose Us Entry" apiEndpoint="/why-choose-us" redirectPath="/admin/why-choose-us" fields={WHY_FIELDS} initialData={data} isEdit />}
     </AdminEditWrapper>
+  );
+}
+
+export default function EditWhyChooseUsPage() {
+  return (
+    <Suspense fallback={<div className="text-gray-500 py-10 text-center">Loading...</div>}>
+      <EditWhyChooseUsContent />
+    </Suspense>
   );
 }

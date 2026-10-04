@@ -1,7 +1,8 @@
 "use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { AdminEditWrapper } from "@/components/admin/AdminEditWrapper";
-import { use } from "react";
 
 const STAT_FIELDS = [
   { name: 'value', label: 'Value (e.g. 500+)', required: true },
@@ -9,11 +10,25 @@ const STAT_FIELDS = [
   { name: 'order', label: 'Display Order', type: 'number' as const },
 ];
 
-export default function EditStatPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function EditStatContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return <div className="text-red-500 py-10 text-center">Missing stat ID.</div>;
+  }
+
   return (
     <AdminEditWrapper apiEndpoint="/stats" itemId={id}>
       {(data) => <AdminForm title="Edit Stat" apiEndpoint="/stats" redirectPath="/admin/stats" fields={STAT_FIELDS} initialData={data} isEdit />}
     </AdminEditWrapper>
+  );
+}
+
+export default function EditStatPage() {
+  return (
+    <Suspense fallback={<div className="text-gray-500 py-10 text-center">Loading...</div>}>
+      <EditStatContent />
+    </Suspense>
   );
 }

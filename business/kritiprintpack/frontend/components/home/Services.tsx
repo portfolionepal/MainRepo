@@ -29,7 +29,7 @@ export async function Services() {
             return (
               <Link
                 key={service.id}
-                href={`/services/${service.slug}`}
+                href={`/services/detail?slug=${service.slug}`}
                 className="group bg-white rounded-xl p-7 border border-gray-100 hover:border-brand-blue/30 hover:shadow-lg transition-all duration-300"
               >
                 <div className="w-12 h-12 bg-brand-blue/10 rounded-lg flex items-center justify-center mb-5 group-hover:bg-brand-blue transition-colors duration-300">

@@ -37,7 +37,7 @@ export async function Portfolio() {
           {featured.map((item, i) => (
             <Link
               key={item.id}
-              href={`/portfolio/${item.slug}`}
+              href={`/portfolio/detail?slug=${item.slug}`}
               className="group relative bg-brand-gray-light rounded-xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300"
             >
               {/* Actual Image */}

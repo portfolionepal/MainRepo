@@ -44,8 +44,8 @@ export function Footer() {
           social: {
             ...DEFAULT_COMPANY_INFO.social,
             facebook: data.facebookUrl || DEFAULT_COMPANY_INFO.social.facebook,
-            whatsapp: data.whatsappUrl || DEFAULT_COMPANY_INFO.social.whatsapp,
-            instagram: data.instagramUrl || DEFAULT_COMPANY_INFO.social.instagram,
+            whatsapp: data.twitterUrl || DEFAULT_COMPANY_INFO.social.whatsapp,
+            instagram: data.linkedinUrl || DEFAULT_COMPANY_INFO.social.instagram,
           }
         });
       }

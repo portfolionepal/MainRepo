@@ -1,37 +1,64 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Service } from "@/data/services";
 import { fetchAPI } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-
-interface Props {
-  params: Promise<{ slug: string }>;
-}
-
 import { getIconComponent } from "@/lib/icons";
 
-export async function generateStaticParams() {
-  const services: Service[] = (await fetchAPI('/services')) || [];
-  return services.map((s) => ({ slug: s.slug }));
-}
+function ServiceDetailContent() {
+  const searchParams = useSearchParams();
+  const slug = searchParams.get("slug");
+  
+  const [service, setService] = useState<Service | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const service: Service = await fetchAPI(`/services/${slug}`);
-  if (!service) return { title: "Service Not Found" };
-  return {
-    title: service.name,
-    description: service.shortDescription,
-  };
-}
+  useEffect(() => {
+    if (!slug) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
 
-export default async function ServiceDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const service: Service = await fetchAPI(`/services/${slug}`);
-  if (!service) notFound();
+    async function loadService() {
+      try {
+        const data = await fetchAPI(`/services/${slug}`);
+        if (data) {
+          setService(data);
+        } else {
+          setError(true);
+        }
+      } catch (err) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadService();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="bg-brand-navy min-h-screen pt-32 pb-16 flex items-center justify-center">
+        <div className="text-brand-orange text-xl font-display">Loading service details...</div>
+      </div>
+    );
+  }
+
+  if (error || !service) {
+    return (
+      <div className="bg-brand-navy min-h-screen pt-32 pb-16 flex flex-col items-center justify-center">
+        <h1 className="text-white text-3xl font-display font-bold mb-4">Service Not Found</h1>
+        <p className="text-gray-400 mb-8">We couldn't find the service you're looking for.</p>
+        <Button href="/services" variant="primary">Return to Services</Button>
+      </div>
+    );
+  }
 
   const Icon = getIconComponent(service.icon);
 
@@ -108,7 +135,7 @@ export default async function ServiceDetailPage({ params }: Props) {
               <h2 className="font-display font-bold text-white text-2xl mb-1">
                 Ready to get started?
               </h2>
-              <p className="text-gray-400">Tell us your requirements and we&apos;ll be in touch within 24 hours.</p>
+              <p className="text-gray-400">Tell us your requirements and we'll be in touch within 24 hours.</p>
             </div>
             <div className="flex gap-3">
               <Button href="/request-quote" variant="primary" size="md">
@@ -122,5 +149,13 @@ export default async function ServiceDetailPage({ params }: Props) {
         </Container>
       </section>
     </>
+  );
+}
+
+export default function ServiceDetailPage() {
+  return (
+    <Suspense fallback={<div className="bg-brand-navy min-h-screen pt-32 pb-16 flex items-center justify-center"><div className="text-brand-orange text-xl font-display">Loading...</div></div>}>
+      <ServiceDetailContent />
+    </Suspense>
   );
 }

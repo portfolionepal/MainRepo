@@ -1,7 +1,8 @@
 "use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { AdminEditWrapper } from "@/components/admin/AdminEditWrapper";
-import { use } from "react";
 
 const PRODUCT_FIELDS = [
   { name: 'name', label: 'Product Name', required: true },
@@ -16,11 +17,25 @@ const PRODUCT_FIELDS = [
   { name: 'applications', label: 'Applications (one per line)', type: 'list' as const, placeholder: 'e.g. Food packaging' },
 ];
 
-export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function EditProductContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return <div className="text-red-500 py-10 text-center">Missing product ID.</div>;
+  }
+
   return (
     <AdminEditWrapper apiEndpoint="/products" itemId={id}>
       {(data) => <AdminForm title="Edit Product" apiEndpoint="/products" redirectPath="/admin/products" fields={PRODUCT_FIELDS} initialData={data} isEdit useFormData />}
     </AdminEditWrapper>
+  );
+}
+
+export default function EditProductPage() {
+  return (
+    <Suspense fallback={<div className="text-gray-500 py-10 text-center">Loading...</div>}>
+      <EditProductContent />
+    </Suspense>
   );
 }

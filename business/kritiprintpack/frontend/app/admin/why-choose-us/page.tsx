@@ -8,7 +8,7 @@ export default function AdminWhyChooseUsPage() {
       title="Manage Why Choose Us"
       apiEndpoint="/why-choose-us"
       createHref="/admin/why-choose-us/new"
-      editHref={(item) => `/admin/why-choose-us/${item.id}`}
+      editHref={(item) => `/admin/why-choose-us/edit?id=${item.id}`}
       columns={[
         { key: "title", label: "Title", render: (item) => (
           <span className="font-medium text-gray-900">{item.title}</span>

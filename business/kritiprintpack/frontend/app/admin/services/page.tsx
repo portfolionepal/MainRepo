@@ -8,7 +8,7 @@ export default function AdminServicesPage() {
       title="Manage Services"
       apiEndpoint="/services"
       createHref="/admin/services/new"
-      editHref={(item) => `/admin/services/${item.id}`}
+      editHref={(item) => `/admin/services/edit?id=${item.id}`}
       columns={[
         { key: "name", label: "Name", render: (item) => (
           <div>

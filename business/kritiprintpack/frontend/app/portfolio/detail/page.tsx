@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+"use client";
+
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PortfolioItem, PORTFOLIO_CATEGORIES } from "@/data/portfolio";
@@ -8,29 +10,55 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 
-interface Props {
-  params: Promise<{ slug: string }>;
-}
+function PortfolioDetailContent() {
+  const searchParams = useSearchParams();
+  const slug = searchParams.get("slug");
+  
+  const [item, setItem] = useState<PortfolioItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-export async function generateStaticParams() {
-  const portfolioItems: PortfolioItem[] = (await fetchAPI('/portfolio')) || [];
-  return portfolioItems.map((p) => ({ slug: p.slug }));
-}
+  useEffect(() => {
+    if (!slug) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const item: PortfolioItem = await fetchAPI(`/portfolio/${slug}`);
-  if (!item) return { title: "Project Not Found" };
-  return {
-    title: item.title,
-    description: item.description,
-  };
-}
+    async function loadPortfolio() {
+      try {
+        const data = await fetchAPI(`/portfolio/${slug}`);
+        if (data) {
+          setItem(data);
+        } else {
+          setError(true);
+        }
+      } catch (err) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadPortfolio();
+  }, [slug]);
 
-export default async function PortfolioDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const item: PortfolioItem = await fetchAPI(`/portfolio/${slug}`);
-  if (!item) notFound();
+  if (loading) {
+    return (
+      <div className="bg-brand-navy min-h-screen pt-32 pb-16 flex items-center justify-center">
+        <div className="text-brand-orange text-xl font-display">Loading project details...</div>
+      </div>
+    );
+  }
+
+  if (error || !item) {
+    return (
+      <div className="bg-brand-navy min-h-screen pt-32 pb-16 flex flex-col items-center justify-center">
+        <h1 className="text-white text-3xl font-display font-bold mb-4">Project Not Found</h1>
+        <p className="text-gray-400 mb-8">We couldn't find the project you're looking for.</p>
+        <Button href="/portfolio" variant="primary">Return to Portfolio</Button>
+      </div>
+    );
+  }
 
   const categoryLabel = PORTFOLIO_CATEGORIES.find((c) => c.value === item.category)?.label;
 
@@ -102,7 +130,14 @@ export default async function PortfolioDetailPage({ params }: Props) {
           </div>
         </Container>
       </section>
-
     </>
+  );
+}
+
+export default function PortfolioDetailPage() {
+  return (
+    <Suspense fallback={<div className="bg-brand-navy min-h-screen pt-32 pb-16 flex items-center justify-center"><div className="text-brand-orange text-xl font-display">Loading...</div></div>}>
+      <PortfolioDetailContent />
+    </Suspense>
   );
 }

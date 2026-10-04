@@ -8,7 +8,7 @@ export default function AdminProductsPage() {
       title="Manage Products"
       apiEndpoint="/products"
       createHref="/admin/products/new"
-      editHref={(item) => `/admin/products/${item.id}`}
+      editHref={(item) => `/admin/products/edit?id=${item.id}`}
       columns={[
         { key: "name", label: "Name", render: (item) => (
           <div>

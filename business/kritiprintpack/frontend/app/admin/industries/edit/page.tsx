@@ -1,7 +1,8 @@
 "use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { AdminEditWrapper } from "@/components/admin/AdminEditWrapper";
-import { use } from "react";
 
 const INDUSTRY_FIELDS = [
   { name: 'name', label: 'Industry Name', required: true },
@@ -12,11 +13,25 @@ const INDUSTRY_FIELDS = [
   { name: 'products', label: 'Products we provide for this industry (one per line)', type: 'list' as const, placeholder: 'e.g. Corrugated Master Cartons' },
 ];
 
-export default function EditIndustryPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function EditIndustryContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return <div className="text-red-500 py-10 text-center">Missing industry ID.</div>;
+  }
+
   return (
     <AdminEditWrapper apiEndpoint="/industries" itemId={id}>
       {(data) => <AdminForm title="Edit Industry" apiEndpoint="/industries" redirectPath="/admin/industries" fields={INDUSTRY_FIELDS} initialData={data} isEdit useFormData />}
     </AdminEditWrapper>
+  );
+}
+
+export default function EditIndustryPage() {
+  return (
+    <Suspense fallback={<div className="text-gray-500 py-10 text-center">Loading...</div>}>
+      <EditIndustryContent />
+    </Suspense>
   );
 }

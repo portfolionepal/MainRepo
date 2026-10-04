@@ -32,7 +32,12 @@ export default function AdminContactPage() {
         const json = await res.json();
         if (json.data) {
           const state: Record<string, string> = {};
-          CONTACT_FIELDS.forEach(f => { state[f.name] = json.data[f.name] || ''; });
+          CONTACT_FIELDS.forEach(f => { 
+            let key = f.name;
+            if (key === 'whatsappUrl') key = 'twitterUrl';
+            if (key === 'instagramUrl') key = 'linkedinUrl';
+            state[f.name] = json.data[key] || ''; 
+          });
           setFormState(state);
         }
       } catch (err) {
@@ -49,6 +54,12 @@ export default function AdminContactPage() {
     setSaving(true);
 
     try {
+      const payload = { ...formState };
+      payload.twitterUrl = payload.whatsappUrl;
+      payload.linkedinUrl = payload.instagramUrl;
+      delete payload.whatsappUrl;
+      delete payload.instagramUrl;
+
       const token = localStorage.getItem("adminToken");
       const res = await fetch(`${API_URL}/contact`, {
         method: "PUT",
@@ -56,7 +67,7 @@ export default function AdminContactPage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(formState),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to update");

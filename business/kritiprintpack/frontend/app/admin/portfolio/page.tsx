@@ -8,7 +8,7 @@ export default function AdminPortfolioPage() {
       title="Manage Portfolio"
       apiEndpoint="/portfolio"
       createHref="/admin/portfolio/new"
-      editHref={(item) => `/admin/portfolio/${item.id}`}
+      editHref={(item) => `/admin/portfolio/edit?id=${item.id}`}
       columns={[
         { key: "title", label: "Title", render: (item) => (
           <div>

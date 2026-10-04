@@ -64,7 +64,7 @@ export function PortfolioCard({ item, className }: PortfolioCardProps) {
           {item.description}
         </p>
         <Link
-          href={`/portfolio/${item.slug}`}
+          href={`/portfolio/detail?slug=${item.slug}`}
           className="inline-flex items-center gap-1.5 text-brand-blue text-sm font-semibold hover:gap-3 transition-all mt-auto"
         >
           Learn more <ArrowRight className="w-4 h-4" />
