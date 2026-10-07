@@ -33,6 +33,6 @@ export const getImageUrl = (path: string) => {
   }
   
   // Otherwise, it's an uploaded file from the backend
-  const rootUrl = API_URL.replace('/api', '');
+  const rootUrl = API_URL.replace(/\/api\/?$/, '');
   return `${rootUrl}${path}`;
 };

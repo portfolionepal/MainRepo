@@ -14,7 +14,6 @@ const sora = Sora({
   subsets: ["latin"],
   variable: "--font-sora",
   display: "swap",
-  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
