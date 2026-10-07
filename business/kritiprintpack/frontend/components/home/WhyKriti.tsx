@@ -1,11 +1,34 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import * as LucideIcons from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { fetchAPI } from "@/lib/api";
 import { getIconComponent } from "@/lib/icons";
 
-export async function WhyKriti() {
-  const reasons = (await fetchAPI('/why-choose-us')) || [];
+export function WhyKriti() {
+  const [reasons, setReasons] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAPI('/why-choose-us').then((data) => {
+      setReasons(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 lg:py-28 bg-brand-gray-light relative overflow-hidden">
+        <Container className="relative">
+          <div className="text-center text-gray-500 py-10">Loading...</div>
+        </Container>
+      </section>
+    );
+  }
+
+  if (reasons.length === 0) return null;
 
   return (
     <section className="py-20 lg:py-28 bg-brand-gray-light relative overflow-hidden">

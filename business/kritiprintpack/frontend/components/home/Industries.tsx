@@ -1,13 +1,36 @@
-import Link from "next/link";
+"use client";
 
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Industry } from "@/data/industries";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { fetchAPI } from "@/lib/api";
 import { getIconComponent } from "@/lib/icons";
 
-export async function Industries() {
-  const industries: Industry[] = (await fetchAPI('/industries')) || [];
+export function Industries() {
+  const [industries, setIndustries] = useState<Industry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAPI('/industries').then((data) => {
+      setIndustries(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 lg:py-28 bg-white">
+        <Container>
+          <div className="text-center text-gray-500 py-10">Loading industries...</div>
+        </Container>
+      </section>
+    );
+  }
+
+  if (industries.length === 0) return null;
+
   return (
     <section className="py-20 lg:py-28 bg-white">
       <Container>

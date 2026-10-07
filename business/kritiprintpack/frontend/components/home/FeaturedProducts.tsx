@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Product } from "@/data/products";
@@ -7,9 +10,29 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { fetchAPI } from "@/lib/api";
 
-export async function FeaturedProducts() {
-  const products: Product[] = (await fetchAPI('/products')) || [];
+export function FeaturedProducts() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAPI('/products').then((data) => {
+      setProducts(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 lg:py-28 bg-white">
+        <Container>
+          <div className="text-center text-gray-500 py-10">Loading products...</div>
+        </Container>
+      </section>
+    );
+  }
+
   const featured = products.filter((p) => p.isFeatured).slice(0, 6);
+  if (featured.length === 0) return null;
 
   return (
     <section className="py-20 lg:py-28 bg-white">

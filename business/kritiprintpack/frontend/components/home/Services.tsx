@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import * as LucideIcons from "lucide-react";
 import { ArrowRight } from "lucide-react";
@@ -8,9 +11,29 @@ import { Button } from "@/components/ui/Button";
 import { fetchAPI } from "@/lib/api";
 import { getIconComponent } from "@/lib/icons";
 
-export async function Services() {
-  const services: Service[] = (await fetchAPI('/services')) || [];
+export function Services() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAPI('/services').then((data) => {
+      setServices(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 lg:py-28 bg-brand-gray-light">
+        <Container>
+          <div className="text-center text-gray-500 py-10">Loading services...</div>
+        </Container>
+      </section>
+    );
+  }
+
   const featured = services.filter((s) => s.isFeatured);
+  if (featured.length === 0) return null;
 
   return (
     <section className="py-20 lg:py-28 bg-brand-gray-light">

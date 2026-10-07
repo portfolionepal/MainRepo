@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ExternalLink } from "lucide-react";
@@ -12,9 +15,29 @@ function getCategoryLabel(category: string): string {
   return PORTFOLIO_CATEGORIES.find((c) => c.value === category)?.label ?? category;
 }
 
-export async function Portfolio() {
-  const portfolioItems: PortfolioItem[] = (await fetchAPI('/portfolio')) || [];
+export function Portfolio() {
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAPI('/portfolio').then((data) => {
+      setPortfolioItems(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 lg:py-28 bg-white">
+        <Container>
+          <div className="text-center text-gray-500 py-10">Loading portfolio...</div>
+        </Container>
+      </section>
+    );
+  }
+
   const featured = portfolioItems.filter((p) => p.isFeatured).slice(0, 4);
+  if (featured.length === 0) return null;
 
   return (
     <section className="py-20 lg:py-28 bg-white">
