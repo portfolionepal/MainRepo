@@ -1,9 +1,12 @@
 "use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { cn } from "@/lib/utils";
 
 interface Stat {
   id?: string;
@@ -25,12 +28,53 @@ const fadeUp = {
 };
 
 const HIGHLIGHTS = [
-  "ISO-quality corrugated manufacturing",
-  "Custom packaging for FMCG & food sector",
-  "15+ years serving Nepal's industry leaders",
+  "Quality Corrugated Manufacturing",
+  "Custom Packaging for FMCG & Food Sector",
+  "41+ Years Serving Nepal's Industry Leaders",
+];
+
+const HERO_SLIDES = [
+  {
+    src: "/hero-main.jpg",
+    alt: "Corrugated Packaging Factory Warehouse",
+    title: "Corrugated Manufacturing Plant",
+  },
+  {
+    src: "/hero-floating-1.jpg",
+    alt: "High-Speed Production and Printing Lines",
+    title: "Automated Production Lines",
+  },
+  {
+    src: "/hero-floating-2.jpg",
+    alt: "Precision Box Packaging and Quality Assurance",
+    title: "Precision Box Packaging",
+  },
+  {
+    src: "/images/products/industrial-shipping-boxes.jpg",
+    alt: "Custom Industrial Shipping & Master Cartons",
+    title: "Industrial Shipping Cartons",
+  },
 ];
 
 export function Hero({ stats }: HeroProps) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-slide every 3 seconds in a continuous loop
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handlePrev = () => {
+    setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  };
+
+  const handleNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+  };
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-brand-gray-light">
       {/* Background pattern */}
@@ -57,7 +101,6 @@ export function Hero({ stats }: HeroProps) {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left: Text content */}
           <div>
-
             <motion.h1
               custom={1}
               initial="hidden"
@@ -118,25 +161,84 @@ export function Hero({ stats }: HeroProps) {
             </motion.div>
           </div>
 
-          {/* Right: Visual element */}
+          {/* Right: Visual element (4-Image Auto Slider) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="relative hidden lg:block"
+            className="relative block mt-6 lg:mt-0"
           >
             {/* Main card */}
-            <div className="relative bg-white rounded-3xl overflow-hidden border border-brand-gray-light shadow-2xl aspect-[4/3] w-full transform lg:scale-100 xl:scale-105 hover:scale-[1.02] xl:hover:scale-[1.07] transition-transform duration-700 origin-center z-10">
-              <Image 
-                src="/hero-main.jpg" 
-                alt="Corrugated Packaging Factory"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-              />
+            <div className="relative bg-white rounded-3xl overflow-hidden border border-brand-gray-light shadow-2xl aspect-[4/3] w-full transform lg:scale-100 xl:scale-105 transition-all duration-500 origin-center z-10 group">
+              {/* Slides */}
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={HERO_SLIDES[currentSlide].src}
+                    alt={HERO_SLIDES[currentSlide].alt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    priority={currentSlide === 0}
+                  />
+                  {/* Subtle gradient overlay for badge & dots readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25 pointer-events-none" />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Slide badge / title */}
+              <div className="absolute top-4 left-4 z-20">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-navy/80 backdrop-blur-md text-white border border-white/15 shadow-md">
+                  <span className="w-2 h-2 rounded-full bg-brand-orange animate-pulse" />
+                  {HERO_SLIDES[currentSlide].title}
+                </span>
+              </div>
+
+              {/* Prev / Next controls (appear on hover) */}
+              <button
+                type="button"
+                onClick={handlePrev}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-brand-navy/60 hover:bg-brand-navy/90 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg border border-white/10"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleNext}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-brand-navy/60 hover:bg-brand-navy/90 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg border border-white/10"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
+              {/* Slide navigation indicators (dots) */}
+              <div className="absolute bottom-5 right-5 z-20 flex items-center gap-2">
+                {HERO_SLIDES.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setCurrentSlide(idx)}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      currentSlide === idx
+                        ? "w-8 bg-brand-orange shadow-md"
+                        : "w-2 bg-white/70 hover:bg-white"
+                    )}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+
               {/* Orange accent bar */}
-              <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-brand-orange z-10" />
+              <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-brand-orange z-20" />
             </div>
           </motion.div>
         </div>

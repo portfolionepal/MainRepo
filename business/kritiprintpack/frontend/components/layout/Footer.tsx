@@ -59,14 +59,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center mb-5">
-              <Image
-                src="/logo.png"
-                alt="Kriti Print & Pack Logo"
-                width={240}
-                height={64}
-                className="h-16 w-auto object-contain"
-              />
+            <Link href="/" className="inline-flex items-center mb-5">
+              <div className="bg-white px-3.5 py-1.5 rounded-xl shadow-sm">
+                <Image
+                  src="/logo.png"
+                  alt="Kriti Print & Pack Logo"
+                  width={200}
+                  height={50}
+                  className="h-11 w-auto object-contain"
+                />
+              </div>
             </Link>
             <p className="text-brand-gray text-sm leading-relaxed mb-6">
               Professional printing and packaging solutions for FMCG, food, industrial, and

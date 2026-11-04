@@ -56,14 +56,23 @@ export function Navbar() {
             className="flex items-center flex-shrink-0"
             aria-label="Kriti Print & Pack Industries"
           >
-            <Image 
-              src="/logo.png" 
-              alt="Kriti Print & Pack Logo" 
-              width={240} 
-              height={64} 
-              className="h-16 w-auto object-contain"
-              priority
-            />
+            <div
+              className={cn(
+                "flex items-center rounded-lg transition-all duration-300",
+                isScrolled || !isHomePage
+                  ? "bg-white/95 px-3 py-1 shadow-sm backdrop-blur-sm"
+                  : "bg-transparent py-1"
+              )}
+            >
+              <Image 
+                src="/logo.png" 
+                alt="Kriti Print & Pack Logo" 
+                width={220} 
+                height={54} 
+                className="h-10 lg:h-12 w-auto object-contain"
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
