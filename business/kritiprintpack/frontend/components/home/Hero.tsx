@@ -36,8 +36,8 @@ const HIGHLIGHTS = [
 const HERO_SLIDES = [
   {
     src: "/hero-main.jpg",
-    alt: "Corrugated Packaging Factory Warehouse",
-    title: "Corrugated Manufacturing Plant",
+    alt: "Packaging Factory Warehouse",
+    title: "Manufacturing Plant",
   },
   {
     src: "/hero-floating-1.jpg",
