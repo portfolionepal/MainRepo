@@ -12,6 +12,9 @@ export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     });
 
     if (!res.ok) {
+      if (res.status === 404) {
+        return null;
+      }
       throw new Error(`API error: ${res.status}`);
     }
     const data = await res.json();
@@ -26,12 +29,12 @@ export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
 export const getImageUrl = (path: string) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  
+
   // If the path is a static frontend image (e.g. from seed data), return it as-is
   if (path.startsWith('/images/')) {
     return path;
   }
-  
+
   // Otherwise, it's an uploaded file from the backend
   const rootUrl = API_URL.replace(/\/api\/?$/, '');
   return `${rootUrl}${path}`;

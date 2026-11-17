@@ -13,7 +13,7 @@ import { getIconComponent } from "@/lib/icons";
 function ServiceDetailContent() {
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
-  
+
   const [service, setService] = useState<Service | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -127,27 +127,6 @@ function ServiceDetailContent() {
         </Container>
       </section>
 
-      {/* CTA */}
-      <section className="py-14 bg-brand-navy">
-        <Container>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h2 className="font-display font-bold text-white text-2xl mb-1">
-                Ready to get started?
-              </h2>
-              <p className="text-gray-400">Tell us your requirements and we'll be in touch within 24 hours.</p>
-            </div>
-            <div className="flex gap-3">
-              <Button href="/request-quote" variant="primary" size="md">
-                Request a Quote
-              </Button>
-              <Button href="/contact" variant="outline" size="md" className="border-white/30 text-white hover:bg-white hover:text-brand-gray-dark">
-                Contact Us
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </section>
     </>
   );
 }

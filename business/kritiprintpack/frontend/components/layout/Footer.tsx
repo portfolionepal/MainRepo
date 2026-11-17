@@ -15,25 +15,25 @@ import { useEffect, useState } from "react";
 import { Container } from "@/components/ui/Container";
 
 const PRODUCT_LINKS = [
-  { label: "Corrugated Master Cartons", href: "/products/corrugated-master-cartons" },
-  { label: "Custom Mailer Boxes", href: "/products/custom-printed-mailer-boxes" },
-  { label: "FMCG Food Packaging", href: "/products/fmcg-food-packaging-cartons" },
-  { label: "Edible Oil Packaging", href: "/products/edible-oil-packaging-boxes" },
-  { label: "Industrial Shipping Boxes", href: "/products/industrial-shipping-boxes" },
-  { label: "Eco-Friendly Kraft Boxes", href: "/products/eco-friendly-kraft-boxes" },
+  { label: "Corrugated Master Cartons", href: "/products/detail?slug=corrugated-master-cartons" },
+  { label: "Custom Mailer Boxes", href: "/products/detail?slug=custom-printed-mailer-boxes" },
+  { label: "FMCG Food Packaging", href: "/products/detail?slug=fmcg-food-packaging-cartons" },
+  { label: "Edible Oil Packaging", href: "/products/detail?slug=edible-oil-packaging-boxes" },
+  { label: "Industrial Shipping Boxes", href: "/products/detail?slug=industrial-shipping-boxes" },
+  { label: "Eco-Friendly Kraft Boxes", href: "/products/detail?slug=eco-friendly-kraft-boxes" },
 ];
 
 const SERVICE_LINKS = [
-  { label: "Custom Packaging Design", href: "/services/custom-packaging-design" },
-  { label: "Sustainable Packaging", href: "/services/sustainable-packaging" },
-  { label: "Rapid Prototyping", href: "/services/rapid-prototyping-sampling" },
-  { label: "FMCG & Food Grade", href: "/services/fmcg-food-grade-packaging" },
-  { label: "Large Volume Manufacturing", href: "/services/large-volume-manufacturing" },
+  { label: "Custom Packaging Design", href: "/services/detail?slug=custom-packaging-design" },
+  { label: "Sustainable Packaging", href: "/services/detail?slug=sustainable-packaging" },
+  { label: "Rapid Prototyping", href: "/services/detail?slug=rapid-prototyping-sampling" },
 ];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [COMPANY_INFO, setCompanyInfo] = useState(DEFAULT_COMPANY_INFO);
+  const [productLinks, setProductLinks] = useState(PRODUCT_LINKS);
+  const [serviceLinks, setServiceLinks] = useState(SERVICE_LINKS);
 
   useEffect(() => {
     fetchAPI('/contact').then(data => {
@@ -48,6 +48,24 @@ export function Footer() {
             instagram: data.linkedinUrl || DEFAULT_COMPANY_INFO.social.instagram,
           }
         });
+      }
+    });
+
+    fetchAPI('/services').then(data => {
+      if (data && Array.isArray(data) && data.length > 0) {
+        setServiceLinks(data.slice(0, 6).map((s: { name: string; slug: string }) => ({
+          label: s.name,
+          href: `/services/detail?slug=${s.slug}`
+        })));
+      }
+    });
+
+    fetchAPI('/products').then(data => {
+      if (data && Array.isArray(data) && data.length > 0) {
+        setProductLinks(data.slice(0, 6).map((p: { name: string; slug: string }) => ({
+          label: p.name,
+          href: `/products/detail?slug=${p.slug}`
+        })));
       }
     });
   }, []);
@@ -106,7 +124,7 @@ export function Footer() {
               Products
             </h3>
             <ul className="space-y-3">
-              {PRODUCT_LINKS.map((link) => (
+              {productLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -125,7 +143,7 @@ export function Footer() {
               Services
             </h3>
             <ul className="space-y-3">
-              {SERVICE_LINKS.map((link) => (
+              {serviceLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

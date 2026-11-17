@@ -25,7 +25,7 @@ function getSpecIcon(key: string) {
 function ProductDetailContent() {
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
-  
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -187,23 +187,6 @@ function ProductDetailContent() {
         </Container>
       </section>
 
-      {/* CTA */}
-      <section className="py-14 bg-brand-navy">
-        <Container>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h2 className="font-display font-bold text-white text-2xl mb-1">
-                Interested in this product?
-              </h2>
-              <p className="text-gray-400">Request a quote and we'll get back to you within 24 hours.</p>
-            </div>
-            <Button href="/request-quote" variant="primary" size="lg">
-              Request a Quote
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </div>
-        </Container>
-      </section>
     </>
   );
 }
