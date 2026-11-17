@@ -9,7 +9,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 const CONTACT_FIELDS = [
   { name: 'name', label: 'Company Name' },
   { name: 'address', label: 'Address' },
-  { name: 'phone', label: 'Phone' },
   { name: 'mobile', label: 'Mobile' },
   { name: 'email', label: 'Email' },
   { name: 'mapUrl', label: 'Google Map Embed URL' },
